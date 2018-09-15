@@ -1,0 +1,324 @@
+html{
+    height: 100%;
+    width:100%;
+    overflow: hidden; 
+}
+input::-webkit-input-placeholder { /* WebKit, Blink, Edge */
+    color:    #fff;
+}
+input:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
+    color:    #fff;
+}
+input::-moz-placeholder { /* Mozilla Firefox 19+ */
+    color:    #fff;
+}
+input:-ms-input-placeholder { /* Internet Explorer 10-11 */
+    color:    #fff;
+}
+
+input:focus::-webkit-input-placeholder {
+color: transparent;
+/* transparent是全透明黑色(black)的速记法，即一个类似rgba(0,0,0,0)这样的值 */
+}
+input:focus:-moz-placeholder {
+color: transparent;
+}
+input:focus::-moz-placeholder {
+color: transparent;
+}
+input:focus:-ms-input-placeholder {
+color: transparent;
+}
+body{
+    /* background-image: url(../../images/bg.jpeg);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 100% 100%; */ 
+    background: url(../images/bg.jpeg) no-repeat center center fixed; 
+     background-size: cover;
+    overflow: hidden;
+}
+.ipwrap{
+    margin-top: 2rem;
+}
+.iconfont{
+    color: #fff;
+}
+.mask{
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: #534275;
+        opacity: 0.5;
+}
+.y-wrap{
+    /* height: 400px; */
+    margin-top: 4rem;
+    z-index: 999;
+}
+.y-head-icon{
+    text-align: center;
+    margin: 3rem 0;
+}
+.y-head-icon span{
+    font-size: 8rem;
+    color: #fff;
+}
+.select-box{
+    padding: 0;
+}
+.cs-options{
+    color: #fff;
+
+}
+.y-test-box span,.y-test-box input,.y-test-box .col-xs-2,.double-input-box *{
+        color: #fff;
+        padding: 0;
+        margin: 0;
+    }
+/* .cs-addicon{
+        background-color:#9bbeda;
+        text-align: center;
+        line-height: 20px;
+        border: solid 1px #fff;
+        border-radius: 20px; 
+    } */
+    .cs-addicon{
+       color:#9bbeda;
+    }
+.row{
+    margin: 0;
+}
+.y-form-control-test{
+    /* display: inline-block; */
+    border: none;
+    border-bottom: solid 1px #fff;
+    outline: none;
+    font-size: 18px;
+    background-color: transparent;
+}
+.y-form-control{
+    outline: none;
+    background-color: transparent;
+    border: solid 0px;
+    -webkit-appearance: initial;
+    color: #fff;
+    border-bottom: 1px solid #fff;
+}
+.y-input{
+    outline: none;
+    background-color: transparent;
+    border: solid 0px;
+    -webkit-appearance: initial;
+    color: #fff;
+}
+
+.y-show{
+        display: block;
+    }
+.y-hide{
+    display:none;
+}
+.option-delete{
+    position: absolute;
+    display: inline-block;
+    boder: none;
+    border: none;
+    right: 0;
+    /* float: right; */
+    padding: 1.2em 0.8em;
+    top: -0.1em;
+}
+.y-btn-wrap{
+    text-align: center;
+    /* margin-top: 2rem; */
+}
+.y-btn{
+    display: inline-block;
+    width: 100%;
+    padding: 0.7rem;
+    margin:12px 0;
+    margin-bottom: 2rem;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1.42857143;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    -ms-touch-action: manipulation;
+    touch-action: manipulation;
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    background-image: none;
+    border: 1px solid transparent;
+    border-radius: 30px;
+    background-color: #9bbeda;
+    outline: none;
+    color: #fff;
+    /* margin-top: 3rem; */
+}
+.bugtip{
+        color: red;
+        
+        font-size: 10px;
+        position: absolute;
+    }
+.ripple {
+    position:absolute;
+    background:#9bbeda;
+    border-radius:100%;
+    transform:scale(0);
+    pointer-events:none;
+}
+.ripple.show {
+    animation:ripple .5s ease-out;
+}
+.double-input-box{
+    height: 2rem;
+}
+.maskloading{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background:#9bbeda;
+    z-index: 10000;
+    text-align: center;
+}
+/* 动画相关的 */
+.ant-spin-dot {
+    position: relative;
+    display: inline-block;
+    font-size: 20px;
+    width: 40px;
+    height: 40px;
+    margin: 3rem 0;
+}
+.ant-spin {
+    margin-right: 16px;
+}
+
+.ant-spin {
+    font-family: Monospaced Number,Chinese Quote,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,PingFang SC,Hiragino Sans GB,Microsoft YaHei,Helvetica Neue,Helvetica,Arial,sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+    color: rgba(0,0,0,.65);
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    color: #e91e63;
+    vertical-align: middle;
+    text-align: center;
+    opacity: 0;
+    position: absolute;
+    -webkit-transition: -webkit-transform .3s cubic-bezier(.78,.14,.15,.86);
+    transition: -webkit-transform .3s cubic-bezier(.78,.14,.15,.86);
+    transition: transform .3s cubic-bezier(.78,.14,.15,.86);
+    transition: transform .3s cubic-bezier(.78,.14,.15,.86),-webkit-transform .3s cubic-bezier(.78,.14,.15,.86);
+    /* display: none; */
+}
+.ant-spin-spinning {
+    opacity: 1;
+    position: static;
+    /* display: inline-block; */
+}
+.ant-spin-dot-spin{
+    -webkit-transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    transform: rotate(45deg);
+    -webkit-animation: antRotate 1.2s infinite linear;
+    animation: antRotate 1.2s infinite linear;
+}
+.ant-spin-dot i:first-child {
+    left: 0;
+    top: 0;
+}
+.ant-spin-dot i:nth-child(2) {
+    right: 0;
+    top: 0;
+    -webkit-animation-delay: .4s;
+    animation-delay: .4s;
+}
+.ant-spin-dot i:nth-child(3) {
+    right: 0;
+    bottom: 0;
+    -webkit-animation-delay: .8s;
+    animation-delay: .8s;
+}
+.ant-spin-dot i:nth-child(4) {
+    left: 0;
+    bottom: 0;
+    -webkit-animation-delay: 1.2s;
+    animation-delay: 1.2s;
+}
+.ant-spin-dot i {
+    width: 20px;
+    height: 20px;
+    border-radius: 100%;
+    background-color: #e91e63;
+    -webkit-transform: scale(.75);
+    -ms-transform: scale(.75);
+    transform: scale(.75);
+    display: block;
+    position: absolute;
+    opacity: .3;
+    -webkit-animation: antSpinMove 1s infinite linear alternate;
+    animation: antSpinMove 1s infinite linear alternate;
+    -webkit-transform-origin: 50% 50%;
+    -ms-transform-origin: 50% 50%;
+    transform-origin: 50% 50%;
+}
+@-webkit-keyframes antSpinMove {
+    to {
+        opacity: 1
+    }
+}
+
+@keyframes antSpinMove {
+    to {
+        opacity: 1
+    }
+}
+@-webkit-keyframes antRotate {
+    to {
+        -webkit-transform: rotate(405deg);
+        transform: rotate(405deg)
+    }
+}
+
+@keyframes antRotate {
+    to {
+        -webkit-transform: rotate(405deg);
+        transform: rotate(405deg)
+    }
+}
+@keyframes ripple {
+    to {
+        transform:scale(2);
+        /* opacity:0; */
+    }
+}
+@media (min-width:  768px) {
+    .y-wrap{
+        background-color: #f5f5f5;
+        border: 1px solid #e3e3e3;
+        border-radius: 4px;
+        -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.05);
+        box-shadow: inset 0 1px 1px rgba(0,0,0,.05);
+        border-radius: 3px;
+        -webkit-box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        background: rgba(255,255,255, 0.2);
+    }
+    .ipwrap {
+        margin-top: 1rem;
+    }
+}
