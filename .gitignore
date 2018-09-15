@@ -1,2 +1,14 @@
 .DS_Store
+FreeRDP.xcodeproj/
+iFreeRDP.xcodeproj/
+FreeRDP.build/
 
+Debug-iphoneos/
+external/
+freerdp-2.0.0-dev-Darwin-armv7/
+include/
+rdtk/
+winpr/
+libfreerdp/
+channels/
+.gitignore.swp
