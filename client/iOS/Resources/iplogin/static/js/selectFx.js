@@ -362,7 +362,7 @@
                                             method : 'post',
                                             data : {
                                             // mac:mac/*终端mac地址*/,
-                                            type:'Windows',
+                                            type:'IOS',
                                             username:username,
                                             password:encryptedPassword
                                             },
