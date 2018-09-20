@@ -843,7 +843,7 @@
 //		_keyboard_last_height = keyboardEndFrame.size.width + keyboardEndFrame.origin.x;
         
      //设置横屏
-    CGFloat height = [[UIScreen mainScreen] bounds].size.height;
+        CGFloat height = [[UIScreen mainScreen] bounds].size.height;
         _keyboard_last_height = height - keyboardEndFrame.origin.y;
 	} else {
 		// portrait has the keyboard based on the difference of the height and the frames y.
@@ -856,9 +856,25 @@
     [UIView setAnimationCurve:[[[notification userInfo] objectForKey:UIKeyboardAnimationCurveUserInfoKey] intValue]];
     [UIView setAnimationDuration:[[[notification userInfo] objectForKey:UIKeyboardAnimationDurationUserInfoKey] doubleValue]];
 	CGRect frame = [_session_scrollview frame];
+    
+    //需要处理_touchpointer_view里面的那个imageView，要进行变换，太麻烦了，暂时不做
+//    NSLog(@"-------------------获取键盘的高度-----------------");
+//    NSDictionary *userInfo = [notification userInfo];
+//    NSValue *aValue = [userInfo objectForKey:UIKeyboardFrameEndUserInfoKey];
+//    CGRect keyboardRect = [aValue CGRectValue];
+//    int kbHeight = keyboardRect.size.height;
+//    NSLog(@"width:%f, height:%f", frame.size.width, frame.size.width);
 	frame.size.height -= shiftHeight;
 	[_session_scrollview setFrame:frame];
-    [_touchpointer_view setFrame:frame];
+//    CGFloat height = [UIScreen mainScreen].bounds.size.height;
+//    CGFloat width = [UIScreen mainScreen].bounds.size.width;
+//    CGFloat finalPointerViwerHeight = ([_touchpointer_view getPointerHeight] > height - kbHeight) > 0 ? [_touchpointer_view curPointerImgFrame].height/2 : [_touchpointer_view getPointerHeight];
+//    CGFloat preWidth = [_touchpointer_view getPointerWidth];
+//    CGRect newRect = CGRectMake(0, 0, width, height);
+//    [_touchpointer_view setFrame:newRect];
+    
+//    NSLog(@"width:%f, height:%f", [[UIScreen mainScreen] bounds].size.width, [[UIScreen mainScreen] bounds].size.height);
+//    [_touchpointer_view setCenter:CGPointMake(width - preWidth/2, finalPointerViwerHeight)];
 	[UIView commitAnimations];
 	
 }
@@ -866,7 +882,7 @@
 - (void)keyboardWillShow:(NSNotification *)notification
 {
 	[self shiftKeyboard: notification];
-	
+    
     [_touchpointer_view ensurePointerIsVisible];
 }
 

@@ -70,4 +70,6 @@
 - (int)getPointerWidth;
 - (int)getPointerHeight;
 
+- (CGSize) curPointerImgFrame;
+
 @end

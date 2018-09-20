@@ -21,7 +21,7 @@ if(jumpfrom !== '0'){
                url : authurl,
                method : 'post',
                data : {
-               type:'Windows',
+               type:'IOS',
                username:username,
                password:encryptedPassword
                }

@@ -152,6 +152,9 @@
     return [_cur_pointer_img size].height;
 }
 
+- (CGSize) curPointerImgFrame {
+    return _cur_pointer_img.size;
+}
 
 @end
 
