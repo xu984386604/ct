@@ -15,7 +15,7 @@
 
 #define SCREEN_HEIGHT ([UIScreen mainScreen].bounds.size.height)
 #define SCREEN_WIDTH  ([UIScreen mainScreen].bounds.size.width)
-#define LOCALMD5      @"ddee83fdb8cd37d682c2c74dd8bcfe98"
+#define LOCALMD5      @"b794338338af80b5198806c16b3624c5"
 
 //WLOG_LEVEL=DEBUG  环境变量
 @interface CuWebViewController () <MyFloatButtonDelegate>

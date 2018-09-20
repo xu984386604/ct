@@ -235,8 +235,13 @@ bool IsInner(unsigned int userIp, unsigned int begin, unsigned int end)
     NSURLSessionDataTask *sessionData = [session dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data,NSURLResponse * _Nullable response, NSError * _Nullable error) {
         NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
         NSLog(@"发送%@信息的请求返回状态码：%ld", type, (long)httpResponse.statusCode);
-        if(data) {
+        if([type isEqualToString:@"postData函数"])
+        {
             
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"SHOWPOSTDATAMESSAGE" object:data];}
+        if([type isEqualToString:@"postDataWhenFirstOpenRdp函数"])
+        {
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"HANDLEFIRSTPOSTDATAERROREVENT" object:data];
         }
     }];
     [sessionData resume]; //如果request任务暂停了，则恢复
