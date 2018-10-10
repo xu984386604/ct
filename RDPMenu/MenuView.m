@@ -100,20 +100,14 @@ static MenuView *instanceMenuView;
     //先判断是在左边还是右边
     if ( mypoint.x - kWidth/2 < 0.f )
     {
-        myx = 20 ;        //在左边
+        myx = mypoint.x + 26 ;        //在左边
     }else{
         
-        myx = kWidth - 20 -bgwidth;   //在右边
+        myx = mypoint.x - bgwidth - 26;   //在右边
     }
     
-    if ( mypoint.y - 20 -bgheight - 10 < floatbtnH/2 )
-    {
-        myy = mypoint.y + floatbtnH/2 + 10; //在下边
-    }else{
-        
-        myy = mypoint.y - 10 - floatbtnH/2 -bgheight ; //在上边
-    }
     
+    myy = mypoint.y - bgheight/2;
     bgview = [[UIView alloc] initWithFrame:
               CGRectMake(myx, myy, bgwidth, bgheight)];
 

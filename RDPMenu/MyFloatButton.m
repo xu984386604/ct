@@ -62,18 +62,21 @@ float _h; //有效活动高度
     return self;
 }
 - (void) tapAction{
+    
     [self.delegate floatTapAction:nil];
+    
 }
 #pragma mark - UIResponder
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
 {
-    
+   
 }
 
 - (void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event
 {
-    
+
+    [self setCenter:[vminfo share].mypoint];
 }
 
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
@@ -101,7 +104,7 @@ float _h; //有效活动高度
         ||
         movedPT.y - self.frame.size.height/2 < 0.f
         ||
-        movedPT.y + self.frame.size.height/2 > _h
+          movedPT.y + self.frame.size.height/2 > _h
         )
     {
         return;
@@ -146,6 +149,10 @@ float _h; //有效活动高度
         m.x = _w - _bannerIV.frame.size.width/2;
     if (m.y > _h - _bannerIV.frame.size.height/2)
         m.y = _h - _bannerIV.frame.size.height/2;
+    if (m.y < 60)
+        m.y = 60;
+    
+    
     
     [UIView animateWithDuration:0.1 animations:^
      {

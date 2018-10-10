@@ -26,7 +26,7 @@
 
 #define AUTOSCROLLDISTANCE 20
 #define AUTOSCROLLTIMEOUT 0.05
-
+#define CORRECTHTTPSTATUSCODE [NSNumber numberWithInt:800]
 
 @interface RDPSessionViewController (Private)<MyFloatButtonDelegate>
 -(void)showSessionToolbar:(BOOL)show;
@@ -170,6 +170,7 @@
     }
 
     
+    
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -189,6 +190,11 @@
             [_session connect];
         _session_initilized = YES;
     }
+    
+    
+    
+    
+
 
 }
 
@@ -390,7 +396,7 @@
 - (void) loadFloatButton {
     //加载悬浮按钮
     _myfloatbutton=[[MyFloatButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-60, SCREEN_HEIGHT-176, 46, 46)];
-    [vminfo share].mypoint = CGPointMake(SCREEN_WIDTH-60, SCREEN_HEIGHT-176);
+    [vminfo share].mypoint = _myfloatbutton.center;
     _myfloatbutton.alpha=0.5;
     _myfloatbutton.delegate=self;
     _myfloatbutton.bannerIV.image=[UIImage imageNamed:@"menu.png"];
@@ -405,6 +411,7 @@
         [self menuButtonTapAction:tag];
     };
 }
+
 
 - (void)sessionDidConnect:(RDPSession*)session
 {
@@ -445,6 +452,11 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillHide:) name: UIKeyboardWillHideNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardDidHide:) name: UIKeyboardDidHideNotification object:nil];
 
+    
+    //注册挂载网盘处理函数
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handlePostDataEvent:) name:@"SHOWPOSTDATAMESSAGE" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleFirstPostDataError:) name:@"HANDLEFIRSTPOSTDATAERROREVENT" object:nil];
+    
     // remove and release connecting view
     [_connecting_indicator_view stopAnimating];
     [_connecting_view removeFromSuperview];
@@ -468,13 +480,32 @@
     //挂载网盘第一次
     [self performSelector:@selector(postDataWhenFirstOpenRdp) withObject:nil afterDelay:0];
     [self loadFloatButton]; //加载悬浮按钮
+    
+    //定时器向虚拟机发送虚拟按键
+    myTimer = [NSTimer scheduledTimerWithTimeInterval:240 target:self selector:@selector(sendWinKeyToServiceToKeepAlive) userInfo:nil repeats:YES];
+    
+    
+    
 }
+-(void)sendWinKeyToServiceToKeepAlive
+{
+   
+    [[RDPKeyboard getSharedRDPKeyboard] sendVirtualKeyCode:0x5B];
+    
+}
+
+
+
+
+
+
+
 
 #pragma mark FloatButton TapAction
 //悬浮按钮的点击事件
 - (void)floatTapAction:(MyFloatButton *)sender
 {
-    if (!ISShowMenuButton) {
+    if (!ISShowMenuButton ) {
         [UIView animateWithDuration:0.2 animations:^{
             [_mymenuview showMenuView];
             _myfloatbutton.isMoving = NO;
@@ -494,7 +525,6 @@
     switch (tag) {
         case 1:
             [self toggleKeyboard:nil];
-            [self myfunction];
             break;
         case 2:
             [self toggleTouchPointer:nil];
@@ -664,7 +694,7 @@
                               myinfo.vmip,@"AppIP",
                               myinfo.vmpasswd,@"vmpasswd",
                               myinfo.vmusername,@"vmusername",
-                              @"0",@"isFirst",
+                              myinfo.apptype,@"appType",
                               nil];
     //挂载网盘
     if(!flag) //卸载网盘
@@ -676,7 +706,7 @@
         [dic setValue:myinfo.uid forKey:@"uid"];
     }
 
-    [[[CommonUtils alloc] init] makeRequestToServer:Reset_vm_User withDictionary:dic byHttpMethod:@"POST" type:@"postData函数（网盘）"];
+    [[[CommonUtils alloc] init] makeRequestToServer:Reset_vm_User withDictionary:dic byHttpMethod:@"POST" type:@"postData函数"];
 }
 
 -(void)postDataWhenFirstOpenRdp
@@ -688,12 +718,168 @@
                               myinfo.vmip,@"AppIP",
                               myinfo.vmpasswd,@"vmpasswd",
                               myinfo.vmusername,@"vmusername",
-                              @"1",@"isFirst",
+                              myinfo.apptype,@"appType",
                               nil];
     //挂载网盘
     [dic setValue:myinfo.uid forKey:@"uid"];
-    [[[CommonUtils alloc] init] makeRequestToServer:Reset_vm_User withDictionary:dic byHttpMethod:@"POST" type:@"postDataWhenFirstOpenRdp函数（网盘）"];
+    [[[CommonUtils alloc] init] makeRequestToServer:Reset_vm_User withDictionary:dic byHttpMethod:@"POST" type:@"postDataWhenFirstOpenRdp函数"];
 }
+//挂载网盘提示信息
+-(void)handlePostDataEvent:(NSNotification *)aNotification
+{
+    
+    NSData *mydata = [aNotification object];
+    NSDictionary *mydic = [NSJSONSerialization JSONObjectWithData:mydata options:NSJSONReadingAllowFragments error:nil];
+    
+    NSNumber * code = [mydic objectForKey:@"code"];
+    
+    NSLog(@"%@",mydic);
+    if([code isEqualToNumber:CORRECTHTTPSTATUSCODE])
+    {
+        NSDictionary * msg = [mydic objectForKey:@"msg"];
+        if(msg){
+            
+            if ((NSNull *)msg == [NSNull null]) {
+                [self showAlertView:3];
+                return;
+            }
+            
+            NSString *description2 = [[msg objectForKey:@"description"]
+                                      stringByRemovingPercentEncoding];
+            NSString *status = [msg objectForKey:@"status"];
+            
+            if (![status isEqualToString:@"success"]) {
+                [self showAlertView:3];
+                return;
+            }
+            
+            if ([description2 isEqualToString:@"网盘挂载成功"]) {
+                [self showAlertView:0];
+            }else if ([description2 isEqualToString:@"网盘已经存在"])
+            {
+                [self showAlertView:1];}
+            else if ([description2 isEqualToString:@"网盘卸载成功"])
+            {
+                [self showAlertView:2];
+            }
+            
+        }else{
+            [self showAlertView:4];
+        }
+        
+    }else
+    {
+        [self showAlertView:5];
+    }
+    
+}
+//第一次挂载网盘失败处理函数
+-(void)handleFirstPostDataError:(NSNotification *)aNotification
+{
+    NSData *mydata = [aNotification object];
+    NSDictionary *mydic = [NSJSONSerialization JSONObjectWithData:mydata options:NSJSONReadingAllowFragments error:nil];
+    
+    
+    if(mydic)
+    {
+        NSNumber * code = [mydic objectForKey:@"code"];
+        if(![code isEqualToNumber:CORRECTHTTPSTATUSCODE])
+        {
+            [self showAlertView:5];
+        }else
+        {
+            NSDictionary* msg = [mydic objectForKey:@"msg"];
+            
+            if(!msg)
+            {
+                [self showAlertView:3];
+                return;
+
+            }
+            if ((NSNull *)msg == [NSNull null]) {
+                [self showAlertView:3];
+                return;
+            }
+            NSString *status = [msg objectForKey:@"status"];
+            if([status isEqualToString:@"failed"])
+            {
+                [self showAlertView:3];
+            }
+        }
+    }else{
+        [self showAlertView:5];
+    }
+}
+
+
+
+
+-(void)showAlertView:(int )num
+{
+    
+    UIAlertController * myalert = nil;
+    switch (num) {
+        case 0:
+            myalert = [UIAlertController alertControllerWithTitle:@"操作提示"
+                                                          message:@"网盘挂载成功"
+                                                   preferredStyle:UIAlertControllerStyleAlert];
+            break;
+        case 1:
+            myalert = [UIAlertController alertControllerWithTitle:@"操作提示"
+                                                          message:@"网盘已经存在"
+                                                   preferredStyle:UIAlertControllerStyleAlert];
+            break;
+        case 2:
+            myalert = [UIAlertController alertControllerWithTitle:@"操作提示"
+                                                          message:@"网盘卸载成功"
+                                                   preferredStyle:UIAlertControllerStyleAlert];
+            break;
+        case 3:
+            myalert = [UIAlertController alertControllerWithTitle:@"操作提示"
+                                                          message:@"网盘操作失败"
+                                                   preferredStyle:UIAlertControllerStyleAlert];
+            break;
+            
+        case 4:
+            myalert = [UIAlertController alertControllerWithTitle:@"操作提示"
+                                                          message:@"网盘操作失败"
+                                                   preferredStyle:UIAlertControllerStyleAlert];
+            break;
+            
+        case 5:
+            myalert = [UIAlertController alertControllerWithTitle:@"操作提示"
+                                                          message:@"网络连接错误"
+                                                   preferredStyle:UIAlertControllerStyleAlert];
+            break;
+            
+        default:
+            break;
+    }
+    
+    
+    
+    UIAlertAction * defaultaction = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:nil];
+    
+    [myalert addAction:defaultaction];
+    dispatch_async(dispatch_get_main_queue(), ^{
+
+        [self.navigationController presentViewController:myalert animated:YES completion:nil];
+    });
+    
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 #pragma mark - Keyboard Toolbar Handlers
 
@@ -812,7 +998,26 @@
 //悬浮按钮的点击断开事件
 - (IBAction)disconnectSession:(id)sender
 {
-    [_session disconnect];        
+    
+    //弹出提示框
+    UIAlertController * myalert = [UIAlertController alertControllerWithTitle:@"确认提示" message:@"退出应用前，请确认您已保存数据！" preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertAction * defaultaction =[UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        
+        [_session disconnect];
+        
+        
+    }];
+    
+    UIAlertAction * cancle =[UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        
+    }];
+    
+    [myalert addAction:cancle];
+    [myalert addAction:defaultaction];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self presentViewController:myalert animated:YES completion:nil];
+    });
+
 }
 
 //取消按钮的点击事件响应
@@ -882,7 +1087,8 @@
 - (void)keyboardWillShow:(NSNotification *)notification
 {
 	[self shiftKeyboard: notification];
-    
+    //悬浮按钮是否会遮挡键盘
+    [self myfunction];
     [_touchpointer_view ensurePointerIsVisible];
 }
 
