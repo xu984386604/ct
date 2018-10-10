@@ -24,6 +24,9 @@
     
     NSLog(@"收到的服务端发来的打开远程应用的连接信息：%@",_dic);
    
+    NSString *arguments = [_dic objectForKey:@"arguments"];
+    NSArray *argumentsArray = [arguments componentsSeparatedByString:@","];
+    
     //解析json数据保存到vminfo中
     vminfo * myinfo = [vminfo share];
     myinfo.tsip=[_dic objectForKey:@"tsip"];
@@ -34,7 +37,7 @@
     myinfo.vmport=[_dic objectForKey:@"vmport"];
     myinfo.vmpasswd=[_dic objectForKey:@"vmpsswd"];
     myinfo.vmusername=[_dic objectForKey:@"vmusername"];
-    NSString* remoteProgram=[_dic objectForKey:@"remoteProgram"];
+    NSString* remoteProgram= [_dic objectForKey:@"remoteProgram"];
     myinfo.appid = [_dic objectForKey:@"id"];    
      //docker应用处理
     NSString *apptype=[_dic objectForKey:@"appType"];
@@ -49,7 +52,11 @@
         remoteProgram=[NSString stringWithFormat:@"%@ %@ %@ %@:%@",remoteProgram,str1,myinfo.dockerVncPwd,myinfo.dockerIp,myinfo.dockerPort];
     }
     
-    myinfo.remoteProgram=[NSString  stringWithFormat:@"opener.exe %@", remoteProgram];
+    
+    NSLog(@"dakaiwenjaindedizhi:%lu", (unsigned long)[argumentsArray[0] rangeOfString:@":"].location);
+    myinfo.remoteProgram=[NSString  stringWithFormat:@"opener.exe %@ %@", remoteProgram, [argumentsArray[0] substringFromIndex:[argumentsArray[0] rangeOfString:@":"].location]];
+    
+    
     //接收的数据不为空则可以调用来打开RDP
     BOOL is_every_param_ok = YES;
     
