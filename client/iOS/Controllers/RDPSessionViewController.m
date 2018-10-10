@@ -396,7 +396,7 @@
 - (void) loadFloatButton {
     //加载悬浮按钮
     _myfloatbutton=[[MyFloatButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-60, SCREEN_HEIGHT-176, 46, 46)];
-    [vminfo share].mypoint = CGPointMake(SCREEN_WIDTH-60, SCREEN_HEIGHT-176);
+    [vminfo share].mypoint = _myfloatbutton.center;
     _myfloatbutton.alpha=0.5;
     _myfloatbutton.delegate=self;
     _myfloatbutton.bannerIV.image=[UIImage imageNamed:@"menu.png"];
@@ -411,6 +411,7 @@
         [self menuButtonTapAction:tag];
     };
 }
+
 
 - (void)sessionDidConnect:(RDPSession*)session
 {
@@ -479,15 +480,32 @@
     //挂载网盘第一次
     [self performSelector:@selector(postDataWhenFirstOpenRdp) withObject:nil afterDelay:0];
     [self loadFloatButton]; //加载悬浮按钮
-
+    
+    //定时器向虚拟机发送虚拟按键
+    myTimer = [NSTimer scheduledTimerWithTimeInterval:240 target:self selector:@selector(sendWinKeyToServiceToKeepAlive) userInfo:nil repeats:YES];
+    
+    
     
 }
+-(void)sendWinKeyToServiceToKeepAlive
+{
+   
+    [[RDPKeyboard getSharedRDPKeyboard] sendVirtualKeyCode:0x5B];
+    
+}
+
+
+
+
+
+
+
 
 #pragma mark FloatButton TapAction
 //悬浮按钮的点击事件
 - (void)floatTapAction:(MyFloatButton *)sender
 {
-    if (!ISShowMenuButton) {
+    if (!ISShowMenuButton ) {
         [UIView animateWithDuration:0.2 animations:^{
             [_mymenuview showMenuView];
             _myfloatbutton.isMoving = NO;
@@ -507,7 +525,6 @@
     switch (tag) {
         case 1:
             [self toggleKeyboard:nil];
-            [self myfunction];
             break;
         case 2:
             [self toggleTouchPointer:nil];
@@ -677,6 +694,7 @@
                               myinfo.vmip,@"AppIP",
                               myinfo.vmpasswd,@"vmpasswd",
                               myinfo.vmusername,@"vmusername",
+                              myinfo.apptype,@"appType",
                               nil];
     //挂载网盘
     if(!flag) //卸载网盘
@@ -700,6 +718,7 @@
                               myinfo.vmip,@"AppIP",
                               myinfo.vmpasswd,@"vmpasswd",
                               myinfo.vmusername,@"vmusername",
+                              myinfo.apptype,@"appType",
                               nil];
     //挂载网盘
     [dic setValue:myinfo.uid forKey:@"uid"];
@@ -1068,7 +1087,8 @@
 - (void)keyboardWillShow:(NSNotification *)notification
 {
 	[self shiftKeyboard: notification];
-    
+    //悬浮按钮是否会遮挡键盘
+    [self myfunction];
     [_touchpointer_view ensurePointerIsVisible];
 }
 
