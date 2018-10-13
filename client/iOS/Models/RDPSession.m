@@ -266,6 +266,7 @@ out_free:
 
 - (void) disconnect
 {
+    
 	mfInfo* mfi = [self mfi];
 	
     ios_events_send(mfi, [NSDictionary dictionaryWithObject:@"disconnect" forKey:@"type"]);
@@ -440,7 +441,7 @@ out_free:
 }
 
 - (void)sessionDidDisconnect
-{	
+{
     [[NSNotificationCenter defaultCenter] postNotificationName:TSXSessionDidDisconnectNotification object:self];
 	
     if ([[self delegate] respondsToSelector:@selector(sessionDidDisconnect:)])	

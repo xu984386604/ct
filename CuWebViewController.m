@@ -50,6 +50,9 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(setFlag:) name:@"setFlag" object:nil];
 
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showParamErrorMessage) name:@"paramErrorMessage" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(openRdp) name:@"reloadRdp" object:nil];
+    
+    
     
     _connectInfo = [vminfo share];
 }

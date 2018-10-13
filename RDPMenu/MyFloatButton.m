@@ -44,13 +44,14 @@ float _h; //有效活动高度
         //此处表示正常情况下父视图的有效范围, 其他尺寸自行更改
         _w = SCREEN_WIDTH;
         _h = SCREEN_HEIGHT-49;
-        //_bannerIV.image = [UIImage imageNamed:@"publishAdd"];
+        _bannerIV.image = [UIImage imageNamed:@"catolog2.png"];
         _bannerIV.layer.cornerRadius = 23.f;
         _bannerIV.layer.masksToBounds = YES;
-        _bannerIV.backgroundColor = [UIColor orangeColor];
+        _bannerIV.backgroundColor = [UIColor blackColor];
         _bannerIV.userInteractionEnabled = YES;
-        _bannerIV.alpha = 0.8f;
+        _bannerIV.alpha = 0.8;
         [self addSubview:_bannerIV];
+        self.contentMode = UIViewContentModeScaleAspectFill;
         _locationTag = kLocationTag_right;
         _nLogoWidth = frame.size.width;
         _nLogoHeight = frame.size.height;

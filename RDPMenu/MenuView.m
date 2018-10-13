@@ -26,6 +26,7 @@
     MenuButton * button3;
     MenuButton * button4;
     MenuButton * button5;
+    MenuButton * button6;
     UIView     * bgview;
     
 }
@@ -42,11 +43,12 @@ static MenuView *instanceMenuView;
 
 -(void)showMenuView
 {
-    CGPoint point1 = CGPointMake(30, 35);
-    CGPoint point2 = CGPointMake(90, 35);
-    CGPoint point3 = CGPointMake(150, 35);
-    CGPoint point4 = CGPointMake(210, 35);
-    CGPoint point5 = CGPointMake(270, 35);
+    CGPoint point1 = CGPointMake(25, 35);
+    CGPoint point2 = CGPointMake(75, 35);
+    CGPoint point3 = CGPointMake(125, 35);
+    CGPoint point4 = CGPointMake(175, 35);
+    CGPoint point5 = CGPointMake(225, 35);
+    CGPoint point6 = CGPointMake(275, 35);
     //确定 bgview 的位置
     [self locateBgview];
     
@@ -65,10 +67,14 @@ static MenuView *instanceMenuView;
     button4 = [MenuButton buttonWithTitle:@"卸载" imageTitle:@"unload_netdisk.png" center:point4];
     button4.tag = 4;
      [button4 addTarget:self action:@selector(buttonAction:) forControlEvents:UIControlEventTouchUpInside];
-    
-    button5 = [MenuButton buttonWithTitle:@"断开" imageTitle:@"close.png" center:point5];
+   
+    button5 = [MenuButton buttonWithTitle:@"刷新" imageTitle:@"fresh2.png" center:point5];
     button5.tag = 5;
     [button5 addTarget:self action:@selector(buttonAction:) forControlEvents:UIControlEventTouchUpInside];
+    
+    button6 = [MenuButton buttonWithTitle:@"断开" imageTitle:@"close.png" center:point6];
+    button6.tag = 6;
+    [button6 addTarget:self action:@selector(buttonAction:) forControlEvents:UIControlEventTouchUpInside];
     
    
     [bgview addSubview:button2];
@@ -76,6 +82,7 @@ static MenuView *instanceMenuView;
     [bgview addSubview:button1];
     [bgview addSubview:button4];
     [bgview addSubview:button5];
+    [bgview addSubview:button6];
     
     bgview.alpha=1;
     bgview.backgroundColor=[UIColor colorWithRed:
@@ -127,6 +134,7 @@ static MenuView *instanceMenuView;
         [button3 removeFromSuperview];
         [button4 removeFromSuperview];
         [button5 removeFromSuperview];
+        [button6 removeFromSuperview];
     }];
 
 }

@@ -397,14 +397,10 @@
     //加载悬浮按钮
     _myfloatbutton=[[MyFloatButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-60, SCREEN_HEIGHT-176, 46, 46)];
     [vminfo share].mypoint = _myfloatbutton.center;
-    _myfloatbutton.alpha=0.5;
+    _myfloatbutton.alpha=0.8;
     _myfloatbutton.delegate=self;
-    _myfloatbutton.bannerIV.image=[UIImage imageNamed:@"menu.png"];
-    
     [self.view addSubview:_myfloatbutton];
-    
     _mymenuview=[[MenuView alloc] init];
-    
     _mymenuview.clickMenuButton = ^(NSInteger tag){
         ISShowMenuButton = YES;
         [self floatTapAction:nil];
@@ -477,20 +473,21 @@
     }
     //进入遮挡windows登陆界面的界面
 //    [self sessionConnected:session];
-    //挂载网盘第一次
-    [self performSelector:@selector(postDataWhenFirstOpenRdp) withObject:nil afterDelay:0];
+    //开辟新线程，挂载网盘第一次
+        [self performSelector:@selector(postDataWhenFirstOpenRdp) withObject:nil afterDelay:0];
+
     [self loadFloatButton]; //加载悬浮按钮
     
     //定时器向虚拟机发送虚拟按键
-    myTimer = [NSTimer scheduledTimerWithTimeInterval:240 target:self selector:@selector(sendWinKeyToServiceToKeepAlive) userInfo:nil repeats:YES];
+    myTimer = [NSTimer scheduledTimerWithTimeInterval:180 target:self selector:@selector(sendWinKeyToServiceToKeepAlive) userInfo:nil repeats:YES];
     
-    
+  
     
 }
 -(void)sendWinKeyToServiceToKeepAlive
 {
    
-    [[RDPKeyboard getSharedRDPKeyboard] sendVirtualKeyCode:0x5B];
+    [[RDPKeyboard getSharedRDPKeyboard] sendVirtualKeyCode:0x00];
     
 }
 
@@ -536,13 +533,21 @@
             [self postData:NO];
             break;
         case 5:
+            [self testFunc];
+            break;
+        case 6:
             [self disconnectSession:nil];
             break;
         default:
             break;
     }
     
-    
+}
+-(void)testFunc
+{
+    [self sessionDidDisconnect:nil];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"reloadRdp" object:nil];
+
 }
 //弹出键盘的时候遮挡悬浮按钮处理事件
 -(void)myfunction
@@ -565,8 +570,11 @@
 //返回最初的界面
 - (void) sessionDidDisconnect:(RDPSession*)session
 {
-    //向服务器发送关闭指令
-    [self performSelector:@selector(closeOpenRdp) withObject:nil];
+    
+    //清空定时器
+    [myTimer invalidate];
+    myTimer = nil;
+    
     //隐藏menu
     if(ISShowMenuButton)
     {
@@ -574,7 +582,10 @@
             [_mymenuview dismiss];
         }];
     }
-    [self.navigationController popToRootViewControllerAnimated:YES];}
+    
+    [self.navigationController popToRootViewControllerAnimated:YES];
+    
+}
 
 #pragma mark close rdp
 //关闭rdp
@@ -1004,7 +1015,10 @@
     UIAlertAction * defaultaction =[UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
         
         [_session disconnect];
-        
+        //向服务器发送关闭信息
+        dispatch_async(dispatch_get_global_queue(0, 0), ^{
+            [self closeOpenRdp];
+        });
         
     }];
     

@@ -83,7 +83,7 @@
     
     if(is_every_param_ok)
     {
-        [self openRdp];
+        [self sendOpenRdpNotification];
 
     }else
     {
@@ -98,7 +98,7 @@
  **function：向消息中心发送“openRdp”的消息，cuWebVC中用于处理该事件
  
  *****************************/
--(void)openRdp
+-(void)sendOpenRdpNotification
 {
     [[NSNotificationCenter defaultCenter] postNotificationName:@"openRdp" object:nil];
 }
