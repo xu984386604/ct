@@ -12,6 +12,8 @@
 #import <CommonCrypto/CommonDigest.h>
 #import "FontAwesome/NSString+FontAwesome.h"
 #import "UpdateApp/UpdateApp.h"
+#import <SCLAlertView.h>
+
 
 #define SCREEN_HEIGHT ([UIScreen mainScreen].bounds.size.height)
 #define SCREEN_WIDTH  ([UIScreen mainScreen].bounds.size.width)
@@ -88,6 +90,16 @@
     [myWebView loadRequest:request];
     [self.view addSubview:myWebView];
     [(UIScrollView *)[[myWebView subviews] objectAtIndex:0] setBounces:NO];
+    
+    SCLAlertViewBuilder *builder = [SCLAlertViewBuilder new]
+    .addButtonWithActionBlock(@"Send", ^{ /*work here*/ });
+    SCLAlertViewShowBuilder *showBuilder = [SCLAlertViewShowBuilder new]
+    .style(SCLAlertViewStyleWarning)
+    .title(@"Title")
+    .subTitle(@"Subtitle")
+    .duration(0);
+//    [UIApplication sharedApplication].keyWindow.rootViewController
+    [showBuilder showAlertView:builder.alertView onViewController:self];
 }
 
 //加载本地网页(notice)
