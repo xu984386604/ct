@@ -21,6 +21,7 @@
 
 #define IOS_VERSION_7_OR_ABOVE (([[[UIDevice currentDevice] systemVersion] floatValue] >= 7.0)? (YES):(NO))
 
+
 @interface RDPSessionViewController : UIViewController <RDPSessionDelegate, TouchPointerDelegate, AdvancedKeyboardDelegate, RDPKeyboardDelegate, UIScrollViewDelegate, UITextFieldDelegate>
 {
 	// scrollview that hosts the rdp session view

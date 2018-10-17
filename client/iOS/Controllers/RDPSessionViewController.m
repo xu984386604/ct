@@ -18,7 +18,7 @@
 #import "BlockAlertView.h"
 #import "myAlertView.h"
 #import "vminfo.h"
-
+#import <SCLAlertView.h>
 
 
 
@@ -108,9 +108,8 @@
 - (void)viewDidLoad 
 {
     [super viewDidLoad];
+    
 }
-
-
 -(BOOL)shouldAutorotate{
     return YES;
 }
@@ -738,7 +737,8 @@
 //挂载网盘提示信息
 -(void)handlePostDataEvent:(NSNotification *)aNotification
 {
-    
+    SCLAlertView * alertview = [[SCLAlertView alloc] init];
+    alertview.showAnimationType = SCLAlertViewShowAnimationSimplyAppear;
     NSData *mydata = [aNotification object];
     NSDictionary *mydic = [NSJSONSerialization JSONObjectWithData:mydata options:NSJSONReadingAllowFragments error:nil];
     
@@ -751,7 +751,7 @@
         if(msg){
             
             if ((NSNull *)msg == [NSNull null]) {
-                [self showAlertView:3];
+                [alertview showError:self title:@"Error" subTitle:@"网盘操作出错" closeButtonTitle:@"确定" duration:0.0f];
                 return;
             }
             
@@ -760,137 +760,60 @@
             NSString *status = [msg objectForKey:@"status"];
             
             if (![status isEqualToString:@"success"]) {
-                [self showAlertView:3];
+                
+                [alertview showError:self title:@"Error" subTitle:description2 closeButtonTitle:@"确定" duration:0.0f];
+                return;
+            }else{
+                [alertview showSuccess:self title:@"Congratulations" subTitle:description2 closeButtonTitle:@"确定" duration:0.0f];
                 return;
             }
-            
-            if ([description2 isEqualToString:@"网盘挂载成功"]) {
-                [self showAlertView:0];
-            }else if ([description2 isEqualToString:@"网盘已经存在"])
-            {
-                [self showAlertView:1];}
-            else if ([description2 isEqualToString:@"网盘卸载成功"])
-            {
-                [self showAlertView:2];
-            }
-            
         }else{
-            [self showAlertView:4];
+            [alertview showError:self title:@"Error" subTitle:@"网盘操作出错" closeButtonTitle:@"确定" duration:0.0f];
+            return;
         }
         
-    }else
-    {
-        [self showAlertView:5];
+    }else{
+        [alertview showError:self title:@"Error" subTitle:@"网盘操作出错" closeButtonTitle:@"确定" duration:0.0f];
+        return;
     }
     
 }
 //第一次挂载网盘失败处理函数
 -(void)handleFirstPostDataError:(NSNotification *)aNotification
 {
+    SCLAlertView * alertView = [[SCLAlertView alloc] init];
+    alertView.showAnimationType = SCLAlertViewShowAnimationFadeIn;
     NSData *mydata = [aNotification object];
     NSDictionary *mydic = [NSJSONSerialization JSONObjectWithData:mydata options:NSJSONReadingAllowFragments error:nil];
-    
     
     if(mydic)
     {
         NSNumber * code = [mydic objectForKey:@"code"];
-        if(![code isEqualToNumber:CORRECTHTTPSTATUSCODE])
-        {
-            [self showAlertView:5];
+        if(![code isEqualToNumber:CORRECTHTTPSTATUSCODE]){
+        [alertView showError:self title:@"ERROR" subTitle:@"网络错误，未能完成网盘操作" closeButtonTitle:@"确定" duration:0.0f];
+            return;
         }else
         {
             NSDictionary* msg = [mydic objectForKey:@"msg"];
-            
-            if(!msg)
+            if(!msg || (NSNull *)msg == [NSNull null])
             {
-                [self showAlertView:3];
-                return;
-
-            }
-            if ((NSNull *)msg == [NSNull null]) {
-                [self showAlertView:3];
+                [alertView showError:self title:@"Error" subTitle:@"挂载网盘失败" closeButtonTitle:@"确定" duration:0.0f];
                 return;
             }
             NSString *status = [msg objectForKey:@"status"];
-            if([status isEqualToString:@"failed"])
-            {
-                [self showAlertView:3];
+            NSString *description2 = [[msg objectForKey:@"description"]
+                                      stringByRemovingPercentEncoding];
+
+            if([status isEqualToString:@"failed"]){
+                [alertView showError:self title:@"Error" subTitle:description2 closeButtonTitle:@"确定" duration:0.0f];
+                return;
             }
         }
     }else{
-        [self showAlertView:5];
+        [alertView showError:self title:@"Error" subTitle:@"挂载网盘失败" closeButtonTitle:@"确定" duration:0.0f];
+        return;
     }
 }
-
-
-
-
--(void)showAlertView:(int )num
-{
-    
-    UIAlertController * myalert = nil;
-    switch (num) {
-        case 0:
-            myalert = [UIAlertController alertControllerWithTitle:@"操作提示"
-                                                          message:@"网盘挂载成功"
-                                                   preferredStyle:UIAlertControllerStyleAlert];
-            break;
-        case 1:
-            myalert = [UIAlertController alertControllerWithTitle:@"操作提示"
-                                                          message:@"网盘已经存在"
-                                                   preferredStyle:UIAlertControllerStyleAlert];
-            break;
-        case 2:
-            myalert = [UIAlertController alertControllerWithTitle:@"操作提示"
-                                                          message:@"网盘卸载成功"
-                                                   preferredStyle:UIAlertControllerStyleAlert];
-            break;
-        case 3:
-            myalert = [UIAlertController alertControllerWithTitle:@"操作提示"
-                                                          message:@"网盘操作失败"
-                                                   preferredStyle:UIAlertControllerStyleAlert];
-            break;
-            
-        case 4:
-            myalert = [UIAlertController alertControllerWithTitle:@"操作提示"
-                                                          message:@"网盘操作失败"
-                                                   preferredStyle:UIAlertControllerStyleAlert];
-            break;
-            
-        case 5:
-            myalert = [UIAlertController alertControllerWithTitle:@"操作提示"
-                                                          message:@"网络连接错误"
-                                                   preferredStyle:UIAlertControllerStyleAlert];
-            break;
-            
-        default:
-            break;
-    }
-    
-    
-    
-    UIAlertAction * defaultaction = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:nil];
-    
-    [myalert addAction:defaultaction];
-    dispatch_async(dispatch_get_main_queue(), ^{
-
-        [self.navigationController presentViewController:myalert animated:YES completion:nil];
-    });
-    
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 #pragma mark - Keyboard Toolbar Handlers
 
@@ -1009,29 +932,19 @@
 //悬浮按钮的点击断开事件
 - (IBAction)disconnectSession:(id)sender
 {
-    
-    //弹出提示框
-    UIAlertController * myalert = [UIAlertController alertControllerWithTitle:@"确认提示" message:@"退出应用前，请确认您已保存数据！" preferredStyle:UIAlertControllerStyleAlert];
-    UIAlertAction * defaultaction =[UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-        
-        [_session disconnect];
-        //向服务器发送关闭信息
-        dispatch_async(dispatch_get_global_queue(0, 0), ^{
-            [self closeOpenRdp];
-        });
+    SCLAlertView *alert = [[SCLAlertView alloc] init];
+    [alert addButton:@"取消" actionBlock:^{
         
     }];
-    
-    UIAlertAction * cancle =[UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-        
+    [alert addButton:@"确定" actionBlock:^{
+                [_session disconnect];
+                //向服务器发送关闭信息
+                dispatch_async(dispatch_get_global_queue(0, 0), ^{
+                    [self closeOpenRdp];
+                });
     }];
-    
-    [myalert addAction:cancle];
-    [myalert addAction:defaultaction];
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [self presentViewController:myalert animated:YES completion:nil];
-    });
-
+    alert.showAnimationType = SCLAlertViewShowAnimationFadeIn;
+    [alert showNotice:self title:@"Notice" subTitle: @"退出应用前，请确认您已保存数据!" closeButtonTitle:nil duration:0.0f];
 }
 
 //取消按钮的点击事件响应
