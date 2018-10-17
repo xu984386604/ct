@@ -17,7 +17,7 @@
 
 #define SCREEN_HEIGHT ([UIScreen mainScreen].bounds.size.height)
 #define SCREEN_WIDTH  ([UIScreen mainScreen].bounds.size.width)
-#define LOCALMD5      @"467a41f20486d2c7431aefb492aa1c06"
+#define LOCALMD5      @"6ee1d6224449c233a409945d83ef1233"
 
 //WLOG_LEVEL=DEBUG  环境变量
 @interface CuWebViewController () <MyFloatButtonDelegate>
@@ -90,16 +90,6 @@
     [myWebView loadRequest:request];
     [self.view addSubview:myWebView];
     [(UIScrollView *)[[myWebView subviews] objectAtIndex:0] setBounces:NO];
-    
-    SCLAlertViewBuilder *builder = [SCLAlertViewBuilder new]
-    .addButtonWithActionBlock(@"Send", ^{ /*work here*/ });
-    SCLAlertViewShowBuilder *showBuilder = [SCLAlertViewShowBuilder new]
-    .style(SCLAlertViewStyleWarning)
-    .title(@"Title")
-    .subTitle(@"Subtitle")
-    .duration(0);
-//    [UIApplication sharedApplication].keyWindow.rootViewController
-    [showBuilder showAlertView:builder.alertView onViewController:self];
 }
 
 //加载本地网页(notice)
@@ -594,25 +584,31 @@
 //md5校验 错误提示信息
 -(void)showMD5CheckAlert
 {
-    UIAlertController * myalert = [UIAlertController alertControllerWithTitle:@"安全提示" message:@"本地文件被篡改，拒绝加载" preferredStyle:UIAlertControllerStyleAlert];
-    UIAlertAction * defaultaction = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:nil];
     
-    [myalert addAction:defaultaction];
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [self presentViewController:myalert animated:YES completion:nil];
+    SCLAlertViewBuilder *builder = [SCLAlertViewBuilder new]
+    .addButtonWithActionBlock(@"退出", ^{
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"appEnterbackGround" object:nil];
     });
+    SCLAlertViewShowBuilder *showBuilder = [SCLAlertViewShowBuilder new]
+    .style(SCLAlertViewStyleError)
+    .title(@"错误")
+    .subTitle(@"本地文件被篡改，无法打开")
+    .duration(0);
+    [showBuilder showAlertView:builder.alertView onViewController:self];
+    
 }
 
 //传入的参数错误，提示错误信息
 -(void)showParamErrorMessage
 {
-    UIAlertController * myalert = [UIAlertController alertControllerWithTitle:@"错误提示" message:@"参数错误，无法打开" preferredStyle:UIAlertControllerStyleAlert];
-    UIAlertAction * defaultaction = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:nil];
-    
-    [myalert addAction:defaultaction];
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [self presentViewController:myalert animated:YES completion:nil];
-    });
+    SCLAlertViewBuilder *builder = [SCLAlertViewBuilder new]
+    .addButtonWithActionBlock(@"确定", ^{});
+    SCLAlertViewShowBuilder *showBuilder = [SCLAlertViewShowBuilder new]
+    .style(SCLAlertViewStyleError)
+    .title(@"错误")
+    .subTitle(@"参数错误，无法打开")
+    .duration(0);
+    [showBuilder showAlertView:builder.alertView onViewController:self];
 }
 
 @end
