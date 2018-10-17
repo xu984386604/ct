@@ -54,8 +54,6 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showParamErrorMessage) name:@"paramErrorMessage" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(openRdp) name:@"reloadRdp" object:nil];
     
-    
-    
     _connectInfo = [vminfo share];
 }
 
@@ -469,7 +467,7 @@
         _myfloatbutton.alpha=0.5;
         _myfloatbutton.delegate=self;
         
-        UIColor *fontIconColor = [UIColor colorWithRed:210 green:210 blue:210 alpha:0.8];
+        UIColor *fontIconColor = [UIColor colorWithRed:210/255.0 green:210/255.0 blue:210/255.0 alpha:0.8];
         NSString *fontIcon = [NSString fontAwesomeIconStringForEnum:FAIconArrowLeft];
         UIImage *menuPicWithAlpha = [CommonUtils imageByApplyingAlpha:0.8 image:[UIImage imageNamed:@"menu.png"]];
         
