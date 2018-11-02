@@ -399,7 +399,7 @@ out_free:
 // Main thread.
 - (void)runSessionFinished:(NSNumber*)result
 {
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"stoppostMessageToservice" object:@"recoverMsg"];
+//    [[NSNotificationCenter defaultCenter] postNotificationName:@"stoppostMessageToservice" object:@"recoverMsg"];
 	int result_code = [result intValue];
 	switch (result_code)
 	{

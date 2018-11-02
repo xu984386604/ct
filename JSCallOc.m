@@ -70,7 +70,7 @@
         [openerArguments setValue:@"0" forKey:@"is_document"];
     }
     [openerArguments setValue:remoteProgram forKey:@"programpath"];
-    [openerArguments setValue:@"6" forKey:@"timeout"];
+    [openerArguments setValue:@"15" forKey:@"timeout"];
     [openerArguments setValue:myinfo.vmpasswd forKey:@"vmpassword"];
     
     NSString *tmp1 = [CommonUtils dictionaryToJson:openerArguments];

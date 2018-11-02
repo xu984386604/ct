@@ -46,8 +46,8 @@
     
     //注册观察者处理事件
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(openRdp) name:@"openRdp" object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver: self selector:@selector(stoppostMessageToservice:) name:@"stoppostMessageToservice" object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(postMessageToService:) name:@"postMessageToservice" object:nil];
+//    [[NSNotificationCenter defaultCenter] addObserver: self selector:@selector(stoppostMessageToservice:) name:@"stoppostMessageToservice" object:nil];
+//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(postMessageToService:) name:@"postMessageToservice" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loadLocalHTMLbyNotice:) name:@"loadLocalHTML" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(setFlag:) name:@"setFlag" object:nil];
 
@@ -230,28 +230,28 @@
 //            _mytimer = [NSTimer scheduledTimerWithTimeInterval:120.0 target:self selector:@selector(sendTimerMessage:) userInfo:@{@"smsType":@"loginMsg"} repeats:YES];
 //        }
 //    }
-    if ([obj isEqualToString:@"recoverMsg"]) {
-        [self sendMessage: @"recoverMsg"];
-        //每个300s发送一次
-        if (![vminfo share].recoverTimer) {
-            [vminfo share].recoverTimer = [NSTimer scheduledTimerWithTimeInterval:300.0 target:self selector:@selector(sendTimerMessage:) userInfo:@{@"smsType":@"recoverMsg"} repeats:YES];
-        }
-    }
+//    if ([obj isEqualToString:@"recoverMsg"]) {
+//        [self sendMessage: @"recoverMsg"];
+//        //每个300s发送一次
+//        if (![vminfo share].recoverTimer) {
+//            [vminfo share].recoverTimer = [NSTimer scheduledTimerWithTimeInterval:300.0 target:self selector:@selector(sendTimerMessage:) userInfo:@{@"smsType":@"recoverMsg"} repeats:YES];
+//        }
+//    }
 }
 
 //停止向cu发送消息
 -(void)stoppostMessageToservice:(NSNotification*) notification
 {
-    NSString* smsType = (NSString*)[notification object];//获取到传递的对象
-    if ([smsType  isEqual: @"recoverMsg"]) {
-        [[vminfo share].recoverTimer invalidate];
-        [vminfo share].recoverTimer  = nil;
-    }
+//    NSString* smsType = (NSString*)[notification object];//获取到传递的对象
+//    if ([smsType  isEqual: @"recoverMsg"]) {
+//        [[vminfo share].recoverTimer invalidate];
+//        [vminfo share].recoverTimer  = nil;
+//    }
     //if ([smsType  isEqual: @"loginMsg"]) {
     //    [_mytimer invalidate];
     //    _mytimer = nil;
     //}
-    NSLog(@"停止发送%@信息!", smsType);
+//    NSLog(@"停止发送%@信息!", smsType);
 }
 
 //NStimer的回调方法只能是不带参数的方法或者是带参数但是参数本身只能是NStimer的方法,有多个rdp应用时才适用
