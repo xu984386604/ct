@@ -16,4 +16,4 @@ channels/
 client/iOS/Release-iphoneos/iFreeRDP.app.dSYM/Contents/Info.plist
 SCLAlertView/README.md
 SharedPrecompiledheaders/
-client/iOS/Release-iphoneos/iFreeRDP.app.dSYM/Contents/Resources/DWARF/
+client/iOS/Release-iphoneos/
