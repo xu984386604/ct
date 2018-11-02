@@ -46,6 +46,10 @@
 @property (nonatomic, copy) NSString * dockerPort;
 @property (nonatomic, copy) NSString * appid;
 
+//设置屏幕的width和height
+@property(nonatomic,assign) NSInteger height;
+@property(nonatomic,assign) NSInteger width;
+
 
 @property (nonatomic, copy) NSString *cuIp;
 

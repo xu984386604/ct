@@ -535,6 +535,9 @@
             [self testFunc];
             break;
         case 6:
+            [self changeResolutionRatio];
+            break;
+        case 7:
             [self disconnectSession:nil];
             break;
         default:
@@ -544,10 +547,61 @@
 }
 -(void)testFunc
 {
-    [self sessionDidDisconnect:nil];
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"reloadRdp" object:nil];
-
+    [self disconnectSession:@"1"];
+    
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"reloadRdp" object:nil];
+    });
 }
+-(void)changeResolutionRatio
+{
+    SCLAlertView *myalert = [[SCLAlertView alloc] init];
+    
+    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone){
+        
+        [myalert addButton:@"768 x 1366" actionBlock:^{
+            [vminfo share].width = 768;
+            [vminfo share].height = 1366;
+            [self testFunc];
+            
+        }];
+        [myalert addButton:@"1080 x 1920" actionBlock:^{
+            [vminfo share].width = 1080;
+            [vminfo share].height = 1920;
+            [self testFunc];
+        }];
+        [myalert addButton:@"1242 x 2208" actionBlock:^{
+            [vminfo share].width = 1242;
+            [vminfo share].height = 2208;
+            [self testFunc];
+        }];
+    }else{
+        [myalert addButton:@"768 x 1024" actionBlock:^{
+            [vminfo share].width = 768;
+            [vminfo share].height = 1024;
+            [self testFunc];
+        }];
+        [myalert addButton:@"1152 x 1536" actionBlock:^{
+            [vminfo share].width = 1152;
+            [vminfo share].height = 1536;
+            [self testFunc];
+        }];
+        [myalert addButton:@"1536 x 2048" actionBlock:^{
+            [vminfo share].width = 1536;
+            [vminfo share].height = 2048;
+            [self testFunc];
+        }];
+    }
+    
+    NSString *str = [NSString stringWithFormat:@"当前分辨率是 %ld x %ld",(long)[vminfo share].width,(long)[vminfo share].height];
+    [myalert showQuestion:self title:@"修改分辨率" subTitle:str closeButtonTitle:@"确定" duration:0.0f];
+    
+}
+
+
+
+
+
 //弹出键盘的时候遮挡悬浮按钮处理事件
 -(void)myfunction
 {
@@ -931,20 +985,23 @@
 
 //悬浮按钮的点击断开事件
 - (IBAction)disconnectSession:(id)sender
-{
-    SCLAlertView *alert = [[SCLAlertView alloc] init];
-    [alert addButton:@"取消" actionBlock:^{
-        
-    }];
-    [alert addButton:@"确定" actionBlock:^{
-                [_session disconnect];
-                //向服务器发送关闭信息
-                dispatch_async(dispatch_get_global_queue(0, 0), ^{
-                    [self closeOpenRdp];
-                });
-    }];
-    alert.showAnimationType = SCLAlertViewShowAnimationFadeIn;
-    [alert showNotice:self title:@"Notice" subTitle: @"退出应用前，请确认您已保存数据!" closeButtonTitle:nil duration:0.0f];
+{    if(sender)
+    {
+        [_session disconnect];
+    }else{
+        SCLAlertView *alert = [[SCLAlertView alloc] init];
+        [alert addButton:@"取消" actionBlock:^{
+            
+        }];
+        [alert addButton:@"确定" actionBlock:^{
+                    [_session disconnect];
+                    //向服务器发送关闭信息
+                    dispatch_async(dispatch_get_global_queue(0, 0), ^{
+                        [self closeOpenRdp];
+                    });
+        }];
+        alert.showAnimationType = SCLAlertViewShowAnimationFadeIn;
+        [alert showWarning:self title:@"Notice" subTitle: @"退出应用前，请确认您已保存数据!" closeButtonTitle:nil duration:0.0f];    }
 }
 
 //取消按钮的点击事件响应

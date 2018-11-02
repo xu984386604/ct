@@ -27,6 +27,7 @@
     MenuButton * button4;
     MenuButton * button5;
     MenuButton * button6;
+    MenuButton * button7;
     UIView     * bgview;
     
 }
@@ -49,6 +50,8 @@ static MenuView *instanceMenuView;
     CGPoint point4 = CGPointMake(175, 35);
     CGPoint point5 = CGPointMake(225, 35);
     CGPoint point6 = CGPointMake(275, 35);
+    CGPoint point7 = CGPointMake(325, 35);
+
     //确定 bgview 的位置
     [self locateBgview];
     
@@ -72,10 +75,14 @@ static MenuView *instanceMenuView;
     button5.tag = 5;
     [button5 addTarget:self action:@selector(buttonAction:) forControlEvents:UIControlEventTouchUpInside];
     
-    button6 = [MenuButton buttonWithTitle:@"断开" imageTitle:@"close.png" center:point6];
+    button6 = [MenuButton buttonWithTitle:@"分辨率" imageTitle:@"res.png" center:point6];
     button6.tag = 6;
     [button6 addTarget:self action:@selector(buttonAction:) forControlEvents:UIControlEventTouchUpInside];
     
+    button7 = [MenuButton buttonWithTitle:@"断开" imageTitle:@"close.png" center:point7];
+    button7.tag = 7;
+    [button7 addTarget:self action:@selector(buttonAction:) forControlEvents:UIControlEventTouchUpInside];
+
    
     [bgview addSubview:button2];
     [bgview addSubview:button3];
@@ -83,6 +90,7 @@ static MenuView *instanceMenuView;
     [bgview addSubview:button4];
     [bgview addSubview:button5];
     [bgview addSubview:button6];
+    [bgview addSubview:button7];
     
     bgview.alpha=1;
     bgview.backgroundColor=[UIColor colorWithRed:
@@ -135,6 +143,7 @@ static MenuView *instanceMenuView;
         [button4 removeFromSuperview];
         [button5 removeFromSuperview];
         [button6 removeFromSuperview];
+        [button7 removeFromSuperview];
     }];
 
 }
