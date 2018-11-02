@@ -10,6 +10,10 @@
 
 @implementation JSCallOc
 
+-(void)openIOSApp:(NSString*)data {
+    [self AcceptTheDataFromJs:data];
+}
+
 /*****************************
  **parameter：json数据
  **function：解析并且保存json数据
@@ -24,8 +28,8 @@
     
     NSLog(@"收到的服务端发来的打开远程应用的连接信息：%@",_dic);
    
-    NSString *arguments = [_dic objectForKey:@"arguments"];
-    NSArray *argumentsArray = [arguments componentsSeparatedByString:@","];
+//    NSString *arguments = [_dic objectForKey:@"arguments"];
+//    NSArray *argumentsArray = [arguments componentsSeparatedByString:@","];
     
     //解析json数据保存到vminfo中
     vminfo * myinfo = [vminfo share];
@@ -52,10 +56,28 @@
         remoteProgram=[NSString stringWithFormat:@"%@ %@ %@ %@:%@",remoteProgram,str1,myinfo.dockerVncPwd,myinfo.dockerIp,myinfo.dockerPort];
     }
     
+    NSDictionary *arguments = [_dic objectForKey:@"arguments"];
+    NSMutableDictionary *openerArguments;
+    if (arguments) {
+        openerArguments = [NSMutableDictionary dictionaryWithDictionary:arguments];
+        if (![arguments objectForKey:@"is_document"]) {
+            [openerArguments setValue:@"0" forKey:@"is_document"];
+        } else {
+            [openerArguments setValue:@"1" forKey:@"is_document"]; //将传的整型1改为字符串“1”，否则opener那边会出问题，垃圾opener
+        }
+    } else {
+        openerArguments = [NSMutableDictionary dictionary];
+        [openerArguments setValue:@"0" forKey:@"is_document"];
+    }
+    [openerArguments setValue:remoteProgram forKey:@"programpath"];
+    [openerArguments setValue:@"6" forKey:@"timeout"];
+    [openerArguments setValue:myinfo.vmpasswd forKey:@"vmpassword"];
     
-    NSLog(@"dakaiwenjaindedizhi:%lu", (unsigned long)[argumentsArray[0] rangeOfString:@":"].location);
-    myinfo.remoteProgram=[NSString  stringWithFormat:@"opener.exe %@ %@", remoteProgram, [argumentsArray[0] substringFromIndex:[argumentsArray[0] rangeOfString:@":"].location]];
-    
+    NSString *tmp1 = [CommonUtils dictionaryToJson:openerArguments];
+    NSString *tmp2 = [tmp1 stringByReplacingOccurrencesOfString:@"\"" withString:@"\\\""];
+    myinfo.remoteProgram=[NSString  stringWithFormat:@"opener.exe %@", [tmp2 stringByReplacingOccurrencesOfString:@"\n" withString:@""]];
+    openerArguments = nil;
+    remoteProgram = nil;
     
     //接收的数据不为空则可以调用来打开RDP
     BOOL is_every_param_ok = YES;

@@ -15,3 +15,4 @@ channels/
 *.a
 client/iOS/Release-iphoneos/iFreeRDP.app.dSYM/Contents/Info.plist
 SCLAlertView/README.md
+SharedPrecompiledheaders/
