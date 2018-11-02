@@ -681,19 +681,13 @@
     _session_scrollview.bounces = NO;
     _session_scrollview.bouncesZoom = NO;
     
-    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
-        view_rect = CGRectMake(0, 0, sess_params->DesktopWidth/2, sess_params->DesktopHeight/2);
-        _session_scrollview.maximumZoomScale = 1;
-        _session_scrollview.minimumZoomScale = 0.5;
-        [_session_scrollview setZoomScale:0.5];
-        NSLog(@"IPHONE");
-    } else {
-        view_rect = CGRectMake(0, 0, sess_params->DesktopWidth, sess_params->DesktopHeight);
-        _session_scrollview.maximumZoomScale = 2;
-        _session_scrollview.minimumZoomScale = 1;
-        [_session_scrollview setZoomScale:1];
-        NSLog(@"IPAD");
-    }
+    
+    CGFloat myheight = [UIScreen mainScreen].bounds.size.height;
+    CGFloat float1 = [vminfo share].width;
+    CGFloat float2 = [vminfo share].height;
+    
+    view_rect = CGRectMake(0, 0, sess_params->DesktopWidth, sess_params->DesktopHeight);
+
     
     //设置画布大小的
     [_session_scrollview setContentSize:view_rect.size];
@@ -702,8 +696,15 @@
     // set session view size
     [_session_view setFrame:view_rect];
     
-    // show/hide toolbar
-   // [_session setToolbarVisible:![[NSUserDefaults standardUserDefaults] boolForKey:@"ui.hide_tool_bar"]];
+    CGFloat minumun = (float1 > float2)?(myheight / float2 ):(myheight / float1 );
+    if(minumun >= 1)
+    {
+        _session_scrollview.maximumZoomScale = 2;
+    }else{
+        _session_scrollview.maximumZoomScale = 1;
+    }
+    _session_scrollview.minimumZoomScale = minumun;
+    [_session_scrollview setZoomScale:minumun];
 }
 
 - (void)sessionBitmapContextDidChange:(RDPSession*)session

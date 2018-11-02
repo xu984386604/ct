@@ -14,7 +14,7 @@
 #define kWidth  [[UIApplication sharedApplication] keyWindow].bounds.size.width
 #define kHeight [[UIApplication sharedApplication] keyWindow].bounds.size.height
 
-#define bgwidth 300
+#define bgwidth 350
 #define bgheight 70
 #define floatbtnH  46
 

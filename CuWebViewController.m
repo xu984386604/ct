@@ -55,6 +55,14 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(openRdp) name:@"reloadRdp" object:nil];
     
     _connectInfo = [vminfo share];
+    
+    //初始化vminfo中的height和width
+    CGRect rect = [[UIScreen mainScreen] bounds];
+    CGSize size = rect.size;
+    
+    _connectInfo.width =(int) size.width;
+    _connectInfo.height =(int) size.height;
+
 }
 
 #pragma mark 网页加载
@@ -135,11 +143,8 @@
         [self sendMessageToDocker];
     }
     
-    CGRect rect = [[UIScreen mainScreen] bounds];
-    CGSize size = rect.size;
-    
-    int width =(int) size.width;
-    int height =(int) size.height;
+    int width  = (int)_connectInfo.width;
+    int height = (int)_connectInfo.height;
     if(height < width) {
         int temp = height;
         height = width;
@@ -147,18 +152,20 @@
     }
     NSLog(@"设置的分辨率：width:%d  height:%d", width, height);
     //设置分辨率
-    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
+   /* if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
         [[bookmark params] setInt:height * 2 forKey:@"width"];
         [[bookmark params] setInt:width * 2 forKey:@"height"];
         NSLog(@"IPHONE");
     } else {
         [[bookmark params] setInt:height forKey:@"width"];
         [[bookmark params] setInt:width forKey:@"height"];
-    }
+    }*/
+    [[bookmark params] setInt:height  forKey:@"width"];
+    [[bookmark params] setInt:width  forKey:@"height"];
     
     NSLog(@"连接参数：%@",[bookmark params]);
     RDPSession* session = [[[RDPSession alloc] initWithBookmark:bookmark] autorelease];
-    NSLog(@"rdp连接的session的名称：%@", session.sessionName);
+   // NSLog(@"rdp连接的session的名称：%@", session.sessionName);
     RDPSessionViewController* ctrl = [[[RDPSessionViewController alloc] initWithNibName:@"RDPSessionView" bundle:nil session:session] autorelease];
     dispatch_async(dispatch_get_main_queue(), ^{
         [self.navigationController pushViewController:ctrl animated:YES];
@@ -173,7 +180,7 @@
     NSString *key = [NSString stringWithFormat:@"ios%@", [session sessionName]];
     [[vminfo share].multiRdpRecoverInfo setObject:jsonData forKey:key];
     NSLog(@"存入multiRdpRecoverInfo的信息：%@", [[vminfo share].multiRdpRecoverInfo objectForKey:key]);
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"postMessageToservice" object:@"recoverMsg"];
+  //  [[NSNotificationCenter defaultCenter] postNotificationName:@"postMessageToservice" object:@"recoverMsg"];
 }
 
 #pragma mark initJsContext
