@@ -225,6 +225,11 @@
     [_advanced_keyboard_view release];
     [_keyboard_toolbar release];
     [_session release];
+    [myTimer invalidate];
+    myTimer = nil;
+    [_myfloatbutton release];
+    [_mymenuview release];
+    
     [super dealloc];
 }
 
@@ -489,13 +494,6 @@
     [[RDPKeyboard getSharedRDPKeyboard] sendVirtualKeyCode:0x00];
     
 }
-
-
-
-
-
-
-
 
 #pragma mark FloatButton TapAction
 //悬浮按钮的点击事件
