@@ -67,7 +67,7 @@ div.cs-select:focus {
 
 /* Options */
 .cs-select .cs-options {
-	position: absolute;
+	/*position: absolute;*/
 	overflow: hidden;
 	width: 100%;
 	background: #fff;
