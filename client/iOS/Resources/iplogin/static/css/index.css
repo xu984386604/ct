@@ -1,5 +1,5 @@
 html{
-    height: 100%;
+    min-height: 100%;
     width:100%;
     overflow: hidden;
 }
@@ -17,26 +17,27 @@ input:-ms-input-placeholder { /* Internet Explorer 10-11 */
 }
 
 input:focus::-webkit-input-placeholder {
-    color: transparent;
-    /* transparent是全透明黑色(black)的速记法，即一个类似rgba(0,0,0,0)这样的值 */
+color: transparent;
+/* transparent是全透明黑色(black)的速记法，即一个类似rgba(0,0,0,0)这样的值 */
 }
 input:focus:-moz-placeholder {
-    color: transparent;
+color: transparent;
 }
 input:focus::-moz-placeholder {
-    color: transparent;
+color: transparent;
 }
 input:focus:-ms-input-placeholder {
-    color: transparent;
+color: transparent;
 }
 body{
-    /* background-image: url(../../images/bg.jpeg);
-     background-repeat: no-repeat;
-     background-position: center;
-     background-size: 100% 100%; */
-    background: url(../images/bg.jpeg) no-repeat center center fixed;
-    background-size: cover;
-    overflow: hidden;
+    /* background-image: url(../images/bg.jpeg);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 100% 100%; */
+    background: url(../images/bg2.jpg) no-repeat center center fixed;
+     background-size: cover;
+      /* background-size: 100% 100%; */
+     overflow: hidden;
 }
 .ipwrap{
     margin-top: 2rem;
@@ -45,17 +46,20 @@ body{
     color: #fff;
 }
 .mask{
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: #534275;
-    opacity: 0.5;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: #534275;
+        opacity: 0.5;
 }
 .y-wrap{
     /* height: 400px; */
     margin-top: 4rem;
+    z-index: 999;
+}
+#Windowsexit{
     z-index: 999;
 }
 .y-head-icon{
@@ -71,23 +75,23 @@ body{
 }
 .cs-options{
     color: #fff;
-    
+
 }
 .y-test-box span,.y-test-box input,.y-test-box .col-xs-2,.double-input-box *{
-    color: #fff;
-    padding: 0;
-    margin: 0;
-}
+        color: #fff;
+        padding: 0;
+        margin: 0;
+    }
 /* .cs-addicon{
- background-color:#9bbeda;
- text-align: center;
- line-height: 20px;
- border: solid 1px #fff;
- border-radius: 20px;
- } */
-.cs-addicon{
-    color:#9bbeda;
-}
+        background-color:#9bbeda;
+        text-align: center;
+        line-height: 20px;
+        border: solid 1px #fff;
+        border-radius: 20px;
+    } */
+    .cs-addicon{
+       color:#9bbeda;
+    }
 .row{
     margin: 0;
 }
@@ -116,8 +120,8 @@ body{
 }
 
 .y-show{
-    display: block;
-}
+        display: block;
+    }
 .y-hide{
     display:none;
 }
@@ -163,10 +167,11 @@ body{
     /* margin-top: 3rem; */
 }
 .bugtip{
-    color: red;
-    font-size: 1.5rem;
-    position: absolute;
-}
+        color: red;
+        font-size: 1.5rem;
+        position: absolute;
+        z-index: -999;
+    }
 .ripple {
     position:absolute;
     background:#9bbeda;
@@ -321,3 +326,4 @@ body{
         margin-top: 1rem;
     }
 }
+

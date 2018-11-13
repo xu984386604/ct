@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>ukey登录</title>
+    <script type="text/javascript" src="./static/js/jquery.min.js"></script>
+    <link rel="stylesheet" href="./static/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="./static/css/normalize.css" />
+    <link rel="stylesheet" type="text/css" href="./static/css/iconfont.css">
+    <link rel="stylesheet" type="text/css" href="./static/css/index.css" />
+    <link rel="stylesheet" type="text/css" href="./static/css/animate.css" />
+    <script type="text/javascript" src="./config.js"></script>
+</head>
+<body>
+<div class="container-fluid">
+    <div id="Windowsexit" class="pull-right"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></div>
+    <div class="row">
+        <div class="col-lg-4 col-lg-offset-4  col-md-6 col-md-offset-3 col-sm-offset-2 col-sm-8 col-xs-12  y-wrap">
+            <div class="row changebox">
+                <div class='ant-spin ant-spin-spinning'>
+                    <span class='ant-spin-dot ant-spin-dot-spin'><i></i><i></i><i></i><i></i></span>
+                </div>
+                <!--<div class="y-head-icon">-->
+                    <!--<span class="iconfont icon-yunjisuan"></span>-->
+                <!--</div>-->
+                <div class="statusmsg">读取Ukey用户信息...</div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+</body>
+<style>
+    @media (min-height:  500px) {
+        .changebox{
+            margin-top: 20%;
+            min-height: 0px;
+        }
+    }
+    .changebox{
+        min-height: 300px;
+    }
+    .statusmsg{
+        text-align: center;
+        color: #fff;
+        font-size: 2rem;
+    }
+
+    #Windowsexit:hover {
+        position: relative;
+        right: 0;
+        z-index: 1000;
+        display: none;
+        width: 20px;
+        height: 20px;
+        border-radius: 10px;
+        text-align: center;
+        border: 1px solid #fff;
+        color: #fff;
+    }
+    #Windowsexit {
+        position: relative;
+        right: 0;
+        z-index: 1000;
+        display: none;
+        width: 20px;
+        height: 20px;
+        border-radius: 10px;
+        text-align: center;
+        border: 1px solid #9E9E9E;
+        color: #edeaea;
+    }
+</style>
+<script src="./static/js/qwebchannel.js"></script>
+<script src="./static/js/common.js"></script>
+<script type="text/javascript" src="./static/js/bootstrap.min.js"></script>
+<script src="./static/js/indexUkey.js"></script>
+</html>

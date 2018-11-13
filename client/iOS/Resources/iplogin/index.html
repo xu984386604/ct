@@ -5,16 +5,20 @@
             <meta name="viewport" content="width=device-width, initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
                 <meta http-equiv="X-UA-Compatible" content="ie=edge">
                     <title>ip配置</title>
+                    <script type="text/javascript" src="./static/js/jquery.min.js"></script>
                     <link rel="stylesheet" href="./static/css/bootstrap.min.css">
                         <link rel="stylesheet" type="text/css" href="./static/css/normalize.css" />
                         <link rel="stylesheet" type="text/css" href="./static/css/iconfont.css">
                             <link rel="stylesheet" type="text/css" href="./static/css/cs-select.css" />
                             <link rel="stylesheet" type="text/css" href="./static/css/cs-skin-underline.css" />
                             <link rel="stylesheet" type="text/css" href="./static/css/index.css" />
+                            <link rel="stylesheet" type="text/css" href="./static/css/animate.css" />
+                            <link rel="stylesheet" type="text/css" href="./static/css/login.css" />
                             <script type="text/javascript" src="./static/js/jquery.min.js"></script>
     </head>
     <body>
         <div class="container-fluid">
+            <div id="Windowsexit" class="pull-right"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></div>
             <div class="row">
                 <div class="col-lg-4 col-lg-offset-4  col-md-6 col-md-offset-3 col-sm-offset-2 col-sm-8 col-xs-12  y-wrap">
                     <div class="row changebox">
@@ -24,7 +28,33 @@
                         <div class="y-head-icon">
                             <span class="iconfont icon-yunjisuan"></span>
                         </div>
-                        <div class="insertbox"></div>
+                        <div class="insertbox">
+                            <div class="col-sm-offset-1 col-sm-10 col-xs-offset-1 col-xs-10 loginbox">
+                                <div class="y-box-wrap">
+                                    <input type="text" class="form-control" id="username" placeholder="用户名">
+                                        </div>
+                                <div class="y-box-wrap">
+                                    <input type="password" class="form-control" id="password" placeholder="密码">
+                                        </div>
+                                <div class="y-box-wrap">
+                                    <button class="btn col-xs-12 btn-primary" id="login">登录</button>
+                                </div>
+                                <div class="y-box-wrap">
+                                    <div class="linkbox">
+                                        <label class="ant-checkbox-wrapper">
+                                            <span class="ant-checkbox">
+                                                <input type="checkbox" class="ant-checkbox-input" value="">
+                                                    <span class="ant-checkbox-inner"></span>
+                                                    </span>
+                                            <span class="y-link">自动登录 |</span>
+                                        </label>
+                                        <span class="y-link regist"><a href="#">注册</a> |</span>
+                                        <span class="y-link reset-password"><a href="#">忘记密码</a></span>
+                                        <span class="y-link exit"><a href="#"> | 退出</a></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <div class="ipwrap">
                         <div class="row">
@@ -37,19 +67,13 @@
                                 <div class="row rowmarnone">
                                     <section class="col-sm-offset-1 col-sm-10 col-xs-offset-1 col-xs-10 select-box">
                                         <select class="cs-select cs-skin-underline iplist">
-                                                <option value="1" selected data-ipaddress='121.49.107.4:55590'>实验室</option>
-                                                <option value="1" selected data-ipaddress='121.49.107.4:8443'>实验室2</option>
-                                                <option value="2" data-ipaddress='222.186.209.130:55555'>镇江</option>
-                                            <!-- <option value="2" data-ipaddress='172.20.156.110'>110</option>  -->
+                                            <option value="1" selected data-ipaddress='121.49.107.4:55590'>实验室开发</option>
+                                            <option value="2" data-ipaddress='121.49.107.4:55596'>实验室测试</option>
+                                            <option value="3"  data-ipaddress='121.49.107.4:55561'>实验室演示</option>
+                                            <option value="4" data-ipaddress='222.186.209.130:55555'>镇江演示</option>
                                         </select>
                                     </section>
                                 </div>
-                                <!-- <div class='col-sm-offset-1 col-sm-10 col-xs-offset-1 col-xs-10 y-btn-wrap'>
-                                 <button class="y-btn" id="configip">
-                                 连接
-                                 </button>
-                                 </div> -->
-                                <!-- <div class="ipconboxmask y-hide"></div> -->
                             </div>
                         </div>
                     </div>
@@ -57,7 +81,7 @@
             </div>
         </div>
         </div>
-        <div class="mask"></div>
+        <!--<div class="mask"></div>-->
         <div class="maskloading y-hide">
             <div class='ant-spin ant-spin-spinning'>
                 <span class='ant-spin-dot ant-spin-dot-spin'><i></i><i></i><i></i><i></i></span>
@@ -65,10 +89,12 @@
         </div>
     </body>
     <style>
-        .changebox{
-            /* height: 20rem; */
-            /* text-align: center; */
-            margin-top: 20%;
+        @media (min-height:  500px) {
+            .changebox{
+                /* height: 20rem; */
+                /* text-align: center; */
+                margin-top: 20%;
+            }
         }
     .configicon{
         font-size: 2rem;
@@ -97,13 +123,41 @@
         margin-top: 2rem;
     }
     .insertbox{
-        opacity: 0;
+        /*opacity: 0;*/
+        display: none;
     }
     .y-btn-wrap{
         /* margin: 0; */
         padding: 0;
         margin-top: 1rem;
         
+    }
+    #Windowsexit:hover {
+        position: relative;
+        right: 0;
+        z-index: 1000;
+        display: none;
+        width: 20px;
+        height: 20px;
+        border-radius: 10px;
+        text-align: center;
+        border: 1px solid #fff;
+        color: #fff;
+    }
+    #Windowsexit {
+        position: relative;
+        right: 0;
+        z-index: 1000;
+        display: none;
+        width: 20px;
+        height: 20px;
+        border-radius: 10px;
+        text-align: center;
+        border: 1px solid #9E9E9E;
+        color: #9E9E9E;
+    }
+    .loginbox{
+        padding: 0;
     }
     </style>
     <script src="./static/js/qwebchannel.js"></script>

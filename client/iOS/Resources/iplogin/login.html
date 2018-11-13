@@ -9,7 +9,7 @@
     <link rel="stylesheet" type="text/css" href="./static/css/animate.css" />
     <link rel="stylesheet" type="text/css" href="./static/css/login.css" />
 </head>
-<body style="background:transparent;">
+<body>
     <div class="container-fluid">
         <div class="row">
             <div class="col-sm-offset-1 col-sm-10 col-xs-offset-1 col-xs-10 loginbox">
@@ -29,11 +29,11 @@
                                 <input type="checkbox" class="ant-checkbox-input" value="">
                                 <span class="ant-checkbox-inner"></span>
                             </span>
-                            <span class="y-link">自动登录 |</span>     
+                            <span class="y-link">自动登录 |</span>
                         </label>
                         <span class="y-link regist"><a href="#">注册</a> |</span>
                         <span class="y-link reset-password"><a href="#">忘记密码</a></span>
-                        <span class="y-link exit y-hide"><a href="#"> | 退出</a></span>
+                        <span class="y-link exit"><a href="#"> | 退出</a></span>
                     </div>
                 </div>
             </div>
@@ -43,11 +43,6 @@
 <script>
     $('.ant-checkbox-wrapper').click(function(){
         $(this).toggleClass('ant-checkbox-checked');
-    })
-    $(function(){
-        if(navigator.userAgent.indexOf('Windows') !=-1){
-            $('.exit').removeClass('y-hide');
-        }
     })
 </script>
 </html>
