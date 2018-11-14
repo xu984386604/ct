@@ -73,6 +73,15 @@
     [openerArguments setValue:@"15" forKey:@"timeout"];
     [openerArguments setValue:myinfo.vmpasswd forKey:@"vmpassword"];
     
+    //检查参数是否为空，如果为空则删除该条参数。垃圾opener无法处理参数为空的问题
+    NSString *argumentValue;
+    for (argumentValue in [openerArguments allKeys]) {
+        if ([@"" isEqualToString:[openerArguments objectForKey:argumentValue]]) {
+            [openerArguments removeObjectForKey:argumentValue];
+        }
+    }
+    argumentValue = nil;
+    
     NSString *tmp1 = [CommonUtils dictionaryToJson:openerArguments];
     NSString *tmp2 = [tmp1 stringByReplacingOccurrencesOfString:@"\"" withString:@"\\\""];
     myinfo.remoteProgram=[NSString  stringWithFormat:@"opener.exe %@", [tmp2 stringByReplacingOccurrencesOfString:@"\n" withString:@""]];
