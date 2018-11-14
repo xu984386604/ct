@@ -45,6 +45,7 @@
     myinfo.appid = [_dic objectForKey:@"id"];    
      //docker应用处理
     NSString *apptype=[_dic objectForKey:@"appType"];
+    myinfo.apptype = apptype;
     if([apptype isEqualToString:@"lca"])
     {
         myinfo.dockerId=[_dic objectForKey:@"docker_id"];

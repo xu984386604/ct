@@ -759,6 +759,7 @@
                               myinfo.vmusername,@"vmusername",
                               myinfo.apptype,@"appType",
                               nil];
+    
     //挂载网盘
     if(!flag) //卸载网盘
     {
@@ -769,6 +770,7 @@
         [dic setValue:myinfo.uid forKey:@"uid"];
     }
 
+    NSLog(@"%@",dic);
     [[[CommonUtils alloc] init] makeRequestToServer:Reset_vm_User withDictionary:dic byHttpMethod:@"POST" type:@"postData函数"];
 }
 
