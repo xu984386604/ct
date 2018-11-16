@@ -195,7 +195,7 @@
     //[[NSNotificationCenter defaultCenter] postNotificationName:@"postMessageToservice" object:@"loginMsg"];
 
 }
-//注销的时候，停止发送心跳
+//注销的时候
 -(void)StopHeartBeat:(id)num
 {
      //[[NSNotificationCenter defaultCenter] postNotificationName:@"stoppostMessageToservice" object:@"loginMsg"];
