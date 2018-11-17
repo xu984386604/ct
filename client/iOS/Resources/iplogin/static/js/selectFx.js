@@ -366,6 +366,7 @@
                    executeByTerminal(sendData);
                    self.options.canselect = true;
                    //点击登录按钮
+                   $('#login').unbind();
                    $('#login').click(function(){
                                      //获取用户的输入
                                      var username = $('#username').val();

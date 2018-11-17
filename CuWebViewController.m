@@ -103,7 +103,7 @@
     NSString *filename = [[notification userInfo] objectForKey:@"filename"];
     NSString *dirName = [[notification userInfo] objectForKey:@"dirname"];
     NSString *filePath = [[NSBundle mainBundle] pathForResource:filename ofType:@"html" inDirectory:dirName];
-    filePath = [NSString stringWithFormat:@"%@?isAutoLogin=0&canClearCookie=1", filePath]; //0代表注销跳回登录页面
+    filePath = [NSString stringWithFormat:@"%@?isAutoLogin=0&canClearCookie=pwd", filePath]; //0代表注销跳回登录页面,canClearCookie，pwd代表清除密码，all代表清除所有的缓存
     NSLog(@"notice-filepath：%@",filePath);
     NSURL *url = [NSURL URLWithString:filePath];
     NSURLRequest *request = [NSURLRequest requestWithURL:url];
