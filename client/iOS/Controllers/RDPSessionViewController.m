@@ -770,7 +770,6 @@
         [dic setValue:myinfo.uid forKey:@"uid"];
     }
 
-    NSLog(@"%@",dic);
     [[[CommonUtils alloc] init] makeRequestToServer:Reset_vm_User withDictionary:dic byHttpMethod:@"POST" type:@"postData函数"];
 }
 
@@ -799,7 +798,6 @@
     
     NSNumber * code = [mydic objectForKey:@"code"];
     
-    NSLog(@"%@",mydic);
     if([code isEqualToNumber:CORRECTHTTPSTATUSCODE])
     {
         NSDictionary * msg = [mydic objectForKey:@"msg"];
@@ -996,7 +994,7 @@
         }];
         [alert addButton:@"确定" actionBlock:^{
                     [_session disconnect];
-                    //向服务器发送关闭信息
+                    //向器发送关闭信息
                     dispatch_async(dispatch_get_global_queue(0, 0), ^{
                         [self closeOpenRdp];
                     });
