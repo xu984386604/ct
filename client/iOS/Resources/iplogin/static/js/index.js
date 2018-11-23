@@ -9,9 +9,10 @@ if(devicetype == 'Windows'){
     $('#Windowsexit').css('display','block');
 }
 //如果注销则清空localstorage
-if(canClearCookie == '1'){
+if(canClearCookie == 'pwd'){
     localStorage.setItem('autologin','false');
     localStorage.removeItem('enpw');
+}else if(canClearCookie == 'all'){
     localStorage.clear();
 }
 
