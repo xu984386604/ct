@@ -555,43 +555,53 @@
 {
     SCLAlertView *myalert = [[SCLAlertView alloc] init];
     
+    NSInteger myheight = [UIScreen mainScreen].bounds.size.height;
+    NSInteger mywidth  = [UIScreen mainScreen].bounds.size.width;
+    
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone){
         
-        [myalert addButton:@"768 x 1366" actionBlock:^{
-            [vminfo share].width = 768;
-            [vminfo share].height = 1366;
-            [self testFunc];
-            
-        }];
-        [myalert addButton:@"1080 x 1920" actionBlock:^{
-            [vminfo share].width = 1080;
-            [vminfo share].height = 1920;
+        [myalert addButton:[NSString stringWithFormat:@"低 %ld x %ld",(long)mywidth,(long)myheight] actionBlock:^{
+            [vminfo share].width = mywidth;
+            [vminfo share].height = myheight;
             [self testFunc];
         }];
-        [myalert addButton:@"1242 x 2208" actionBlock:^{
-            [vminfo share].width = 1242;
-            [vminfo share].height = 2208;
+        [myalert addButton:@"中 1280 x 720" actionBlock:^{
+            [vminfo share].width = 720;
+            [vminfo share].height = 1280;
             [self testFunc];
         }];
+        
+        NSInteger multipe = 2;
+        if(myheight >= 736)
+        {
+            multipe =3;
+        }
+        
+        [myalert addButton:[NSString stringWithFormat:@"高 %ld x %ld(自适应)",(long)mywidth*multipe,(long)myheight*multipe] actionBlock:^{
+            [vminfo share].width = mywidth *multipe;
+            [vminfo share].height = myheight *multipe;
+            [self testFunc];
+        }];
+        
     }else{
-        [myalert addButton:@"768 x 1024" actionBlock:^{
-            [vminfo share].width = 768;
-            [vminfo share].height = 1024;
+        [myalert addButton:[NSString stringWithFormat:@"低 %ld x %ld",(long)mywidth,(long)myheight] actionBlock:^{
+            [vminfo share].width = mywidth;
+            [vminfo share].height = myheight;
             [self testFunc];
         }];
-        [myalert addButton:@"1152 x 1536" actionBlock:^{
-            [vminfo share].width = 1152;
-            [vminfo share].height = 1536;
+        [myalert addButton:@"中 1368 x 1024" actionBlock:^{
+            [vminfo share].width = 1024;
+            [vminfo share].height = 1368;
             [self testFunc];
         }];
-        [myalert addButton:@"1536 x 2048" actionBlock:^{
-            [vminfo share].width = 1536;
-            [vminfo share].height = 2048;
+        [myalert addButton:[NSString stringWithFormat:@"高 %ld x %ld(自适应)",(long)mywidth*2,(long)myheight*2] actionBlock:^{
+            [vminfo share].width = mywidth *2;
+            [vminfo share].height = myheight *2;
             [self testFunc];
         }];
     }
     
-    NSString *str = [NSString stringWithFormat:@"当前分辨率是 %ld x %ld",(long)[vminfo share].width,(long)[vminfo share].height];
+    NSString *str = [NSString stringWithFormat:@"当前分辨率是 %ld x %ld",(long)[vminfo share].height,(long)[vminfo share].width];
     [myalert showQuestion:self title:@"修改分辨率" subTitle:str closeButtonTitle:@"确定" duration:0.0f];
     
 }
@@ -697,9 +707,9 @@
     CGFloat minumun = (float1 > float2)?(myheight / float2 ):(myheight / float1 );
     if(minumun >= 1)
     {
-        _session_scrollview.maximumZoomScale = 2;
+        _session_scrollview.maximumZoomScale = 3;
     }else{
-        _session_scrollview.maximumZoomScale = 1;
+        _session_scrollview.maximumZoomScale = 2;
     }
     _session_scrollview.minimumZoomScale = minumun;
     [_session_scrollview setZoomScale:minumun];

@@ -60,8 +60,8 @@
     CGRect rect = [[UIScreen mainScreen] bounds];
     CGSize size = rect.size;
     
-    _connectInfo.width =(int) size.width;
-    _connectInfo.height =(int) size.height;
+    _connectInfo.width =(int) size.width *2;
+    _connectInfo.height =(int) size.height *2;
 
 }
 
