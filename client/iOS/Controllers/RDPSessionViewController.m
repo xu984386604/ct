@@ -571,17 +571,20 @@
             [self testFunc];
         }];
         
-        NSInteger multipe = 2;
         if(myheight >= 736)
         {
-            multipe =3;
-        }
+            [myalert addButton:[NSString stringWithFormat:@"高 %ld x %ld(自适应)",(long)mywidth*3,(long)myheight*3] actionBlock:^{
+                [vminfo share].width = mywidth *3;
+                [vminfo share].height = myheight *3;
+                [self testFunc];
+            }];
+        }else{
         
-        [myalert addButton:[NSString stringWithFormat:@"高 %ld x %ld(自适应)",(long)mywidth*multipe,(long)myheight*multipe] actionBlock:^{
-            [vminfo share].width = mywidth *multipe;
-            [vminfo share].height = myheight *multipe;
+            [myalert addButton:[NSString stringWithFormat:@"高 %ld x %ld(自适应)",(long)mywidth*2,(long)myheight*2] actionBlock:^{
+            [vminfo share].width = mywidth *2;
+            [vminfo share].height = myheight *2;
             [self testFunc];
-        }];
+        }];}
         
     }else{
         [myalert addButton:[NSString stringWithFormat:@"低 %ld x %ld",(long)mywidth,(long)myheight] actionBlock:^{
@@ -1049,7 +1052,11 @@
 		_keyboard_last_height = height - keyboardEndFrame.origin.y;
 	}
 	
+    
 	CGFloat shiftHeight = _keyboard_last_height - previousHeight;
+    
+    NSLog(@"=============keyboard_lastheight:%f---------============shiftheight:%f",_keyboard_last_height,shiftHeight);
+
 	[UIView beginAnimations:nil context:NULL];
     [UIView setAnimationCurve:[[[notification userInfo] objectForKey:UIKeyboardAnimationCurveUserInfoKey] intValue]];
     [UIView setAnimationDuration:[[[notification userInfo] objectForKey:UIKeyboardAnimationDurationUserInfoKey] doubleValue]];
