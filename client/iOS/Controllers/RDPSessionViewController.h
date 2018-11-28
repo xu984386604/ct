@@ -95,6 +95,7 @@
     MyFloatButton * _myfloatbutton;  //悬浮按钮
     MenuView * _mymenuview;          //显示的menu
     NSTimer * myTimer;       //定时器
+    CGFloat keyboardHeight;
 
 }
 

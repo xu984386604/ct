@@ -43,7 +43,7 @@ float _h; //有效活动高度
         self.bannerIV = [[UIImageView alloc]initWithFrame:CGRectMake(0, 0, _nLogoWidth, _nLogoHeight)];
         //此处表示正常情况下父视图的有效范围, 其他尺寸自行更改
         _w = SCREEN_WIDTH;
-        _h = SCREEN_HEIGHT-49;
+        _h = SCREEN_HEIGHT-30;
         _bannerIV.image = [UIImage imageNamed:@"catolog2.png"];
         _bannerIV.layer.cornerRadius = 23.f;
         _bannerIV.layer.masksToBounds = YES;
@@ -150,8 +150,8 @@ float _h; //有效活动高度
         m.x = _w - _bannerIV.frame.size.width/2;
     if (m.y > _h - _bannerIV.frame.size.height/2)
         m.y = _h - _bannerIV.frame.size.height/2;
-    if (m.y < 60)
-        m.y = 60;
+    if (m.y < 35)
+        m.y = 35;
     
     
     
@@ -169,7 +169,7 @@ float _h; //有效活动高度
 -(void)setLimitRange:(CGFloat)myHeight andWidth:(CGFloat)myWidth
 {
     _w = myWidth;
-    _h = myHeight-49;
+    _h = myHeight-30;
 }
 
 @end

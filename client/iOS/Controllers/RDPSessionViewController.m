@@ -565,26 +565,17 @@
             [vminfo share].height = myheight;
             [self testFunc];
         }];
-        [myalert addButton:@"中 1280 x 720" actionBlock:^{
-            [vminfo share].width = 720;
-            [vminfo share].height = 1280;
+        [myalert addButton:@"中 852 x 480" actionBlock:^{
+            [vminfo share].width = 480;
+            [vminfo share].height = 852;
             [self testFunc];
         }];
-        
-        if(myheight >= 736)
-        {
-            [myalert addButton:[NSString stringWithFormat:@"高 %ld x %ld(自适应)",(long)mywidth*3,(long)myheight*3] actionBlock:^{
-                [vminfo share].width = mywidth *3;
-                [vminfo share].height = myheight *3;
-                [self testFunc];
-            }];
-        }else{
         
             [myalert addButton:[NSString stringWithFormat:@"高 %ld x %ld(自适应)",(long)mywidth*2,(long)myheight*2] actionBlock:^{
             [vminfo share].width = mywidth *2;
             [vminfo share].height = myheight *2;
             [self testFunc];
-        }];}
+        }];
         
     }else{
         [myalert addButton:[NSString stringWithFormat:@"低 %ld x %ld",(long)mywidth,(long)myheight] actionBlock:^{
@@ -616,15 +607,15 @@
 //弹出键盘的时候遮挡悬浮按钮处理事件
 -(void)myfunction
 {
-    CGPoint temp = _myfloatbutton.center;
-    CGFloat myfloat = SCREEN_HEIGHT  / 3;  //宽度的1/3
-    if (temp.y - myfloat > 0) {
-        temp.y = SCREEN_HEIGHT / 3 ;
-        [UIView animateWithDuration:0.2 animations:^{
-            [_myfloatbutton setCenter:temp];
-        }];
-        [vminfo share].mypoint = temp;
-    }
+        CGPoint temp = _myfloatbutton.center;
+        CGFloat screenHeight = [UIScreen mainScreen].bounds.size.height;
+        if (temp.y - (screenHeight - keyboardHeight) > 0) {
+            temp.y = (screenHeight -keyboardHeight)-30;
+            [UIView animateWithDuration:0.2 animations:^{
+                [_myfloatbutton setCenter:temp];
+            }];
+            [vminfo share].mypoint = temp;
+        }
 }
 
 - (void)sessionWillDisconnect:(RDPSession*)session
@@ -1055,8 +1046,6 @@
     
 	CGFloat shiftHeight = _keyboard_last_height - previousHeight;
     
-    NSLog(@"=============keyboard_lastheight:%f---------============shiftheight:%f",_keyboard_last_height,shiftHeight);
-
 	[UIView beginAnimations:nil context:NULL];
     [UIView setAnimationCurve:[[[notification userInfo] objectForKey:UIKeyboardAnimationCurveUserInfoKey] intValue]];
     [UIView setAnimationDuration:[[[notification userInfo] objectForKey:UIKeyboardAnimationDurationUserInfoKey] doubleValue]];
@@ -1064,12 +1053,12 @@
     
     //需要处理_touchpointer_view里面的那个imageView，要进行变换，太麻烦了，暂时不做
 //    NSLog(@"-------------------获取键盘的高度-----------------");
-//    NSDictionary *userInfo = [notification userInfo];
-//    NSValue *aValue = [userInfo objectForKey:UIKeyboardFrameEndUserInfoKey];
-//    CGRect keyboardRect = [aValue CGRectValue];
-//    int kbHeight = keyboardRect.size.height;
-//    NSLog(@"width:%f, height:%f", frame.size.width, frame.size.width);
-	frame.size.height -= shiftHeight;
+    NSDictionary *userInfo = [notification userInfo];
+    NSValue *aValue = [userInfo objectForKey:UIKeyboardFrameEndUserInfoKey];
+    CGRect keyboardRect = [aValue CGRectValue];
+    keyboardHeight = keyboardRect.size.height;
+    
+    frame.size.height -= shiftHeight;
 	[_session_scrollview setFrame:frame];
 //    CGFloat height = [UIScreen mainScreen].bounds.size.height;
 //    CGFloat width = [UIScreen mainScreen].bounds.size.width;
