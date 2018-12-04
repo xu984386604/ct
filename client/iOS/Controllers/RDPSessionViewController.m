@@ -595,9 +595,18 @@
         }];
     }
     
-    NSString *str = [NSString stringWithFormat:@"当前分辨率是 %ld x %ld",(long)[vminfo share].height,(long)[vminfo share].width];
-    [myalert showQuestion:self title:@"修改分辨率" subTitle:str closeButtonTitle:@"确定" duration:0.0f];
+    NSInteger ShareWidth = [vminfo share].width;
+    NSInteger ShareHeight = [vminfo share].height;
+    if(ShareWidth > ShareHeight)
+    {
+        NSString *str = [NSString  stringWithFormat:@"当前分辨率是 %ld x %ld",(long)ShareWidth,(long)ShareHeight];
+        [myalert showQuestion:self title:@"修改分辨率" subTitle:str closeButtonTitle:@"确定" duration:0.0f];
+    }else{
     
+        NSString *str = [NSString stringWithFormat:@"当前分辨率是 %ld x %ld",(long)ShareHeight,(long)ShareWidth];
+        [myalert showQuestion:self title:@"修改分辨率" subTitle:str closeButtonTitle:@"确定" duration:0.0f];
+    
+    }
 }
 
 

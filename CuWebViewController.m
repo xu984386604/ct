@@ -17,7 +17,7 @@
 
 #define SCREEN_HEIGHT ([UIScreen mainScreen].bounds.size.height)
 #define SCREEN_WIDTH  ([UIScreen mainScreen].bounds.size.width)
-#define LOCALMD5      @"7aa70672dc9ef16cac1b3fc1e78d80bb"
+#define LOCALMD5      @"90fc0b23ca31f1a770f0c65b30e3b383"
 
 //WLOG_LEVEL=DEBUG  环境变量
 @interface CuWebViewController () <MyFloatButtonDelegate>
@@ -59,6 +59,8 @@
     //初始化vminfo中的height和width
     CGRect rect = [[UIScreen mainScreen] bounds];
     CGSize size = rect.size;
+    
+    
     
     _connectInfo.width =(int) size.width *2;
     _connectInfo.height =(int) size.height *2;
