@@ -19,6 +19,7 @@
 #import "myAlertView.h"
 #import "vminfo.h"
 #import <SCLAlertView.h>
+#import "MBProgressHUD/MBProgressHUD+CZ.h"
 
 
 
@@ -524,10 +525,21 @@
             [self toggleTouchPointer:nil];
             break;
         case 3:
-            [self postData:YES];
+
+            [self postData:YES]; //挂载网盘
+            [MBProgressHUD showMessage:@"正在挂载，请稍后" toView:self.view];
+            //60秒后没有返回信息，进度框自动消失
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(60 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                [MBProgressHUD hideHUDForView:self.view];
+            });
             break;
         case 4:
-            [self postData:NO];
+            [self postData:NO]; //卸载网盘
+            [MBProgressHUD showMessage:@"正在卸载，请稍后" toView:self.view];
+            //60秒后没有返回信息，进度框自动消失
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(60 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                [MBProgressHUD hideHUDForView:self.view];
+            });
             break;
         case 5:
             [self testFunc];
@@ -813,6 +825,7 @@
     
     if([code isEqualToNumber:CORRECTHTTPSTATUSCODE])
     {
+        [MBProgressHUD hideHUDForView:self.view];
         NSDictionary * msg = [mydic objectForKey:@"msg"];
         if(msg){
             

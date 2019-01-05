@@ -96,7 +96,6 @@
     MenuView * _mymenuview;          //显示的menu
     NSTimer * myTimer;       //定时器
     CGFloat keyboardHeight;
-
 }
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil session:(RDPSession*)session;
