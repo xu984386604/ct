@@ -740,8 +740,9 @@
 //核对用户名密码
 - (void)session:(RDPSession *)session verifyCertificateWithParams:(NSMutableDictionary *)params
 {
-    VerifyCertificateController* view_controller = [[[VerifyCertificateController alloc] initWithNibName:@"VerifyCertificateView" bundle:nil session:_session params:params] autorelease];
-    [self presentModalViewController:view_controller animated:YES];
+//    VerifyCertificateController* view_controller = [[[VerifyCertificateController alloc] initWithNibName:@"VerifyCertificateView" bundle:nil session:_session params:params] autorelease];
+//    [self presentModalViewController:view_controller animated:YES];
+    [params setValue:[NSNumber numberWithBool:YES] forKey:@"result"];
 }
 
 - (CGSize)sizeForFitScreenForSession:(RDPSession*)session

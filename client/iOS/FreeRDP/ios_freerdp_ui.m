@@ -32,16 +32,16 @@ BOOL ios_ui_authenticate(freerdp * instance, char** username, char** password, c
     [mfi->session performSelectorOnMainThread:@selector(sessionRequestsAuthenticationWithParams:) withObject:params waitUntilDone:YES];
     
     // wait for UI request to be completed
-    [[mfi->session uiRequestCompleted] lock];
-    [[mfi->session uiRequestCompleted] wait];
-    [[mfi->session uiRequestCompleted] unlock];
+//    [[mfi->session uiRequestCompleted] lock];
+//    [[mfi->session uiRequestCompleted] wait];
+//    [[mfi->session uiRequestCompleted] unlock];
     
-	if (![[params valueForKey:@"result"] boolValue])
-	{
-		mfi->unwanted = YES;
-		return FALSE;
-	}
-	   
+    if (![[params valueForKey:@"result"] boolValue])
+    {
+        mfi->unwanted = YES;
+        return FALSE;
+    }
+    
 	// Free old values
 	free(*username);
 	free(*password);
@@ -80,9 +80,9 @@ BOOL ios_ui_check_certificate(freerdp * instance, char * subject, char * issuer,
     [mfi->session performSelectorOnMainThread:@selector(sessionVerifyCertificateWithParams:) withObject:params waitUntilDone:YES];
     
     // wait for UI request to be completed
-    [[mfi->session uiRequestCompleted] lock];
-    [[mfi->session uiRequestCompleted] wait];
-    [[mfi->session uiRequestCompleted] unlock];
+//    [[mfi->session uiRequestCompleted] lock];
+//    [[mfi->session uiRequestCompleted] wait];
+//    [[mfi->session uiRequestCompleted] unlock];
     
 	if (![[params valueForKey:@"result"] boolValue])
 	{
