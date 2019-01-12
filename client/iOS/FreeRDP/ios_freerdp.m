@@ -12,6 +12,7 @@
 #import <freerdp/client/channels.h>
 #import <freerdp/client/cmdline.h>
 #import <freerdp/freerdp.h>
+#include <freerdp/error.h>
 
 #import "ios_freerdp.h"
 #import "ios_freerdp_ui.h"
@@ -19,6 +20,9 @@
 
 #import "RDPSession.h"
 #import "Utils.h"
+
+
+
 
 #pragma mark Connection helpers
 
@@ -131,6 +135,13 @@ int ios_run_freerdp(freerdp* instance)
 
 	while (!freerdp_shall_disconnect(instance))
 	{
+        //65537 - 服务器断开    65538 - 服务器注销   0 - 正常   65548 - 点击应用的右上角的关闭按钮（x）
+        NSLog(@"断开连接的错误码：%i", instance->context->LastError);
+        if (instance->context->LastError == 65537 || instance->context->LastError == 65538) {
+            NSLog(@"断开连接的错误码：%i", instance->context->LastError);
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"disconnectByServer" object:nil];
+        }
+        
 		rcount = wcount = 0;
 		
 		pool = [[NSAutoreleasePool alloc] init];
@@ -197,7 +208,6 @@ int ios_run_freerdp(freerdp* instance)
 		if (freerdp_check_fds(instance) != true)
 		{
 			NSLog(@"%s: inst->rdp_check_fds failed.", __func__);
-            
 			break;
 		}
 		

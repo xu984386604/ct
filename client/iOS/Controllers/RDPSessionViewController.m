@@ -109,7 +109,7 @@
 - (void)viewDidLoad 
 {
     [super viewDidLoad];
-    
+//    _uiRequestCompleted = [[NSCondition alloc] init];
 }
 -(BOOL)shouldAutorotate{
     return YES;
@@ -190,13 +190,9 @@
             [_session connect];
         _session_initilized = YES;
     }
-    
-    
-    
-    
-
-
 }
+
+
 
 - (void)viewWillDisappear:(BOOL)animated 
 {
@@ -452,6 +448,7 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardDidShow:) name: UIKeyboardDidShowNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillHide:) name: UIKeyboardWillHideNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardDidHide:) name: UIKeyboardDidHideNotification object:nil];
+    
 
     
     //注册挂载网盘处理函数
@@ -485,15 +482,11 @@
     
     //定时器向虚拟机发送虚拟按键
     myTimer = [NSTimer scheduledTimerWithTimeInterval:180 target:self selector:@selector(sendWinKeyToServiceToKeepAlive) userInfo:nil repeats:YES];
-    
-  
-    
 }
+
 -(void)sendWinKeyToServiceToKeepAlive
 {
-   
     [[RDPKeyboard getSharedRDPKeyboard] sendVirtualKeyCode:0x00];
-    
 }
 
 #pragma mark FloatButton TapAction

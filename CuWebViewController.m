@@ -17,7 +17,7 @@
 
 #define SCREEN_HEIGHT ([UIScreen mainScreen].bounds.size.height)
 #define SCREEN_WIDTH  ([UIScreen mainScreen].bounds.size.width)
-#define LOCALMD5      @"1a5b7a44d621ca3db5df7458580ce267"
+#define LOCALMD5      @"5bb25321a9da1140ec11ea3a076e9a93"
 
 //WLOG_LEVEL=DEBUG  环境变量
 @interface CuWebViewController () <MyFloatButtonDelegate>
@@ -54,6 +54,10 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showParamErrorMessage) name:@"paramErrorMessage" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(openRdp) name:@"reloadRdp" object:nil];
     
+    //注册服务器断开连接的事件处理
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(disconnectByServer) name: @"disconnectByServer" object:nil];
+    
+    
     _connectInfo = [vminfo share];
     
     //初始化vminfo中的height和width
@@ -65,6 +69,14 @@
     _connectInfo.width =(int) size.width *2;
     _connectInfo.height =(int) size.height *2;
 
+}
+
+- (void) disconnectByServer {
+    dispatch_sync(dispatch_get_main_queue(), ^{
+        SCLAlertView * alertView = [[SCLAlertView alloc] init];
+        alertView.showAnimationType = SCLAlertViewShowAnimationFadeIn;
+        [alertView showError:self title:@"ERROR" subTitle:@"服务器关闭了连接！" closeButtonTitle:@"确定" duration:0.0f];
+    });
 }
 
 #pragma mark 网页加载
@@ -618,4 +630,20 @@
     [showBuilder showAlertView:builder.alertView onViewController:self];
 }
 
+
+-(void)dealloc {
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    _myfloatbutton = nil;
+    _mytimer = nil;
+    
+    context = nil;
+    cuIp = nil;
+    innerCuUrl = nil;
+    myWebView = nil;
+    innerNet = nil;
+    _connectInfo = nil;
+    
+    [super dealloc];
+}
 @end
