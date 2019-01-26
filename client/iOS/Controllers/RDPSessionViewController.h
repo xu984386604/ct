@@ -98,6 +98,8 @@
     CGFloat keyboardHeight;
 }
 
+//@property (readonly) NSCondition* uiRequestCompleted;
+
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil session:(RDPSession*)session;
 
 @end

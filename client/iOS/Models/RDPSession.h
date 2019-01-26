@@ -105,4 +105,10 @@ extern NSString* TSXSessionDidFailToConnectNotification;
 // returns the session's name (usually the label of the bookmark the session was created with)
 - (NSString*)sessionName;
 
+//返回错误码对应的字符串  详见errinfo.h
+- (NSString*)errorInfo;
+
+//返回错误码 详见error.h
+- (int) errorCode;
+
 @end

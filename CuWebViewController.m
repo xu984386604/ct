@@ -14,6 +14,12 @@
 #import "UpdateApp/UpdateApp.h"
 #import <SCLAlertView.h>
 
+#import <notify.h>
+
+#define NotificationLock CFSTR("com.apple.springboard.lockcomplete")
+#define NotificationChange CFSTR("com.apple.springboard.lockstate")
+#define NotificationPwdUI CFSTR("com.apple.springboard.hasBlankedScreen")
+
 
 #define SCREEN_HEIGHT ([UIScreen mainScreen].bounds.size.height)
 #define SCREEN_WIDTH  ([UIScreen mainScreen].bounds.size.width)
@@ -54,24 +60,35 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showParamErrorMessage) name:@"paramErrorMessage" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(openRdp) name:@"reloadRdp" object:nil];
     
+    
+    //使用darwin层的注册锁屏通知（应用在前台）
+    CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, screenLockStateChanged, NotificationLock, NULL, CFNotificationSuspensionBehaviorDeliverImmediately);
+    CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, screenLockStateChanged, NotificationChange, NULL, CFNotificationSuspensionBehaviorDeliverImmediately);
+    
+    //注册服务器断开连接的事件处理
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(disconnectByServer) name: @"disconnectByServer" object:nil];
+    
     _connectInfo = [vminfo share];
     
     //初始化vminfo中的height和width
     CGRect rect = [[UIScreen mainScreen] bounds];
     CGSize size = rect.size;
     
-    
-    
     _connectInfo.width =(int) size.width *2;
     _connectInfo.height =(int) size.height *2;
+}
 
+- (void) disconnectByServer {
+    dispatch_sync(dispatch_get_main_queue(), ^{
+        SCLAlertView * alertView = [[SCLAlertView alloc] init];
+        alertView.showAnimationType = SCLAlertViewShowAnimationFadeIn;
+        [alertView showError:self title:@"ERROR" subTitle:@"服务器关闭了连接！" closeButtonTitle:@"确定" duration:0.0f];
+    });
 }
 
 #pragma mark 网页加载
 
-/******************
- function: 加载cu网页 内外网判断完后会调用此函数加载
- ******************/
+//加载cu网页 内外网判断完后会调用此函数加载
 -(void)loadMyWebview
 {
     NSString *cuurl=[NSString stringWithFormat:@"%@/cu",cuIp];
@@ -351,9 +368,8 @@
 }
 
 #pragma mark sendMessageToDocker
-/*******************
- **function:将docker的信息封装，发送给服务器。
- *******************/
+
+//将docker的信息封装，发送给服务器
 -(void)sendMessageToDocker
 {
     NSString *Reset_vm_User=[NSString stringWithFormat:@"%@cu/index.php/Home/Client/sendMessageToDockerManager",_connectInfo.cuIp];
@@ -538,7 +554,7 @@
 
             [_myfloatbutton setCenter:m2];
             [vminfo share].mypoint = m2;
-                    }];
+        }];
     }
     
     [UIView commitAnimations];
@@ -618,4 +634,48 @@
     [showBuilder showAlertView:builder.alertView onViewController:self];
 }
 
+
+#pragma mark -
+#pragma mark 屏幕方向相关
+
+static void screenLockStateChanged(CFNotificationCenterRef center,void * observer,CFStringRef name,const void *object,CFDictionaryRef userInfo) {
+    NSString* lockstate = (__bridge NSString*)name;
+    //换了一种方式使用了苹果的私有api（setOrientation:），在appstore上架可能会被拒
+    if ([lockstate isEqualToString:(__bridge  NSString*)NotificationLock]) {
+        if ([[UIDevice currentDevice] respondsToSelector:@selector(setOrientation:)]) {
+            SEL selector = NSSelectorFromString(@"setOrientation:");
+            NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:[UIDevice instanceMethodSignatureForSelector:selector]];
+            [invocation setSelector:selector];
+            [invocation setTarget:[UIDevice currentDevice]];
+            int val = UIInterfaceOrientationPortrait;
+            [invocation setArgument:&val atIndex:2];
+            [invocation invoke];
+        }
+//        NSLog(@"locked.");
+    }
+//    else {
+//        NSLog(@"lock state changed.");
+//    }
+}
+
+
+#pragma mark - dealloc
+-(void)dealloc {
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, screenLockStateChanged, NotificationChange, NULL, CFNotificationSuspensionBehaviorDeliverImmediately);
+    CFNotificationCenterRemoveEveryObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL);
+    
+    _myfloatbutton = nil;
+    _mytimer = nil;
+    
+    context = nil;
+    cuIp = nil;
+    innerCuUrl = nil;
+    myWebView = nil;
+    innerNet = nil;
+    _connectInfo = nil;
+    
+    [super dealloc];
+}
 @end

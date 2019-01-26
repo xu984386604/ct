@@ -62,6 +62,8 @@
 
 @property (atomic, copy) NSString *cancelBtnSessionName; //取消按钮断开的那个应用的名字
 
+//@property (readonly) NSCondition* uiRequestCompleted;
+
 +(instancetype) share;
 +(void) filterRecoverRdpinfoDic;
 @end

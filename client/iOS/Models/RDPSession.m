@@ -44,6 +44,17 @@ NSString* TSXSessionDidFailToConnectNotification = @"TSXSessionDidFailToConnect"
     ios_init_freerdp();
 }
 
+//prama MARK - TODO
+//返回错误码对应的字符串  详见errinfo.h
+- (NSString*)errorInfo {
+    return @"TODO!";
+}
+
+//返回错误码 详见error.h
+- (INT32) errorCode {
+    return freerdp_error_info(_freerdp);
+}
+
 // Designated initializer.
 - (id)initWithBookmark:(ComputerBookmark *)bookmark
 {
