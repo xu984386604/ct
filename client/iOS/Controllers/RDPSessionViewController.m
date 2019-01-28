@@ -227,6 +227,7 @@
     [_myfloatbutton release];
     [_mymenuview release];
     
+    
     [super dealloc];
 }
 
@@ -449,8 +450,6 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillHide:) name: UIKeyboardWillHideNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardDidHide:) name: UIKeyboardDidHideNotification object:nil];
     
-
-    
     //注册挂载网盘处理函数
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handlePostDataEvent:) name:@"SHOWPOSTDATAMESSAGE" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleFirstPostDataError:) name:@"HANDLEFIRSTPOSTDATAERROREVENT" object:nil];
@@ -615,9 +614,6 @@
 }
 
 
-
-
-
 //弹出键盘的时候遮挡悬浮按钮处理事件
 -(void)myfunction
 {
@@ -634,7 +630,7 @@
 
 - (void)sessionWillDisconnect:(RDPSession*)session
 {
-
+    
 }
 //返回最初的界面
 - (void) sessionDidDisconnect:(RDPSession*)session
@@ -653,7 +649,7 @@
     }
     
     [self.navigationController popToRootViewControllerAnimated:YES];
-    
+    [vminfo share].RandomCode = nil;  //每次连接这个随机数都应该不一样
 }
 
 #pragma mark close rdp
@@ -783,13 +779,17 @@
     if(!flag) //卸载网盘
     {
         [dic setValue:@"-1" forKey:@"uid"];
+        
     }
     else
     {//挂载网盘
         [dic setValue:myinfo.uid forKey:@"uid"];
+        [dic setValue:myinfo.RandomCode forKey:@"RandomCode"];
     }
 
     [[[CommonUtils alloc] init] makeRequestToServer:Reset_vm_User withDictionary:dic byHttpMethod:@"POST" type:@"postData函数"];
+    
+    myinfo = nil;
 }
 
 -(void)postDataWhenFirstOpenRdp
@@ -805,6 +805,8 @@
                               nil];
     //挂载网盘
     [dic setValue:myinfo.uid forKey:@"uid"];
+    [dic setValue:myinfo.RandomCode forKey:@"RandomCode"]; //打开应用，需要加上这个随机码，给agant用来建立命名管道
+    
     [[[CommonUtils alloc] init] makeRequestToServer:Reset_vm_User withDictionary:dic byHttpMethod:@"POST" type:@"postDataWhenFirstOpenRdp函数"];
 }
 //挂载网盘提示信息
@@ -849,7 +851,6 @@
         [alertview showError:self title:@"Error" subTitle:@"网盘操作出错" closeButtonTitle:@"确定" duration:0.0f];
         return;
     }
-    
 }
 //第一次挂载网盘失败处理函数
 -(void)handleFirstPostDataError:(NSNotification *)aNotification

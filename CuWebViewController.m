@@ -182,7 +182,6 @@
     [[bookmark params] setInt:height  forKey:@"width"];
     [[bookmark params] setInt:width  forKey:@"height"];
     
-    NSLog(@"连接参数：%@",[bookmark params]);
     RDPSession* session = [[[RDPSession alloc] initWithBookmark:bookmark] autorelease];
    // NSLog(@"rdp连接的session的名称：%@", session.sessionName);
     RDPSessionViewController* ctrl = [[[RDPSessionViewController alloc] initWithNibName:@"RDPSessionView" bundle:nil session:session] autorelease];
@@ -196,9 +195,10 @@
                  @"userid": [vminfo share].uid,
                  @"vmip": [vminfo share].vmip
                  };
-    NSString *key = [NSString stringWithFormat:@"ios%@", [session sessionName]];
-    [[vminfo share].multiRdpRecoverInfo setObject:jsonData forKey:key];
-    NSLog(@"存入multiRdpRecoverInfo的信息：%@", [[vminfo share].multiRdpRecoverInfo objectForKey:key]);
+    
+    NSAssert([vminfo share].RandomCode != nil, @"缺少一个随机数！");
+    [[vminfo share].multiRdpRecoverInfo setObject:jsonData forKey:[vminfo share].RandomCode];
+//    NSLog(@"存入multiRdpRecoverInfo的信息：%@", [[vminfo share].multiRdpRecoverInfo objectForKey:key]);
   //  [[NSNotificationCenter defaultCenter] postNotificationName:@"postMessageToservice" object:@"recoverMsg"];
 }
 
@@ -459,7 +459,8 @@
 //悬浮按钮的点击事件
 - (void)floatTapAction:(MyFloatButton *)sender{
     [[self view] makeToast:NSLocalizedString(@"马上返回cu界面", @"come back to cu interface") duration:2.0 position:@"center"];  //ToastDurationShort
-    NSString *cuurl=[NSString stringWithFormat:@"%@/cu",[vminfo share].cuIp];
+    NSString *cuurl=[NSString stringWithFormat:@"%@cu/",[vminfo share].cuIp];
+    NSLog(@"cuurl:%@", cuurl);
     NSURLRequest *myrequest=[NSURLRequest requestWithURL:[NSURL URLWithString:cuurl]];
     [self performSelector:@selector(loadCuPage:) withObject:myrequest afterDelay:1.0f];
     

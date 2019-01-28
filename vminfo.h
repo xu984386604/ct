@@ -62,6 +62,8 @@
 
 @property (atomic, copy) NSString *cancelBtnSessionName; //取消按钮断开的那个应用的名字
 
+@property (nonatomic, copy) NSString *RandomCode; //挂网盘和卸载网盘用到的一个相同的随机数
+
 //@property (readonly) NSCondition* uiRequestCompleted;
 
 +(instancetype) share;
