@@ -136,9 +136,9 @@ int ios_run_freerdp(freerdp* instance)
     while (!freerdp_shall_disconnect(instance))
     {
         //65537 - 服务器断开    65538 - 服务器注销   0 - 正常   65548 - 点击应用的右上角的关闭按钮（x）
-        NSLog(@"断开连接的错误码：%i", instance->context->LastError);
+//        NSLog(@"断开连接的错误码：%i", instance->context->LastError);
         if (instance->context->LastError == 65537 || instance->context->LastError == 65538) {
-            NSLog(@"断开连接的错误码：%i", instance->context->LastError);
+//            NSLog(@"断开连接的错误码：%i", instance->context->LastError);
             [[NSNotificationCenter defaultCenter] postNotificationName:@"disconnectByServer" object:nil];
         }
         

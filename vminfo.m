@@ -17,7 +17,6 @@ static vminfo *myvminfo;
         if(myvminfo == nil)
         {
             myvminfo=[super allocWithZone:zone];
-            myvminfo.multiRdpRecoverInfo = [NSMutableDictionary dictionary];
         }
     }
     
@@ -25,7 +24,18 @@ static vminfo *myvminfo;
 }
 
 +(instancetype) share{
-    return [[self alloc] init];
+    vminfo *info = [[self alloc] init];
+    if (info.RandomCode == nil) {
+//    [[NSDate date] timeIntervalSince1970]
+        NSString *key = [NSString stringWithFormat:@"ios%u", arc4random_uniform(10000)];
+        info.RandomCode = key;
+        key = nil;
+    }
+    
+    if (info.multiRdpRecoverInfo == nil) {
+        info.multiRdpRecoverInfo = [NSMutableDictionary dictionary];
+    }
+    return info;
 }
 
 //获取存活的rdp远程应用的恢复连接的信息

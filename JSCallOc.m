@@ -32,7 +32,7 @@
 //    NSArray *argumentsArray = [arguments componentsSeparatedByString:@","];
     
     //解析json数据保存到vminfo中
-    vminfo * myinfo = [vminfo share];
+    vminfo *myinfo = [vminfo share];
     myinfo.tsip=[_dic objectForKey:@"tsip"];
     myinfo.tsport=[_dic objectForKey:@"tsport"];
     myinfo.tspwd=[_dic objectForKey:@"tspwd"];
@@ -61,6 +61,7 @@
     NSMutableDictionary *openerArguments;
     if (arguments) {
         openerArguments = [NSMutableDictionary dictionaryWithDictionary:arguments];
+        
         if (![arguments objectForKey:@"is_document"]) {
             [openerArguments setValue:@"0" forKey:@"is_document"];
         } else {
@@ -74,6 +75,8 @@
     [openerArguments setValue:@"15" forKey:@"timeout"];
     [openerArguments setValue:myinfo.vmpasswd forKey:@"vmpassword"];
     
+    [openerArguments setValue:myinfo.RandomCode forKey:@"RandomCode"]; //打开应用，需要加上这个随机码，给agant用来建立命名管道
+    
     //检查参数是否为空，如果为空则删除该条参数。垃圾opener无法处理参数为空的问题
     NSString *argumentValue;
     for (argumentValue in [openerArguments allKeys]) {
@@ -81,13 +84,18 @@
             [openerArguments removeObjectForKey:argumentValue];
         }
     }
-    argumentValue = nil;
     
     NSString *tmp1 = [CommonUtils dictionaryToJson:openerArguments];
-    NSString *tmp2 = [tmp1 stringByReplacingOccurrencesOfString:@"\"" withString:@"\\\""];
-    myinfo.remoteProgram=[NSString  stringWithFormat:@"opener.exe %@", [tmp2 stringByReplacingOccurrencesOfString:@"\n" withString:@""]];
+    NSString *tmp2 = [tmp1 stringByReplacingOccurrencesOfString:@"\"" withString:@"\\\""]; //windows的斜杠字符转码
+    
+    myinfo.remoteProgram = [NSString  stringWithFormat:@"opener.exe %@", tmp2];
+    NSLog(@"myinfo.remoteProgram:  %@", myinfo.remoteProgram);
+    
+    tmp1 = nil;
+    tmp2 = nil;
     openerArguments = nil;
     remoteProgram = nil;
+    argumentValue = nil;
     
     //接收的数据不为空则可以调用来打开RDP
     BOOL is_every_param_ok = YES;
@@ -122,6 +130,7 @@
         [[NSNotificationCenter defaultCenter]
          postNotificationName:@"paramErrorMessage" object:nil];
     }
+    
 }
 
 /*****************************
@@ -178,8 +187,6 @@
             [vminfo share].gatewaycheck = @"YES";
             NSLog(@"是外网！");
         }
-
-        
         
     }
     if([operation isEqualToString:@"setUserId"])

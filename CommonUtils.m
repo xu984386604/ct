@@ -39,7 +39,8 @@
 + (NSString*)dictionaryToJson:(NSDictionary *)dic {
     NSError *parseError = nil;
     NSLog(@"开始字典转json格式字符串");
-    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:dic options:NSJSONWritingPrettyPrinted error:&parseError];
+//    NSJSONWritingPrettyPrinted  加上这个参数可以方便查看打印出来的字符串（会加上空格和换行）
+    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:dic options:nil error:&parseError];
     return [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
 }
 
@@ -107,7 +108,7 @@
     unsigned int cBegin = str2intIP("192.168.0.0");
     unsigned int cEnd = str2intIP("192.168.255.255");
     NSLog(@"ipNum:%u", ipNum);
-    _isInnerIp = IsInner(ipNum, aBegin, aEnd) || IsInner(ipNum, bBegin, bEnd) || IsInner(ipNum, cBegin, cEnd);
+    _isInnerIp = isInner(ipNum, aBegin, aEnd) || isInner(ipNum, bBegin, bEnd) || isInner(ipNum, cBegin, cEnd);
     if(_isInnerIp)  //( (a_ip>>24 == 0xa) || (a_ip>>16 == 0xc0a8) || (a_ip>>22 == 0x2b0) )
     {
         bValid = 0;//内网
@@ -127,13 +128,13 @@ unsigned int str2intIP(char* strip) //return int ip
     return ntohl(intIP);
 }
 
-bool IsInner(unsigned int userIp, unsigned int begin, unsigned int end)
+bool isInner(unsigned int userIp, unsigned int begin, unsigned int end)
 {
     return (userIp >= begin) && (userIp <= end);
 }
 
 
-#pragma mark - 将文字添加到图片的方法实现
+#pragma mark - 图片处理相关方法
 
 + (UIImage*)text:(NSString*)text addToView:(UIImage*)image textColor:(UIColor*) color textSize:(CGFloat) fontSize {
     //设置字体样式
