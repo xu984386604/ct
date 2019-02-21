@@ -58,86 +58,86 @@ NSString* TSXSessionDidFailToConnectNotification = @"TSXSessionDidFailToConnect"
 // Designated initializer.
 - (id)initWithBookmark:(ComputerBookmark *)bookmark
 {
-	if (!(self = [super init]))
-		return nil;
-	
-	if (!bookmark)
-		[NSException raise:NSInvalidArgumentException format:@"%s: params may not be nil.", __func__];
+    if (!(self = [super init]))
+        return nil;
+    
+    if (!bookmark)
+        [NSException raise:NSInvalidArgumentException format:@"%s: params may not be nil.", __func__];
     _isCancelConnected = NO; //是否取消连接
     _bookmark = [bookmark retain];
-	_params = [[bookmark params] copy];
+    _params = [[bookmark params] copy];
     _name = [[NSString stringWithFormat:@"ios%@", [bookmark params]] retain];
-    _delegate = nil;	
+    _delegate = nil;    
     _toolbar_visible = NO;
-	_freerdp = ios_freerdp_new();
-    rdpSettings* settings = _freerdp->settings;	
+    _freerdp = ios_freerdp_new();
+    rdpSettings* settings = _freerdp->settings;    
     _ui_request_completed = [[NSCondition alloc] init];
     
     BOOL connected_via_3g = ![bookmark conntectedViaWLAN];
     
-	// Screen Size is set on connect (we need a valid delegate in case the user choose an automatic screen size)
+    // Screen Size is set on connect (we need a valid delegate in case the user choose an automatic screen size)
     
-	// Other simple numeric settings
-	if ([_params hasValueForKey:@"colors"])
-		settings->ColorDepth = [_params intForKey:@"colors" with3GEnabled:connected_via_3g];
-	
-	if ([_params hasValueForKey:@"port"])
-		settings->ServerPort = [_params intForKey:@"port"];
-	
-	if ([_params boolForKey:@"console"])
-		settings->ConsoleSession = 1;
+    // Other simple numeric settings
+    if ([_params hasValueForKey:@"colors"])
+        settings->ColorDepth = [_params intForKey:@"colors" with3GEnabled:connected_via_3g];
+    
+    if ([_params hasValueForKey:@"port"])
+        settings->ServerPort = [_params intForKey:@"port"];
+    
+    if ([_params boolForKey:@"console"])
+        settings->ConsoleSession = 1;
 
-	// connection info	
-	if (!(settings->ServerHostname = strdup([_params UTF8StringForKey:@"hostname"])))
-		goto out_free;
-	
-	// String settings
-	if ([[_params StringForKey:@"username"] length])
-	{
-		settings->Username = strdup([_params UTF8StringForKey:@"username"]);
-		if (!settings->Username)
-			goto out_free;
-	}
+    // connection info    
+    if (!(settings->ServerHostname = strdup([_params UTF8StringForKey:@"hostname"])))
+        goto out_free;
+    
+    // String settings
+    if ([[_params StringForKey:@"username"] length])
+    {
+        settings->Username = strdup([_params UTF8StringForKey:@"username"]);
+        if (!settings->Username)
+            goto out_free;
+    }
 
-	if ([[_params StringForKey:@"password"] length])
-	{
-		settings->Password = strdup([_params UTF8StringForKey:@"password"]);
-		if (!settings->Password)
-			goto out_free;
-	}
+    if ([[_params StringForKey:@"password"] length])
+    {
+        settings->Password = strdup([_params UTF8StringForKey:@"password"]);
+        if (!settings->Password)
+            goto out_free;
+    }
 
-	if ([[_params StringForKey:@"domain"] length])
-	{
-		settings->Domain = strdup([_params UTF8StringForKey:@"domain"]);
-		if (!settings->Domain)
-			goto out_free;
-	}
+    if ([[_params StringForKey:@"domain"] length])
+    {
+        settings->Domain = strdup([_params UTF8StringForKey:@"domain"]);
+        if (!settings->Domain)
+            goto out_free;
+    }
 
-	settings->ShellWorkingDirectory = strdup([_params UTF8StringForKey:@"working_directory"]);
-	settings->AlternateShell = strdup([_params UTF8StringForKey:@"remote_program"]);
-	
-	if (!settings->ShellWorkingDirectory || !settings->AlternateShell)
-		goto out_free;
+    settings->ShellWorkingDirectory = strdup([_params UTF8StringForKey:@"working_directory"]);
+    settings->AlternateShell = strdup([_params UTF8StringForKey:@"remote_program"]);
+    
+    if (!settings->ShellWorkingDirectory || !settings->AlternateShell)
+        goto out_free;
 
 // RemoteFX
-	if ([_params boolForKey:@"perf_remotefx" with3GEnabled:connected_via_3g])
-	{
-		settings->RemoteFxCodec = TRUE;
-		settings->FastPathOutput = TRUE;
-		settings->ColorDepth = 32;
-		settings->LargePointerFlag = TRUE;
-		settings->FrameMarkerCommandEnabled = TRUE;
-		settings->FrameAcknowledge = 10;
-	}
-	else
-	{
-		// enable NSCodec if remotefx is not used
-		settings->NSCodec = TRUE;
-	}
+    if ([_params boolForKey:@"perf_remotefx" with3GEnabled:connected_via_3g])
+    {
+        settings->RemoteFxCodec = TRUE;
+        settings->FastPathOutput = TRUE;
+        settings->ColorDepth = 32;
+        settings->LargePointerFlag = TRUE;
+        settings->FrameMarkerCommandEnabled = TRUE;
+        settings->FrameAcknowledge = 10;
+    }
+    else
+    {
+        // enable NSCodec if remotefx is not used
+        settings->NSCodec = TRUE;
+    }
 
-	settings->BitmapCacheV3Enabled = TRUE;
+    settings->BitmapCacheV3Enabled = TRUE;
 
-	// Performance flags
+    // Performance flags
     settings->DisableWallpaper = ![_params boolForKey:@"perf_show_desktop" with3GEnabled:connected_via_3g];
     settings->DisableFullWindowDrag = ![_params boolForKey:@"perf_window_dragging" with3GEnabled:connected_via_3g];
     settings->DisableMenuAnims = ![_params boolForKey:@"perf_menu_animation" with3GEnabled:connected_via_3g];
@@ -145,25 +145,25 @@ NSString* TSXSessionDidFailToConnectNotification = @"TSXSessionDidFailToConnect"
     settings->AllowFontSmoothing = [_params boolForKey:@"perf_font_smoothing" with3GEnabled:connected_via_3g];
     settings->AllowDesktopComposition = [_params boolForKey:@"perf_desktop_composition" with3GEnabled:connected_via_3g];
     
-	settings->PerformanceFlags = PERF_FLAG_NONE;
-	if (settings->DisableWallpaper)
+    settings->PerformanceFlags = PERF_FLAG_NONE;
+    if (settings->DisableWallpaper)
         settings->PerformanceFlags |= PERF_DISABLE_WALLPAPER;        
-	if (settings->DisableFullWindowDrag)
+    if (settings->DisableFullWindowDrag)
         settings->PerformanceFlags |= PERF_DISABLE_FULLWINDOWDRAG;
-	if (settings->DisableMenuAnims)
-		settings->PerformanceFlags |= PERF_DISABLE_MENUANIMATIONS;
-	if (settings->DisableThemes)
+    if (settings->DisableMenuAnims)
+        settings->PerformanceFlags |= PERF_DISABLE_MENUANIMATIONS;
+    if (settings->DisableThemes)
         settings->PerformanceFlags |= PERF_DISABLE_THEMING;
-	if (settings->AllowFontSmoothing)
-		settings->PerformanceFlags |= PERF_ENABLE_FONT_SMOOTHING;
+    if (settings->AllowFontSmoothing)
+        settings->PerformanceFlags |= PERF_ENABLE_FONT_SMOOTHING;
     if (settings->AllowDesktopComposition)
         settings->PerformanceFlags |= PERF_ENABLE_DESKTOP_COMPOSITION;
-		
-	if ([_params hasValueForKey:@"width"])
-		settings->DesktopWidth = [_params intForKey:@"width"];
-	if ([_params hasValueForKey:@"height"])
-		settings->DesktopHeight = [_params intForKey:@"height"];
-	
+        
+    if ([_params hasValueForKey:@"width"])
+        settings->DesktopWidth = [_params intForKey:@"width"];
+    if ([_params hasValueForKey:@"height"])
+        settings->DesktopHeight = [_params intForKey:@"height"];
+    
     // security
     switch ([_params intForKey:@"security"]) 
     {
@@ -212,15 +212,15 @@ NSString* TSXSessionDidFailToConnectNotification = @"TSXSessionDidFailToConnect"
         }
     }
     
-	// Remote keyboard layout
-	settings->KeyboardLayout = 0x409;
+    // Remote keyboard layout
+    settings->KeyboardLayout = 0x409;
     
-	// Audio settings
+    // Audio settings
     settings->AudioPlayback = FALSE;
     settings->AudioCapture = FALSE;
-	
-	[self mfi]->session = self;
-	return self;
+    
+    [self mfi]->session = self;
+    return self;
 
 out_free:
     [self release];
@@ -229,15 +229,15 @@ out_free:
 
 - (void)dealloc
 {
-	[self setDelegate:nil];
+    [self setDelegate:nil];
     [_bookmark release];
     [_name release];
-	[_params release];
+    [_params release];
     [_ui_request_completed release];
     
-	ios_freerdp_free(_freerdp);
-	
-	[super dealloc];
+    ios_freerdp_free(_freerdp);
+    
+    [super dealloc];
 }
 
 - (CGContextRef)bitmapContext
@@ -250,10 +250,10 @@ out_free:
 
 - (void)connect
 {    
-	// Set Screen Size to automatic if widht or height are still 0
-    rdpSettings* settings = _freerdp->settings;	
-	if (settings->DesktopWidth == 0 || settings->DesktopHeight == 0)
-	{
+    // Set Screen Size to automatic if widht or height are still 0
+    rdpSettings* settings = _freerdp->settings;    
+    if (settings->DesktopWidth == 0 || settings->DesktopHeight == 0)
+    {
         CGSize size = CGSizeZero;        
         if ([[self delegate] respondsToSelector:@selector(sizeForFitScreenForSession:)])
             size = [[self delegate] sizeForFitScreenForSession:self];
@@ -265,38 +265,38 @@ out_free:
             settings->DesktopWidth = size.width;
             settings->DesktopHeight = size.height;
         }
-	}
+    }
     
     // TODO: This is a hack to ensure connections to RDVH with 16bpp don't have an odd screen resolution width
     //       Otherwise this could result in screen corruption ..
     if (settings->ColorDepth <= 16)
         settings->DesktopWidth &= (~1);
     
-	[self performSelectorInBackground:@selector(runSession) withObject:nil];
+    [self performSelectorInBackground:@selector(runSession) withObject:nil];
 }
 
 - (void) disconnect
 {
     
-	mfInfo* mfi = [self mfi];
-	
+    mfInfo* mfi = [self mfi];
+    
     ios_events_send(mfi, [NSDictionary dictionaryWithObject:@"disconnect" forKey:@"type"]);
     
     [[vminfo share].multiRdpRecoverInfo removeObjectForKey:[mfi->session sessionName]];
-	if (mfi->connection_state == TSXConnectionConnecting)
-	{
-		mfi->unwanted = YES;
+    if (mfi->connection_state == TSXConnectionConnecting)
+    {
+        mfi->unwanted = YES;
         if([vminfo share].cancelBtnSessionName) {
             //防止调用2次sessionDidDisconnect方法，另外一次是runsessionFinished方法调用的sessionDidDisconnect方法，不处理的话会导致发送2次logoff断开信息给服务器
             [self sessionDidDisconnect];
         }
-		return;
-	}	
+        return;
+    }    
 }
 
 - (TSXConnectionState)connectionState
 {
-	return [self mfi]->connection_state;
+    return [self mfi]->connection_state;
 }
 
 // suspends the session
@@ -337,8 +337,8 @@ out_free:
 
 - (void)sendInputEvent:(NSDictionary*)eventDescriptor
 {
-	if ([self mfi]->connection_state == TSXConnectionConnected)
-		ios_events_send([self mfi], eventDescriptor);
+    if ([self mfi]->connection_state == TSXConnectionConnected)
+        ios_events_send([self mfi], eventDescriptor);
 }
 
 #pragma mark -
@@ -346,8 +346,8 @@ out_free:
 
 - (void)setNeedsDisplayInRectAsValue:(NSValue*)rect_value
 {
-	if ([[self delegate] respondsToSelector:@selector(session:needsRedrawInRect:)])
-		[[self delegate] session:self needsRedrawInRect:[rect_value CGRectValue]];
+    if ([[self delegate] respondsToSelector:@selector(session:needsRedrawInRect:)])
+        [[self delegate] session:self needsRedrawInRect:[rect_value CGRectValue]];
 } 
 
 
@@ -358,19 +358,19 @@ out_free:
 {
     NSAssert([self mfi]->bitmap_context != nil, @"Screenshot requested while having no valid RDP drawing context");
     
-	CGImageRef cgImage = CGBitmapContextCreateImage([self mfi]->bitmap_context);
-	UIGraphicsBeginImageContext(size);
-	
+    CGImageRef cgImage = CGBitmapContextCreateImage([self mfi]->bitmap_context);
+    UIGraphicsBeginImageContext(size);
+    
     CGContextTranslateCTM(UIGraphicsGetCurrentContext(), 0, size.height);
-	CGContextScaleCTM(UIGraphicsGetCurrentContext(), 1.0, -1.0);
-	CGContextDrawImage(UIGraphicsGetCurrentContext(), CGRectMake(0, 0, size.width, size.height), cgImage);
-	
+    CGContextScaleCTM(UIGraphicsGetCurrentContext(), 1.0, -1.0);
+    CGContextDrawImage(UIGraphicsGetCurrentContext(), CGRectMake(0, 0, size.width, size.height), cgImage);
+    
     UIImage *viewImage = UIGraphicsGetImageFromCurrentImageContext();
 
-	UIGraphicsEndImageContext();
-	CGImageRelease(cgImage);	
-	
-	return viewImage;    
+    UIGraphicsEndImageContext();
+    CGImageRelease(cgImage);    
+    
+    return viewImage;    
 }
 
 - (rdpSettings*)getSessionParams
@@ -390,13 +390,13 @@ out_free:
 
 - (mfInfo*)mfi
 {
-	return MFI_FROM_INSTANCE(_freerdp);
+    return MFI_FROM_INSTANCE(_freerdp);
 }
 
 // Blocks until rdp session finishes.
 - (void)runSession
 {
-    NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];	
+    NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];    
 
     // Run the session
     [self performSelectorOnMainThread:@selector(sessionWillConnect) withObject:nil waitUntilDone:YES];
@@ -411,76 +411,76 @@ out_free:
 - (void)runSessionFinished:(NSNumber*)result
 {
 //    [[NSNotificationCenter defaultCenter] postNotificationName:@"stoppostMessageToservice" object:@"recoverMsg"];
-	int result_code = [result intValue];
-	switch (result_code)
-	{
-		case MF_EXIT_CONN_CANCELED:
-			[self sessionDidDisconnect];
-			break;
-		case MF_EXIT_LOGON_TIMEOUT:
-		case MF_EXIT_CONN_FAILED:
-			[self sessionDidFailToConnect:result_code];
-			break;
-		case MF_EXIT_SUCCESS:
-		default:
-			[self sessionDidDisconnect];	
+    int result_code = [result intValue];
+    switch (result_code)
+    {
+        case MF_EXIT_CONN_CANCELED:
+            [self sessionDidDisconnect];
             break;
-	}			 
+        case MF_EXIT_LOGON_TIMEOUT:
+        case MF_EXIT_CONN_FAILED:
+            [self sessionDidFailToConnect:result_code];
+            break;
+        case MF_EXIT_SUCCESS:
+        default:
+            [self sessionDidDisconnect];    
+            break;
+    }             
 }
 
 #pragma mark -
 #pragma mark Session management (main thread)
 
 - (void)sessionWillConnect
-{	
-	if ([[self delegate] respondsToSelector:@selector(sessionWillConnect:)])
-		[[self delegate] sessionWillConnect:self];
+{    
+    if ([[self delegate] respondsToSelector:@selector(sessionWillConnect:)])
+        [[self delegate] sessionWillConnect:self];
 }
 
 - (void)sessionDidConnect
 {
-	if ([[self delegate] respondsToSelector:@selector(sessionDidConnect:)])	
-		[[self delegate] sessionDidConnect:self];
+    if ([[self delegate] respondsToSelector:@selector(sessionDidConnect:)])    
+        [[self delegate] sessionDidConnect:self];
 }
 
 - (void)sessionDidFailToConnect:(int)reason
-{	
+{    
     [[NSNotificationCenter defaultCenter] postNotificationName:TSXSessionDidFailToConnectNotification object:self];
 
-	if ([[self delegate] respondsToSelector:@selector(session:didFailToConnect:)])
-		[[self delegate] session:self didFailToConnect:reason];
+    if ([[self delegate] respondsToSelector:@selector(session:didFailToConnect:)])
+        [[self delegate] session:self didFailToConnect:reason];
 }
 
 - (void)sessionDidDisconnect
 {
     [[NSNotificationCenter defaultCenter] postNotificationName:TSXSessionDidDisconnectNotification object:self];
-	
-    if ([[self delegate] respondsToSelector:@selector(sessionDidDisconnect:)])	
-		[[self delegate] sessionDidDisconnect:self];
+    
+    if ([[self delegate] respondsToSelector:@selector(sessionDidDisconnect:)])    
+        [[self delegate] sessionDidDisconnect:self];
 }
 
 - (void)sessionBitmapContextWillChange
 {
-	if ([[self delegate] respondsToSelector:@selector(sessionBitmapContextWillChange:)])	
-		[[self delegate] sessionBitmapContextWillChange:self];
+    if ([[self delegate] respondsToSelector:@selector(sessionBitmapContextWillChange:)])    
+        [[self delegate] sessionBitmapContextWillChange:self];
 }
 
 - (void)sessionBitmapContextDidChange
 {
-	if ([[self delegate] respondsToSelector:@selector(sessionBitmapContextDidChange:)])
-		[[self delegate] sessionBitmapContextDidChange:self];
+    if ([[self delegate] respondsToSelector:@selector(sessionBitmapContextDidChange:)])
+        [[self delegate] sessionBitmapContextDidChange:self];
 }
 
 - (void)sessionRequestsAuthenticationWithParams:(NSMutableDictionary*)params
 {
-	if ([[self delegate] respondsToSelector:@selector(session:requestsAuthenticationWithParams:)])
-		[[self delegate] session:self requestsAuthenticationWithParams:params];    
+    if ([[self delegate] respondsToSelector:@selector(session:requestsAuthenticationWithParams:)])
+        [[self delegate] session:self requestsAuthenticationWithParams:params];    
 }
 
 - (void)sessionVerifyCertificateWithParams:(NSMutableDictionary*)params
 {
-	if ([[self delegate] respondsToSelector:@selector(session:verifyCertificateWithParams:)])
-		[[self delegate] session:self verifyCertificateWithParams:params];    
+    if ([[self delegate] respondsToSelector:@selector(session:verifyCertificateWithParams:)])
+        [[self delegate] session:self verifyCertificateWithParams:params];    
 }
 
 @end
