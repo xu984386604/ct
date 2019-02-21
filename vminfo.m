@@ -26,8 +26,8 @@ static vminfo *myvminfo;
 +(instancetype) share{
     vminfo *info = [[self alloc] init];
     if (info.RandomCode == nil) {
-//        [[NSDate date] timeIntervalSince1970]
-        NSString *key = [NSString stringWithFormat:@"ios%i", arc4random_uniform(1000)];
+//    [[NSDate date] timeIntervalSince1970]
+        NSString *key = [NSString stringWithFormat:@"ios%u", arc4random_uniform(10000)];
         info.RandomCode = key;
         key = nil;
     }
