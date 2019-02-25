@@ -517,7 +517,6 @@
             [self toggleTouchPointer:nil];
             break;
         case 3:
-
             [self postData:YES]; //挂载网盘
             [MBProgressHUD showMessage:@"正在挂载，请稍后" toView:self.view];
             //60秒后没有返回信息，进度框自动消失
@@ -806,7 +805,6 @@
     //挂载网盘
     [dic setValue:myinfo.uid forKey:@"uid"];
     [dic setValue:myinfo.RandomCode forKey:@"RandomCode"]; //打开应用，需要加上这个随机码，给agant用来建立命名管道
-    
     [[[CommonUtils alloc] init] makeRequestToServer:Reset_vm_User withDictionary:dic byHttpMethod:@"POST" type:@"postDataWhenFirstOpenRdp函数"];
 }
 //挂载网盘提示信息
@@ -843,11 +841,13 @@
                 return;
             }
         }else{
+            [MBProgressHUD hideHUDForView:self.view];
             [alertview showError:self title:@"Error" subTitle:@"网盘操作出错" closeButtonTitle:@"确定" duration:0.0f];
             return;
         }
         
     }else{
+        [MBProgressHUD hideHUDForView:self.view];
         [alertview showError:self title:@"Error" subTitle:@"网盘操作出错" closeButtonTitle:@"确定" duration:0.0f];
         return;
     }
@@ -859,7 +859,6 @@
     alertView.showAnimationType = SCLAlertViewShowAnimationFadeIn;
     NSData *mydata = [aNotification object];
     NSDictionary *mydic = [NSJSONSerialization JSONObjectWithData:mydata options:NSJSONReadingAllowFragments error:nil];
-    
     if(mydic)
     {
         NSNumber * code = [mydic objectForKey:@"code"];
