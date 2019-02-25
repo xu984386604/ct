@@ -29,7 +29,7 @@
                             <span class="iconfont icon-yunjisuan"></span>
                         </div>
                         <div class="insertbox">
-                            <div class="col-sm-offset-1 col-sm-10 col-xs-offset-1 col-xs-10 loginbox">
+                            <div class="col-sm-offset-1 col-sm-11 col-xs-offset-1 col-xs-11 loginbox">
                                 <div class="y-box-wrap">
                                     <input type="text" class="form-control" id="username" placeholder="用户名">
                                         </div>
@@ -49,8 +49,8 @@
                                             <span class="y-link">自动登录 |</span>
                                         </label>
                                         <span class="y-link regist"><a href="#">注册</a> |</span>
-                                        <span class="y-link reset-password"><a href="#">忘记密码</a></span>
-                                        <span class="y-link exit"><a href="#"> | 退出</a></span>
+                                        <span class="y-link reset-password"><a href="#">忘记密码</a>|</span>
+                                        <span class="y-link exit"><a href="#"> 退出</a></span>
                                     </div>
                                 </div>
                             </div>
@@ -68,13 +68,9 @@
                                     <section class="col-sm-offset-1 col-sm-10 col-xs-offset-1 col-xs-10 select-box">
                                         <select class="cs-select cs-skin-underline iplist">
                                             <option value="1" selected data-ipaddress='172.20.156.202'>实验室开发</option>
-                                            <option value="2" data-ipaddress='121.48.165.22:55580'>实验室测试</option>
-                                            <option value="3"  data-ipaddress='172.20.156.226'>实验室</option>
+                                            <option value="2" data-ipaddress='172.20.157.173'>实验室测试</option>
+                                            <option value="3"  data-ipaddress='121.48.165.22:55580'>实验室演示</option>
                                             <option value="4" data-ipaddress='222.186.209.130:55555'>镇江演示</option>
-<!--                                            <option value="1" selected data-ipaddress='121.49.107.4:55590'>实验室开发</option>-->
-<!--                                            <option value="2" data-ipaddress='121.49.107.4:55596'>实验室测试</option>-->
-<!--                                            <option value="3"  data-ipaddress='121.49.107.4:55561'>实验室演示</option>-->
-<!--                                            <option value="4" data-ipaddress='222.186.209.130:55555'>镇江演示</option>-->
                                         </select>
                                     </section>
                                 </div>
@@ -93,13 +89,16 @@
         </div>
     </body>
     <style>
-        @media (min-height:  500px) {
-            .changebox{
-                /* height: 20rem; */
-                /* text-align: center; */
-                margin-top: 20%;
-            }
+        body{
+            font-size: 15px;
         }
+    @media (min-height:  500px) {
+        .changebox{
+            /* height: 20rem; */
+            /* text-align: center; */
+            margin-top: 20%;
+        }
+    }
     .configicon{
         font-size: 2rem;
         display: block;
@@ -141,24 +140,30 @@
         right: 0;
         z-index: 1000;
         display: none;
-        width: 20px;
-        height: 20px;
-        border-radius: 10px;
+        width: 3rem;
+        height: 3rem;
+        border-radius: 1.5rem;
         text-align: center;
-        border: 1px solid #fff;
+        border: 2px solid #fff;
         color: #fff;
+        cursor:pointer;
+        font-size: 2rem;
+        line-height: 3rem;
     }
     #Windowsexit {
         position: relative;
         right: 0;
         z-index: 1000;
         display: none;
-        width: 20px;
-        height: 20px;
-        border-radius: 10px;
+        width: 3rem;
+        height: 3rem;
+        border-radius: 1.5rem;
         text-align: center;
-        border: 1px solid #9E9E9E;
-        color: #9E9E9E;
+        border: 2px solid #9E9E9E;
+        color: #edeaea;
+        cursor: pointer;
+        font-size: 2rem;
+        line-height: 3rem;
     }
     .loginbox{
         padding: 0;
@@ -176,3 +181,4 @@
                                })
         </script>
 </html>
+

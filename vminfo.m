@@ -29,6 +29,7 @@ static vminfo *myvminfo;
 //    [[NSDate date] timeIntervalSince1970]
         NSString *key = [NSString stringWithFormat:@"ios%u", arc4random_uniform(10000)];
         info.RandomCode = key;
+        [key release];
         key = nil;
     }
     
