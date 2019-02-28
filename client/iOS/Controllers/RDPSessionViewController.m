@@ -618,7 +618,7 @@
 {
         CGPoint temp = _myfloatbutton.center;
         CGFloat screenHeight = [UIScreen mainScreen].bounds.size.height;
-        if (temp.y - (screenHeight - keyboardHeight) > 0) {
+        if ((temp.y + 25 ) > (screenHeight - keyboardHeight)) {
             temp.y = (screenHeight -keyboardHeight)-30;
             [UIView animateWithDuration:0.2 animations:^{
                 [_myfloatbutton setCenter:temp];
@@ -821,13 +821,12 @@
     {
         [MBProgressHUD hideHUDForView:self.view];
         NSDictionary * msg = [mydic objectForKey:@"msg"];
-        if(msg){
-            
-            if ((NSNull *)msg == [NSNull null]) {
-                [alertview showError:self title:@"Error" subTitle:@"网盘操作出错" closeButtonTitle:@"确定" duration:0.0f];
-                return;
-            }
-            
+            if(msg){
+                
+                if ((NSNull *)msg == [NSNull null]) {
+                    [alertview showError:self title:@"Error" subTitle:@"网盘操作出错" closeButtonTitle:@"确定" duration:0.0f];
+                    return;
+                }
             NSString *description2 = [[msg objectForKey:@"description"]
                                       stringByRemovingPercentEncoding];
             NSString *status = [msg objectForKey:@"status"];
@@ -1378,6 +1377,17 @@
     
     // iPad gets a shift button, iphone doesn't (there's just not enough space ...)
     NSArray* items;
+    
+    UIBarButtonItem* shift_btn = [[[UIBarButtonItem alloc] initWithTitle:@"Shift" style:UIBarButtonItemStyleBordered target:self action:@selector(toggleShiftKey:)] autorelease];
+    items = [NSArray arrayWithObjects:esc_btn, flex_spacer,
+             shift_btn, flex_spacer,
+             ctrl_btn, flex_spacer,
+             win_btn, flex_spacer,
+             alt_btn, flex_spacer,
+             ext_btn, flex_spacer, done_btn, nil];
+
+    
+    /*
     if(IsPad())
     {
         UIBarButtonItem* shift_btn = [[[UIBarButtonItem alloc] initWithTitle:@"Shift" style:UIBarButtonItemStyleBordered target:self action:@selector(toggleShiftKey:)] autorelease];
@@ -1390,9 +1400,9 @@
     }
     else
     {
-        items = [NSArray arrayWithObjects:esc_btn, flex_spacer, ctrl_btn, flex_spacer, win_btn, flex_spacer, alt_btn, flex_spacer, ext_btn, flex_spacer, done_btn, nil];        
+        items = [NSArray arrayWithObjects:esc_btn, flex_spacer, ctrl_btn, flex_spacer, win_btn, flex_spacer, alt_btn, flex_spacer, ext_btn, flex_spacer, done_btn, nil];
     }
-    
+    */
     [keyboard_toolbar setItems:items];
     [keyboard_toolbar sizeToFit];
     return keyboard_toolbar;
