@@ -19,14 +19,14 @@
 
 BOOL ios_ui_authenticate(freerdp * instance, char** username, char** password, char** domain)
 {
-	mfInfo* mfi = MFI_FROM_INSTANCE(instance);
+    mfInfo* mfi = MFI_FROM_INSTANCE(instance);
 
-	NSMutableDictionary* params = [NSMutableDictionary dictionaryWithObjectsAndKeys:
-		(*username) ? [NSString stringWithUTF8String:*username] : @"", @"username",
-		(*password) ? [NSString stringWithUTF8String:*password] : @"", @"password",
-		(*domain) ? [NSString stringWithUTF8String:*domain] : @"", @"domain",
-		[NSString stringWithUTF8String:instance->settings->ServerHostname], @"hostname", // used for the auth prompt message; not changed
-		nil];
+    NSMutableDictionary* params = [NSMutableDictionary dictionaryWithObjectsAndKeys:
+        (*username) ? [NSString stringWithUTF8String:*username] : @"", @"username",
+        (*password) ? [NSString stringWithUTF8String:*password] : @"", @"password",
+        (*domain) ? [NSString stringWithUTF8String:*domain] : @"", @"domain",
+        [NSString stringWithUTF8String:instance->settings->ServerHostname], @"hostname", // used for the auth prompt message; not changed
+        nil];
 
     // request auth UI
     [mfi->session performSelectorOnMainThread:@selector(sessionRequestsAuthenticationWithParams:) withObject:params waitUntilDone:YES];
@@ -42,25 +42,25 @@ BOOL ios_ui_authenticate(freerdp * instance, char** username, char** password, c
         return FALSE;
     }
     
-	// Free old values
-	free(*username);
-	free(*password);
-	free(*domain);
-	
-	// set values back
-	*username = strdup([[params objectForKey:@"username"] UTF8String]);
-	*password = strdup([[params objectForKey:@"password"] UTF8String]);
-	*domain = strdup([[params objectForKey:@"domain"] UTF8String]);
+    // Free old values
+    free(*username);
+    free(*password);
+    free(*domain);
+    
+    // set values back
+    *username = strdup([[params objectForKey:@"username"] UTF8String]);
+    *password = strdup([[params objectForKey:@"password"] UTF8String]);
+    *domain = strdup([[params objectForKey:@"domain"] UTF8String]);
 
-	if (!(*username) || !(*password) || !(*domain))
-	{
-		free(*username);
-		free(*password);
-		free(*domain);
-		return FALSE;
-	}
-	
-	return TRUE;
+    if (!(*username) || !(*password) || !(*domain))
+    {
+        free(*username);
+        free(*password);
+        free(*domain);
+        return FALSE;
+    }
+    
+    return TRUE;
 }
 
 BOOL ios_ui_check_certificate(freerdp * instance, char * subject, char * issuer, char * fingerprint)
@@ -69,13 +69,13 @@ BOOL ios_ui_check_certificate(freerdp * instance, char * subject, char * issuer,
     if ([[NSUserDefaults standardUserDefaults] boolForKey:@"security.accept_certificates"] == YES)
         return TRUE;
     
-	mfInfo* mfi = MFI_FROM_INSTANCE(instance);
-	NSMutableDictionary* params = [NSMutableDictionary dictionaryWithObjectsAndKeys:
+    mfInfo* mfi = MFI_FROM_INSTANCE(instance);
+    NSMutableDictionary* params = [NSMutableDictionary dictionaryWithObjectsAndKeys:
                                         (subject) ? [NSString stringWithUTF8String:subject] : @"", @"subject",
                                         (issuer) ? [NSString stringWithUTF8String:issuer] : @"", @"issuer",
                                         (fingerprint) ? [NSString stringWithUTF8String:subject] : @"", @"fingerprint",
                                         nil];
-	
+    
     // request certificate verification UI
     [mfi->session performSelectorOnMainThread:@selector(sessionVerifyCertificateWithParams:) withObject:params waitUntilDone:YES];
     
@@ -84,18 +84,18 @@ BOOL ios_ui_check_certificate(freerdp * instance, char * subject, char * issuer,
 //    [[mfi->session uiRequestCompleted] wait];
 //    [[mfi->session uiRequestCompleted] unlock];
     
-	if (![[params valueForKey:@"result"] boolValue])
-	{
-		mfi->unwanted = YES;
-		return FALSE;
-	}
-	
-	return TRUE;
+    if (![[params valueForKey:@"result"] boolValue])
+    {
+        mfi->unwanted = YES;
+        return FALSE;
+    }
+    
+    return TRUE;
 }
 
 BOOL ios_ui_check_changed_certificate(freerdp * instance, char * subject, char * issuer, char * new_fingerprint, char * old_fingerprint)
 {
-	return ios_ui_check_certificate(instance, subject, issuer, new_fingerprint);    
+    return ios_ui_check_certificate(instance, subject, issuer, new_fingerprint);    
 }
 
 
@@ -104,26 +104,26 @@ BOOL ios_ui_check_changed_certificate(freerdp * instance, char * subject, char *
 
 BOOL ios_ui_begin_paint(rdpContext * context)
 {
-	rdpGdi *gdi = context->gdi;
-	gdi->primary->hdc->hwnd->invalid->null = 1;
+    rdpGdi *gdi = context->gdi;
+    gdi->primary->hdc->hwnd->invalid->null = 1;
     return TRUE;
 }
 
 BOOL ios_ui_end_paint(rdpContext * context)
 {
     mfInfo* mfi = MFI_FROM_INSTANCE(context->instance);
-	rdpGdi *gdi = context->gdi;
-	CGRect dirty_rect = CGRectMake(gdi->primary->hdc->hwnd->invalid->x, gdi->primary->hdc->hwnd->invalid->y, gdi->primary->hdc->hwnd->invalid->w, gdi->primary->hdc->hwnd->invalid->h);
-	
-	if (gdi->primary->hdc->hwnd->invalid->null == 0)
-		[mfi->session performSelectorOnMainThread:@selector(setNeedsDisplayInRectAsValue:) withObject:[NSValue valueWithCGRect:dirty_rect] waitUntilDone:NO];
+    rdpGdi *gdi = context->gdi;
+    CGRect dirty_rect = CGRectMake(gdi->primary->hdc->hwnd->invalid->x, gdi->primary->hdc->hwnd->invalid->y, gdi->primary->hdc->hwnd->invalid->w, gdi->primary->hdc->hwnd->invalid->h);
+    
+    if (gdi->primary->hdc->hwnd->invalid->null == 0)
+        [mfi->session performSelectorOnMainThread:@selector(setNeedsDisplayInRectAsValue:) withObject:[NSValue valueWithCGRect:dirty_rect] waitUntilDone:NO];
     return TRUE;
 }
 
 
 BOOL ios_ui_resize_window(rdpContext * context)
 {
-	ios_resize_display_buffer(MFI_FROM_INSTANCE(context->instance));
+    ios_resize_display_buffer(MFI_FROM_INSTANCE(context->instance));
     return TRUE;
 }
 
@@ -132,34 +132,34 @@ BOOL ios_ui_resize_window(rdpContext * context)
 #pragma mark Exported
 
 static void ios_create_bitmap_context(mfInfo* mfi)
-{	
-	[mfi->session performSelectorOnMainThread:@selector(sessionBitmapContextWillChange) withObject:nil waitUntilDone:YES];
-	    
+{    
+    [mfi->session performSelectorOnMainThread:@selector(sessionBitmapContextWillChange) withObject:nil waitUntilDone:YES];
+        
     rdpGdi* gdi = mfi->instance->context->gdi;
     CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
-	if (gdi->bytesPerPixel == 2)
-		mfi->bitmap_context = CGBitmapContextCreate(gdi->primary_buffer, gdi->width, gdi->height, 5, gdi->width * 2, colorSpace, kCGBitmapByteOrder16Little | kCGImageAlphaNoneSkipFirst);
-	else
-		mfi->bitmap_context = CGBitmapContextCreate(gdi->primary_buffer, gdi->width, gdi->height, 8, gdi->width * 4, colorSpace, kCGBitmapByteOrder32Little | kCGImageAlphaNoneSkipFirst);
+    if (gdi->bytesPerPixel == 2)
+        mfi->bitmap_context = CGBitmapContextCreate(gdi->primary_buffer, gdi->width, gdi->height, 5, gdi->width * 2, colorSpace, kCGBitmapByteOrder16Little | kCGImageAlphaNoneSkipFirst);
+    else
+        mfi->bitmap_context = CGBitmapContextCreate(gdi->primary_buffer, gdi->width, gdi->height, 8, gdi->width * 4, colorSpace, kCGBitmapByteOrder32Little | kCGImageAlphaNoneSkipFirst);
     CGColorSpaceRelease(colorSpace);
     
-	[mfi->session performSelectorOnMainThread:@selector(sessionBitmapContextDidChange) withObject:nil waitUntilDone:YES];
+    [mfi->session performSelectorOnMainThread:@selector(sessionBitmapContextDidChange) withObject:nil waitUntilDone:YES];
 }
 
 void ios_allocate_display_buffer(mfInfo* mfi)
 {
-	gdi_init(mfi->instance, CLRCONV_RGB555 | ((mfi->instance->settings->ColorDepth > 16) ? CLRBUF_32BPP : CLRBUF_16BPP), NULL);
-	ios_create_bitmap_context(mfi);
+    gdi_init(mfi->instance, CLRCONV_RGB555 | ((mfi->instance->settings->ColorDepth > 16) ? CLRBUF_32BPP : CLRBUF_16BPP), NULL);
+    ios_create_bitmap_context(mfi);
 }
 
 void ios_resize_display_buffer(mfInfo* mfi)
 {
-	// Release the old context in a thread-safe manner
-	CGContextRef old_context = mfi->bitmap_context;
-	mfi->bitmap_context = NULL;
-	CGContextRelease(old_context);
-	
-	// Create the new context
-	ios_create_bitmap_context(mfi);
+    // Release the old context in a thread-safe manner
+    CGContextRef old_context = mfi->bitmap_context;
+    mfi->bitmap_context = NULL;
+    CGContextRelease(old_context);
+    
+    // Create the new context
+    ios_create_bitmap_context(mfi);
 }
 

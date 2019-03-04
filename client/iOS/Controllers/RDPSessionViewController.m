@@ -58,7 +58,7 @@
         _advanced_keyboard_view = nil;
         _advanced_keyboard_visible = NO;
         _requesting_advanced_keyboard = NO;
-		_keyboard_last_height = 0;
+        _keyboard_last_height = 0;
 
         _session_toolbar_visible = NO;
         
@@ -87,8 +87,8 @@
 // Implement loadView to create a view hierarchy programmatically, without using a nib.
 - (void)loadView 
 {
-	// load default view and set background color and resizing mask
-	[super loadView];
+    // load default view and set background color and resizing mask
+    [super loadView];
 
     // init keyboard handling vars
     _keyboard_visible = NO;
@@ -135,7 +135,7 @@
 
 - (void)viewWillAppear:(BOOL)animated 
 {
-	[super viewWillAppear:animated];
+    [super viewWillAppear:animated];
 
     // hide navigation bar and (if enabled) the status bar
     if ([[NSUserDefaults standardUserDefaults] boolForKey:@"ui.hide_status_bar"])
@@ -146,7 +146,7 @@
             [[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationNone];
     }
 //    [[self navigationController] setNavigationBarHidden:YES animated:animated];        
-	
+    
     // if sesssion is suspended - notify that we got a new bitmap context
     if ([_session isSuspended]) 
         [self sessionBitmapContextWillChange:_session];
@@ -176,7 +176,7 @@
 - (void)viewDidAppear:(BOOL)animated
 {
 //    NSLog(@"viewDidAppear?");
-	[super viewDidAppear:animated];
+    [super viewDidAppear:animated];
         
     if (!_session_initilized)
     {
@@ -199,16 +199,16 @@
     [super viewWillDisappear:animated];
 
     // show navigation and status bar again
-//	if(animated == YES)
-//		[[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationSlide];
-//	else
-//		[[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationNone];
+//    if(animated == YES)
+//        [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationSlide];
+//    else
+//        [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationNone];
     // reset all modifier keys on rdp keyboard
     [[RDPKeyboard getSharedRDPKeyboard] reset];
     
-	// hide toolbar and keyboard
+    // hide toolbar and keyboard
     [self showSessionToolbar:NO];
-	[_dummy_textfield resignFirstResponder];
+    [_dummy_textfield resignFirstResponder];
 }
 
 
@@ -241,23 +241,23 @@
 // 缩放结束时
 -(void)scrollViewDidEndZooming:(UIScrollView *)scrollView withView:(UIView *)view atScale:(CGFloat) scale {
     [scrollView setZoomScale:scale animated:NO];
-	[_session_view setNeedsDisplay];
+    [_session_view setNeedsDisplay];
 }
 
 #pragma mark -
 #pragma mark TextField delegate methods
 -(BOOL)textFieldShouldBeginEditing:(UITextField *)textField
 {
-	_keyboard_visible = YES;
+    _keyboard_visible = YES;
     _advanced_keyboard_visible = NO;
-	return YES;
+    return YES;
 }
 
 -(BOOL)textFieldShouldEndEditing:(UITextField *)textField
 {
-	_keyboard_visible = NO;
+    _keyboard_visible = NO;
     _advanced_keyboard_visible = NO;
-	return YES;
+    return YES;
 }
 //当用户使用自动更正功能，把输入的文字修改为推荐的文字时，就会调用这个方法。
 //这对于想要加入撤销选项的应用程序特别有用
@@ -266,11 +266,11 @@
 //这个方法的参数中有一个NSRange对象，指明了被改变文字的位置，建议修改的文本也在其中
 // 文本框的文本，是否能被修改
 - (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
-{	
-	if([string length] > 0)
-	{
-		for(int i = 0 ; i < [string length] ; i++)
-		{
+{    
+    if([string length] > 0)
+    {
+        for(int i = 0 ; i < [string length] ; i++)
+        {
             unichar curChar = [string characterAtIndex:i];
 
             // special handling for return/enter key
@@ -278,14 +278,14 @@
                 [[RDPKeyboard getSharedRDPKeyboard] sendEnterKeyStroke];
             else
                 [[RDPKeyboard getSharedRDPKeyboard] sendUnicode:curChar];
-		}
-	}
-	else
-	{
-		[[RDPKeyboard getSharedRDPKeyboard] sendBackspaceKeyStroke];
-	}		
-	
-	return NO;
+        }
+    }
+    else
+    {
+        [[RDPKeyboard getSharedRDPKeyboard] sendBackspaceKeyStroke];
+    }        
+    
+    return NO;
 }
 
 #pragma mark -
@@ -517,7 +517,6 @@
             [self toggleTouchPointer:nil];
             break;
         case 3:
-
             [self postData:YES]; //挂载网盘
             [MBProgressHUD showMessage:@"正在挂载，请稍后" toView:self.view];
             //60秒后没有返回信息，进度框自动消失
@@ -619,7 +618,7 @@
 {
         CGPoint temp = _myfloatbutton.center;
         CGFloat screenHeight = [UIScreen mainScreen].bounds.size.height;
-        if (temp.y - (screenHeight - keyboardHeight) > 0) {
+        if ((temp.y + 25 ) > (screenHeight - keyboardHeight)) {
             temp.y = (screenHeight -keyboardHeight)-30;
             [UIView animateWithDuration:0.2 animations:^{
                 [_myfloatbutton setCenter:temp];
@@ -806,7 +805,6 @@
     //挂载网盘
     [dic setValue:myinfo.uid forKey:@"uid"];
     [dic setValue:myinfo.RandomCode forKey:@"RandomCode"]; //打开应用，需要加上这个随机码，给agant用来建立命名管道
-    
     [[[CommonUtils alloc] init] makeRequestToServer:Reset_vm_User withDictionary:dic byHttpMethod:@"POST" type:@"postDataWhenFirstOpenRdp函数"];
 }
 //挂载网盘提示信息
@@ -823,13 +821,12 @@
     {
         [MBProgressHUD hideHUDForView:self.view];
         NSDictionary * msg = [mydic objectForKey:@"msg"];
-        if(msg){
-            
-            if ((NSNull *)msg == [NSNull null]) {
-                [alertview showError:self title:@"Error" subTitle:@"网盘操作出错" closeButtonTitle:@"确定" duration:0.0f];
-                return;
-            }
-            
+            if(msg){
+                
+                if ((NSNull *)msg == [NSNull null]) {
+                    [alertview showError:self title:@"Error" subTitle:@"网盘操作出错" closeButtonTitle:@"确定" duration:0.0f];
+                    return;
+                }
             NSString *description2 = [[msg objectForKey:@"description"]
                                       stringByRemovingPercentEncoding];
             NSString *status = [msg objectForKey:@"status"];
@@ -843,11 +840,13 @@
                 return;
             }
         }else{
+            [MBProgressHUD hideHUDForView:self.view];
             [alertview showError:self title:@"Error" subTitle:@"网盘操作出错" closeButtonTitle:@"确定" duration:0.0f];
             return;
         }
         
     }else{
+        [MBProgressHUD hideHUDForView:self.view];
         [alertview showError:self title:@"Error" subTitle:@"网盘操作出错" closeButtonTitle:@"确定" duration:0.0f];
         return;
     }
@@ -859,7 +858,6 @@
     alertView.showAnimationType = SCLAlertViewShowAnimationFadeIn;
     NSData *mydata = [aNotification object];
     NSDictionary *mydic = [NSJSONSerialization JSONObjectWithData:mydata options:NSJSONReadingAllowFragments error:nil];
-    
     if(mydic)
     {
         NSNumber * code = [mydic objectForKey:@"code"];
@@ -980,10 +978,10 @@
 
 - (IBAction)toggleKeyboard:(id)sender
 {
-	if(!_keyboard_visible)
-		[_dummy_textfield becomeFirstResponder];
-	else
-		[_dummy_textfield resignFirstResponder];
+    if(!_keyboard_visible)
+        [_dummy_textfield becomeFirstResponder];
+    else
+        [_dummy_textfield resignFirstResponder];
 }
 
 - (IBAction)toggleExtKeyboard:(id)sender
@@ -1044,37 +1042,37 @@
 
 // the keyboard is given in a portrait frame of reference
 - (BOOL)isLandscape {
-	
-	UIInterfaceOrientation ori = [[UIApplication sharedApplication] statusBarOrientation];
-	return ( ori == UIInterfaceOrientationLandscapeLeft || ori == UIInterfaceOrientationLandscapeRight );
+    
+    UIInterfaceOrientation ori = [[UIApplication sharedApplication] statusBarOrientation];
+    return ( ori == UIInterfaceOrientationLandscapeLeft || ori == UIInterfaceOrientationLandscapeRight );
 }
 
 - (void)shiftKeyboard: (NSNotification*)notification {
-	
-	CGRect  keyboardEndFrame = [[[notification userInfo] objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
-	
-	CGFloat previousHeight = _keyboard_last_height;
-	
-	if( [self isLandscape] ) {
-		// landscape has the keyboard based on x, so x can go negative
-//		_keyboard_last_height = keyboardEndFrame.size.width + keyboardEndFrame.origin.x;
+    
+    CGRect  keyboardEndFrame = [[[notification userInfo] objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
+    
+    CGFloat previousHeight = _keyboard_last_height;
+    
+    if( [self isLandscape] ) {
+        // landscape has the keyboard based on x, so x can go negative
+//        _keyboard_last_height = keyboardEndFrame.size.width + keyboardEndFrame.origin.x;
         
      //设置横屏
         CGFloat height = [[UIScreen mainScreen] bounds].size.height;
         _keyboard_last_height = height - keyboardEndFrame.origin.y;
-	} else {
-		// portrait has the keyboard based on the difference of the height and the frames y.
-		CGFloat height = [[UIScreen mainScreen] bounds].size.height;
-		_keyboard_last_height = height - keyboardEndFrame.origin.y;
-	}
-	
+    } else {
+        // portrait has the keyboard based on the difference of the height and the frames y.
+        CGFloat height = [[UIScreen mainScreen] bounds].size.height;
+        _keyboard_last_height = height - keyboardEndFrame.origin.y;
+    }
     
-	CGFloat shiftHeight = _keyboard_last_height - previousHeight;
     
-	[UIView beginAnimations:nil context:NULL];
+    CGFloat shiftHeight = _keyboard_last_height - previousHeight;
+    
+    [UIView beginAnimations:nil context:NULL];
     [UIView setAnimationCurve:[[[notification userInfo] objectForKey:UIKeyboardAnimationCurveUserInfoKey] intValue]];
     [UIView setAnimationDuration:[[[notification userInfo] objectForKey:UIKeyboardAnimationDurationUserInfoKey] doubleValue]];
-	CGRect frame = [_session_scrollview frame];
+    CGRect frame = [_session_scrollview frame];
     
     //需要处理_touchpointer_view里面的那个imageView，要进行变换，太麻烦了，暂时不做
 //    NSLog(@"-------------------获取键盘的高度-----------------");
@@ -1084,7 +1082,7 @@
     keyboardHeight = keyboardRect.size.height;
     
     frame.size.height -= shiftHeight;
-	[_session_scrollview setFrame:frame];
+    [_session_scrollview setFrame:frame];
 //    CGFloat height = [UIScreen mainScreen].bounds.size.height;
 //    CGFloat width = [UIScreen mainScreen].bounds.size.width;
 //    CGFloat finalPointerViwerHeight = ([_touchpointer_view getPointerHeight] > height - kbHeight) > 0 ? [_touchpointer_view curPointerImgFrame].height/2 : [_touchpointer_view getPointerHeight];
@@ -1094,13 +1092,13 @@
     
 //    NSLog(@"width:%f, height:%f", [[UIScreen mainScreen] bounds].size.width, [[UIScreen mainScreen] bounds].size.height);
 //    [_touchpointer_view setCenter:CGPointMake(width - preWidth/2, finalPointerViwerHeight)];
-	[UIView commitAnimations];
-	
+    [UIView commitAnimations];
+    
 }
 
 - (void)keyboardWillShow:(NSNotification *)notification
 {
-	[self shiftKeyboard: notification];
+    [self shiftKeyboard: notification];
     //悬浮按钮是否会遮挡键盘
     [self myfunction];
     [_touchpointer_view ensurePointerIsVisible];
@@ -1118,9 +1116,9 @@
 
 - (void)keyboardWillHide:(NSNotification *)notification
 {
-	
-	[self shiftKeyboard: notification];
-	
+    
+    [self shiftKeyboard: notification];
+    
 }
 
 - (void)keyboardDidHide:(NSNotification*)notification
@@ -1140,16 +1138,16 @@
 
 - (void)handleSingleTap:(UITapGestureRecognizer*)gesture
 {
-	CGPoint pos = [gesture locationInView:_session_view];
+    CGPoint pos = [gesture locationInView:_session_view];
     if (_toggle_mouse_button)
     {
-        [_session sendInputEvent:[self eventDescriptorForMouseEvent:GetRightMouseButtonClickEvent(YES) position:pos]];	
-        [_session sendInputEvent:[self eventDescriptorForMouseEvent:GetRightMouseButtonClickEvent(NO) position:pos]];	        
+        [_session sendInputEvent:[self eventDescriptorForMouseEvent:GetRightMouseButtonClickEvent(YES) position:pos]];    
+        [_session sendInputEvent:[self eventDescriptorForMouseEvent:GetRightMouseButtonClickEvent(NO) position:pos]];            
     }
     else
     {
-        [_session sendInputEvent:[self eventDescriptorForMouseEvent:GetLeftMouseButtonClickEvent(YES) position:pos]];	
-        [_session sendInputEvent:[self eventDescriptorForMouseEvent:GetLeftMouseButtonClickEvent(NO) position:pos]];	        
+        [_session sendInputEvent:[self eventDescriptorForMouseEvent:GetLeftMouseButtonClickEvent(YES) position:pos]];    
+        [_session sendInputEvent:[self eventDescriptorForMouseEvent:GetLeftMouseButtonClickEvent(NO) position:pos]];            
     }
 
     _toggle_mouse_button = NO;
@@ -1157,46 +1155,46 @@
 
 - (void)handleDoubleTap:(UITapGestureRecognizer*)gesture
 {
-	CGPoint pos = [gesture locationInView:_session_view];	
-    [_session sendInputEvent:[self eventDescriptorForMouseEvent:GetLeftMouseButtonClickEvent(YES) position:pos]];	
-    [_session sendInputEvent:[self eventDescriptorForMouseEvent:GetLeftMouseButtonClickEvent(NO) position:pos]];	
-    [_session sendInputEvent:[self eventDescriptorForMouseEvent:GetLeftMouseButtonClickEvent(YES) position:pos]];	
-    [_session sendInputEvent:[self eventDescriptorForMouseEvent:GetLeftMouseButtonClickEvent(NO) position:pos]];	
+    CGPoint pos = [gesture locationInView:_session_view];    
+    [_session sendInputEvent:[self eventDescriptorForMouseEvent:GetLeftMouseButtonClickEvent(YES) position:pos]];    
+    [_session sendInputEvent:[self eventDescriptorForMouseEvent:GetLeftMouseButtonClickEvent(NO) position:pos]];    
+    [_session sendInputEvent:[self eventDescriptorForMouseEvent:GetLeftMouseButtonClickEvent(YES) position:pos]];    
+    [_session sendInputEvent:[self eventDescriptorForMouseEvent:GetLeftMouseButtonClickEvent(NO) position:pos]];    
     _toggle_mouse_button = NO;
 }
 
 - (void)handleLongPress:(UILongPressGestureRecognizer*)gesture
 {    
-	CGPoint pos = [gesture locationInView:_session_view];
+    CGPoint pos = [gesture locationInView:_session_view];
     
-	if([gesture state] == UIGestureRecognizerStateBegan) 
-        [_session sendInputEvent:[self eventDescriptorForMouseEvent:GetLeftMouseButtonClickEvent(YES) position:pos]];	
-	else if([gesture state] == UIGestureRecognizerStateChanged)
+    if([gesture state] == UIGestureRecognizerStateBegan) 
+        [_session sendInputEvent:[self eventDescriptorForMouseEvent:GetLeftMouseButtonClickEvent(YES) position:pos]];    
+    else if([gesture state] == UIGestureRecognizerStateChanged)
         [self handleMouseMoveForPosition:pos];
-	else if([gesture state] == UIGestureRecognizerStateEnded)
-        [_session sendInputEvent:[self eventDescriptorForMouseEvent:GetLeftMouseButtonClickEvent(NO) position:pos]];	
+    else if([gesture state] == UIGestureRecognizerStateEnded)
+        [_session sendInputEvent:[self eventDescriptorForMouseEvent:GetLeftMouseButtonClickEvent(NO) position:pos]];    
 }
 
 
 - (void)handleDoubleLongPress:(UILongPressGestureRecognizer*)gesture
 {
     // this point is mapped against the scroll view because we want to have relative movement to the screen/scrollview
-	CGPoint pos = [gesture locationInView:_session_scrollview];
+    CGPoint pos = [gesture locationInView:_session_scrollview];
     
-	if([gesture state] == UIGestureRecognizerStateBegan) 
+    if([gesture state] == UIGestureRecognizerStateBegan) 
         _prev_long_press_position = pos;
-	else if([gesture state] == UIGestureRecognizerStateChanged)
+    else if([gesture state] == UIGestureRecognizerStateChanged)
     {
         int delta = _prev_long_press_position.y - pos.y;
         
         if(delta > GetScrollGestureDelta())
         {
-            [_session sendInputEvent:[self eventDescriptorForMouseEvent:GetMouseWheelEvent(YES) position:pos]];	
+            [_session sendInputEvent:[self eventDescriptorForMouseEvent:GetMouseWheelEvent(YES) position:pos]];    
             _prev_long_press_position = pos;
         }
         else if(delta < -GetScrollGestureDelta())
         {            
-            [_session sendInputEvent:[self eventDescriptorForMouseEvent:GetMouseWheelEvent(NO) position:pos]];	
+            [_session sendInputEvent:[self eventDescriptorForMouseEvent:GetMouseWheelEvent(NO) position:pos]];    
             _prev_long_press_position = pos;
         }
     }
@@ -1225,7 +1223,7 @@
 -(void)touchPointerLeftClick:(CGPoint)pos down:(BOOL)down
 {
     CGPoint session_view_pos = [_touchpointer_view convertPoint:pos toView:_session_view];
-    [_session sendInputEvent:[self eventDescriptorForMouseEvent:GetLeftMouseButtonClickEvent(down) position:session_view_pos]];	
+    [_session sendInputEvent:[self eventDescriptorForMouseEvent:GetLeftMouseButtonClickEvent(down) position:session_view_pos]];    
 }
 
 // callback for a right click action
@@ -1357,7 +1355,7 @@
         [UIView setAnimationDuration:.4];
         [UIView setAnimationCurve:UIViewAnimationCurveLinear];
         [_session_toolbar setFrame:CGRectMake(0.0, 0.0, [[self view] bounds].size.width, TOOLBAR_HEIGHT)];
-        [UIView commitAnimations];		
+        [UIView commitAnimations];        
         _session_toolbar_visible = YES;        
     }
     else
@@ -1366,27 +1364,38 @@
         [UIView setAnimationDuration:.4];
         [UIView setAnimationCurve:UIViewAnimationCurveLinear];
         [_session_toolbar setFrame:CGRectMake(0.0, -TOOLBAR_HEIGHT, [[self view] bounds].size.width, TOOLBAR_HEIGHT)];
-        [UIView commitAnimations];		
+        [UIView commitAnimations];        
         _session_toolbar_visible = NO;
     }
 }
 
 -(UIToolbar*)keyboardToolbar
 {
-	UIToolbar* keyboard_toolbar = [[[UIToolbar alloc] initWithFrame:CGRectNull] autorelease];
-	[keyboard_toolbar setBarStyle:UIBarStyleBlackOpaque];
+    UIToolbar* keyboard_toolbar = [[[UIToolbar alloc] initWithFrame:CGRectNull] autorelease];
+    [keyboard_toolbar setBarStyle:UIBarStyleBlackOpaque];
     
-	UIBarButtonItem* esc_btn = [[[UIBarButtonItem alloc] initWithTitle:@"Esc" style:UIBarButtonItemStyleBordered target:self action:@selector(pressEscKey:)] autorelease];
+    UIBarButtonItem* esc_btn = [[[UIBarButtonItem alloc] initWithTitle:@"Esc" style:UIBarButtonItemStyleBordered target:self action:@selector(pressEscKey:)] autorelease];
     UIImage* win_icon = [UIImage imageWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"toolbar_icon_win" ofType:@"png"]];
-	UIBarButtonItem* win_btn = [[[UIBarButtonItem alloc] initWithImage:win_icon style:UIBarButtonItemStyleBordered target:self action:@selector(toggleWinKey:)] autorelease];
-	UIBarButtonItem* ctrl_btn = [[[UIBarButtonItem alloc] initWithTitle:@"Ctrl" style:UIBarButtonItemStyleBordered target:self action:@selector(toggleCtrlKey:)] autorelease];
-	UIBarButtonItem* alt_btn = [[[UIBarButtonItem alloc] initWithTitle:@"Alt" style:UIBarButtonItemStyleBordered target:self action:@selector(toggleAltKey:)] autorelease];
-	UIBarButtonItem* ext_btn = [[[UIBarButtonItem alloc] initWithTitle:@"Ext" style:UIBarButtonItemStyleBordered target:self action:@selector(toggleKeyboardWhenOtherVisible:)] autorelease];
-	UIBarButtonItem* done_btn = [[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(toggleKeyboard:)] autorelease];
-	UIBarButtonItem* flex_spacer = [[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil] autorelease];
+    UIBarButtonItem* win_btn = [[[UIBarButtonItem alloc] initWithImage:win_icon style:UIBarButtonItemStyleBordered target:self action:@selector(toggleWinKey:)] autorelease];
+    UIBarButtonItem* ctrl_btn = [[[UIBarButtonItem alloc] initWithTitle:@"Ctrl" style:UIBarButtonItemStyleBordered target:self action:@selector(toggleCtrlKey:)] autorelease];
+    UIBarButtonItem* alt_btn = [[[UIBarButtonItem alloc] initWithTitle:@"Alt" style:UIBarButtonItemStyleBordered target:self action:@selector(toggleAltKey:)] autorelease];
+    UIBarButtonItem* ext_btn = [[[UIBarButtonItem alloc] initWithTitle:@"Ext" style:UIBarButtonItemStyleBordered target:self action:@selector(toggleKeyboardWhenOtherVisible:)] autorelease];
+    UIBarButtonItem* done_btn = [[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(toggleKeyboard:)] autorelease];
+    UIBarButtonItem* flex_spacer = [[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil] autorelease];
     
     // iPad gets a shift button, iphone doesn't (there's just not enough space ...)
     NSArray* items;
+    
+    UIBarButtonItem* shift_btn = [[[UIBarButtonItem alloc] initWithTitle:@"Shift" style:UIBarButtonItemStyleBordered target:self action:@selector(toggleShiftKey:)] autorelease];
+    items = [NSArray arrayWithObjects:esc_btn, flex_spacer,
+             shift_btn, flex_spacer,
+             ctrl_btn, flex_spacer,
+             win_btn, flex_spacer,
+             alt_btn, flex_spacer,
+             ext_btn, flex_spacer, done_btn, nil];
+
+    
+    /*
     if(IsPad())
     {
         UIBarButtonItem* shift_btn = [[[UIBarButtonItem alloc] initWithTitle:@"Shift" style:UIBarButtonItemStyleBordered target:self action:@selector(toggleShiftKey:)] autorelease];
@@ -1399,39 +1408,39 @@
     }
     else
     {
-        items = [NSArray arrayWithObjects:esc_btn, flex_spacer, ctrl_btn, flex_spacer, win_btn, flex_spacer, alt_btn, flex_spacer, ext_btn, flex_spacer, done_btn, nil];        
+        items = [NSArray arrayWithObjects:esc_btn, flex_spacer, ctrl_btn, flex_spacer, win_btn, flex_spacer, alt_btn, flex_spacer, ext_btn, flex_spacer, done_btn, nil];
     }
-    
-	[keyboard_toolbar setItems:items];
+    */
+    [keyboard_toolbar setItems:items];
     [keyboard_toolbar sizeToFit];
     return keyboard_toolbar;
 }
 
 - (void)initGestureRecognizers
 {        
-	// single and double tap recognizer 
+    // single and double tap recognizer 
     UITapGestureRecognizer* doubleTapRecognizer = [[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleDoubleTap:)] autorelease];
     [doubleTapRecognizer setNumberOfTouchesRequired:1];
-	[doubleTapRecognizer setNumberOfTapsRequired:2];	
+    [doubleTapRecognizer setNumberOfTapsRequired:2];    
     
-	UITapGestureRecognizer* singleTapRecognizer = [[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleSingleTap:)] autorelease];
-	[singleTapRecognizer requireGestureRecognizerToFail:doubleTapRecognizer];	
+    UITapGestureRecognizer* singleTapRecognizer = [[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleSingleTap:)] autorelease];
+    [singleTapRecognizer requireGestureRecognizerToFail:doubleTapRecognizer];    
     [singleTapRecognizer setNumberOfTouchesRequired:1];
-	[singleTapRecognizer setNumberOfTapsRequired:1];
+    [singleTapRecognizer setNumberOfTapsRequired:1];
     
     // 2 fingers - tap recognizer 
-	UITapGestureRecognizer* single2FingersTapRecognizer = [[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleSingle2FingersTap:)] autorelease];
+    UITapGestureRecognizer* single2FingersTapRecognizer = [[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleSingle2FingersTap:)] autorelease];
     [single2FingersTapRecognizer setNumberOfTouchesRequired:2];
-	[single2FingersTapRecognizer setNumberOfTapsRequired:1];
+    [single2FingersTapRecognizer setNumberOfTapsRequired:1];
     
-	// long press gesture recognizer
-	UILongPressGestureRecognizer* longPressRecognizer = [[[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handleLongPress:)] autorelease];
-	[longPressRecognizer setMinimumPressDuration:0.5];
+    // long press gesture recognizer
+    UILongPressGestureRecognizer* longPressRecognizer = [[[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handleLongPress:)] autorelease];
+    [longPressRecognizer setMinimumPressDuration:0.5];
     
     // double long press gesture recognizer
-	UILongPressGestureRecognizer* doubleLongPressRecognizer = [[[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handleDoubleLongPress:)] autorelease];
+    UILongPressGestureRecognizer* doubleLongPressRecognizer = [[[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handleDoubleLongPress:)] autorelease];
     [doubleLongPressRecognizer setNumberOfTouchesRequired:2];
-	[doubleLongPressRecognizer setMinimumPressDuration:0.5];
+    [doubleLongPressRecognizer setMinimumPressDuration:0.5];
     
     // 3 finger, single tap gesture for showing/hiding the toolbar
     UITapGestureRecognizer* single3FingersTapRecognizer = [[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleSingle3FingersTap:)] autorelease];
@@ -1439,17 +1448,17 @@
     [single3FingersTapRecognizer setNumberOfTouchesRequired:3];
     
     // add gestures to scroll view
-	[_session_scrollview addGestureRecognizer:singleTapRecognizer];
-	[_session_scrollview addGestureRecognizer:doubleTapRecognizer];
-	[_session_scrollview addGestureRecognizer:single2FingersTapRecognizer];
-	[_session_scrollview addGestureRecognizer:longPressRecognizer];
-	[_session_scrollview addGestureRecognizer:doubleLongPressRecognizer];
+    [_session_scrollview addGestureRecognizer:singleTapRecognizer];
+    [_session_scrollview addGestureRecognizer:doubleTapRecognizer];
+    [_session_scrollview addGestureRecognizer:single2FingersTapRecognizer];
+    [_session_scrollview addGestureRecognizer:longPressRecognizer];
+    [_session_scrollview addGestureRecognizer:doubleLongPressRecognizer];
     [_session_scrollview addGestureRecognizer:single3FingersTapRecognizer];
 }
 
 - (void)suspendSession
 {
-	// suspend session and pop navigation controller
+    // suspend session and pop navigation controller
     [_session suspend];
     
     // pop current view controller
@@ -1458,7 +1467,7 @@
 
 - (NSDictionary*)eventDescriptorForMouseEvent:(int)event position:(CGPoint)position
 {
-    return [NSDictionary dictionaryWithObjectsAndKeys:	
+    return [NSDictionary dictionaryWithObjectsAndKeys:    
                         @"mouse", @"type",
                         [NSNumber numberWithUnsignedShort:event], @"flags",
                         [NSNumber numberWithUnsignedShort:lrintf(position.x)], @"coord_x",

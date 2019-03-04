@@ -43,13 +43,13 @@ extern NSString* TSXSessionDidFailToConnectNotification;
 @interface RDPSession : NSObject 
 {
 @private
-	freerdp* _freerdp;
+    freerdp* _freerdp;
 
     ComputerBookmark* _bookmark;
     
-	ConnectionParams* _params;
-	
-	NSObject<RDPSessionDelegate>* _delegate;
+    ConnectionParams* _params;
+    
+    NSObject<RDPSessionDelegate>* _delegate;
     
     NSCondition* _ui_request_completed;
     
@@ -58,8 +58,8 @@ extern NSString* TSXSessionDidFailToConnectNotification;
     // flag if the session is suspended
     BOOL _suspended;
     
-	// flag that specifies whether the RDP toolbar is visible
-	BOOL _toolbar_visible;
+    // flag that specifies whether the RDP toolbar is visible
+    BOOL _toolbar_visible;
 }
 
 @property (readonly) ConnectionParams* params;
