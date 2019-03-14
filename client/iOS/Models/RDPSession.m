@@ -288,10 +288,11 @@ out_free:
         mfi->unwanted = YES;
         if([vminfo share].cancelBtnSessionName) {
             //防止调用2次sessionDidDisconnect方法，另外一次是runsessionFinished方法调用的sessionDidDisconnect方法，不处理的话会导致发送2次logoff断开信息给服务器
+            [vminfo share].cancelBtnSessionName = nil;
             [self sessionDidDisconnect];
         }
         return;
-    }    
+    }
 }
 
 - (TSXConnectionState)connectionState

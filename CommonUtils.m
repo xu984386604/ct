@@ -246,6 +246,8 @@ bool isInner(unsigned int userIp, unsigned int begin, unsigned int end)
         }
     }];
     [sessionData resume]; //如果request任务暂停了，则恢复
+    
+    [session finishTasksAndInvalidate];
 }
 
 

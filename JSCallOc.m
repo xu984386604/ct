@@ -74,7 +74,6 @@
     [openerArguments setValue:remoteProgram forKey:@"programpath"];
     [openerArguments setValue:@"15" forKey:@"timeout"];
     [openerArguments setValue:myinfo.vmpasswd forKey:@"vmpassword"];
-    
     [openerArguments setValue:myinfo.RandomCode forKey:@"RandomCode"]; //打开应用，需要加上这个随机码，给agant用来建立命名管道
     
     //检查参数是否为空，如果为空则删除该条参数。垃圾opener无法处理参数为空的问题
@@ -215,9 +214,10 @@
 
 //获取cu地址
 -(void) getCUAddress:(NSString *)ipUrl {
-    NSData *str=[ipUrl dataUsingEncoding:NSUTF8StringEncoding];
+    @autoreleasepool {
+    NSData *str = [ipUrl dataUsingEncoding:NSUTF8StringEncoding];
     NSError * err;
-    NSDictionary *mydic=[NSJSONSerialization JSONObjectWithData:str options:NSJSONReadingMutableLeaves error:&err];
+    NSDictionary *mydic = [NSJSONSerialization JSONObjectWithData:str options:NSJSONReadingMutableLeaves error:&err];
     NSString *url=[mydic objectForKey:@"url"];
     [vminfo share].cuIp = [NSString stringWithFormat:@"http://%@/", url];
     NSLog(@"收到的ipurl:%@", url);
@@ -244,6 +244,7 @@
     } else if(isInnerIP == 1) {
         [vminfo share].gatewaycheck = @"YES";
         NSLog(@"是外网！");
+    }
     }
 }
 
