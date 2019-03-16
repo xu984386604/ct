@@ -23,7 +23,7 @@
 
 #define SCREEN_HEIGHT ([UIScreen mainScreen].bounds.size.height)
 #define SCREEN_WIDTH  ([UIScreen mainScreen].bounds.size.width)
-#define LOCALMD5      @"1fa2fb1e8598a9b8042355b4de3df9c7"
+#define LOCALMD5      @"50eebf29fcc2c6e5d9f55e21e9ab56b0"
 
 //WLOG_LEVEL=DEBUG  环境变量
 @interface CuWebViewController () <MyFloatButtonDelegate>
@@ -240,7 +240,7 @@
 #pragma mark heartbeat
 -(void)postMessageToService: (NSNotification*) notification
 {
-    NSString* obj = (NSString*)[notification object];//获取到传递的对象
+//    NSString* obj = (NSString*)[notification object];//获取到传递的对象
     
 //    if ([obj isEqualToString:@"loginMsg"]) {
 //        [self sendMessage: @"loginMsg"];
@@ -356,6 +356,7 @@
         }
     }];
     [sessionData resume]; //如果request任务暂停了，则恢复
+    [session finishTasksAndInvalidate];
 }
 
 //登陆超时处理的函数
@@ -364,6 +365,7 @@
     NSString *textJS=@"window.client.exit(true);";
     [context evaluateScript:textJS];
     [_mytimer invalidate];
+    [_mytimer release];
     _mytimer = nil;
 }
 
@@ -373,7 +375,7 @@
 -(void)sendMessageToDocker
 {
     NSString *Reset_vm_User=[NSString stringWithFormat:@"%@cu/index.php/Home/Client/sendMessageToDockerManager",_connectInfo.cuIp];
-    NSDictionary *json=@{
+    NSDictionary *json = @{
                          @"action":@"update",
                          @"dockerid":_connectInfo.dockerId,
                          @"ip":_connectInfo.dockerIp,
@@ -387,8 +389,49 @@
 #pragma mark 支付宝相关方法
 -(BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType {
     NSURL *reqUrl = request.URL;
-    NSString* urlStr =[reqUrl.absoluteString stringByRemovingPercentEncoding];
-    //NSLog(@"访问的url:%@", urlStr);
+    NSString* urlStr = [reqUrl.absoluteString stringByRemovingPercentEncoding];
+    NSLog(@"访问的url地址是:%@", urlStr);
+    
+    if ([urlStr hasPrefix:@"http://"] || [urlStr hasPrefix:@"https://"]) {
+        NSURLRequest *checkRequest = request;
+        if ([urlStr containsString:@"owncloud"]) {
+            NSString *replacedString = [NSString stringWithFormat:@"?%@", [reqUrl query]];
+            if (replacedString) {
+                NSString *urlString = [urlStr stringByReplacingOccurrencesOfString:replacedString withString:@""];
+                NSURL *checkUrl = [NSURL URLWithString:urlString];
+                checkRequest = [NSURLRequest requestWithURL:checkUrl];
+                NSLog(@"checkUrl:%@", urlString);
+            }
+        }
+
+        NSURLSessionDataTask *dataTask = [[NSURLSession sharedSession] dataTaskWithRequest:checkRequest completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+            NSHTTPURLResponse *tmpresponse = (NSHTTPURLResponse*)response;
+            NSLog(@"statusCode:%ld", (long)tmpresponse.statusCode);
+            long statusCode = (long)tmpresponse.statusCode;
+
+            if(statusCode >= 400) {
+                NSLog(@"返回的网络状态码不对，返回上一个页面!");
+                if ([webView canGoBack]) {
+                    [webView goBack];
+                } else {
+                    [webView stopLoading];
+                }
+            } else if(statusCode == 0) {
+                [webView stopLoading];
+                UIWindow *window = [UIApplication sharedApplication].keyWindow;
+                dispatch_sync(dispatch_get_main_queue(), ^{
+                    [window makeToast:NSLocalizedString(@"请检查网络！正在跳回登录界面！", @"please check your network! Jump to login page！") duration:2.0 position:@"center"];
+                });
+                NSString *filePath = [[NSBundle mainBundle] pathForResource:@"index"  ofType:@"html" inDirectory:@"iplogin"];
+                filePath = [NSString stringWithFormat:@"%@?isAutoLogin=0", filePath]; //1代表应用第一次打开登录页面
+                NSURL *url = [NSURL URLWithString:filePath];
+                NSURLRequest *request = [NSURLRequest requestWithURL:url];
+                [webView loadRequest:request];
+            }
+        }];
+        [dataTask resume];
+    }
+
     //支付宝进入支付环节经历的网址跳转的8个步骤
     //1. https://openapi.alipay.com/gateway.do?charset=UTF-8
     //2. https://unitradeprod.alipay.com/appAssign.htm?alipay_exterface_invoke_assign_target=invoke_f92939685a8a14b982d324a9bc1f6e1e&alipay_exterface_invoke_assign_sign=e_al9k8_jk4r7_pxonth_t0_be_j_m_hvjci_o_gcq_i7_s_e_npm_a_v6er_s47h_vd_t7_iw%3D%3D

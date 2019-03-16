@@ -1024,8 +1024,17 @@
 //取消按钮的点击事件响应
 -(IBAction)cancelButtonPressed:(id)sender
 {
+    _cancel_connect_button.enabled = false;
     _session.isCancelConnected = YES;
     [vminfo share].cancelBtnSessionName = _session.sessionName;
+    if (_connecting_indicator_view && _connecting_view) {
+        // remove and release connecting view
+        [_connecting_indicator_view stopAnimating];
+        [_connecting_view removeFromSuperview];
+        [_connecting_view autorelease];
+    }
+    [self.navigationController popToRootViewControllerAnimated:YES];
+    [self closeOpenRdp];
 }
 
 #pragma mark -

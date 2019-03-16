@@ -20,6 +20,8 @@
 #import  "CuWebViewController.h"
 #import "myNavigationViewController.h"
 
+#import <Reachability.h>
+
 
 @interface AppDelegate()
 {
@@ -51,6 +53,8 @@
     
     _window.rootViewController = mynav;
     [_window makeKeyAndVisible];
+    
+    
     
     return YES;
 }
