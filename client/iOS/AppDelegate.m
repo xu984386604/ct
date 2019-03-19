@@ -19,6 +19,7 @@
 #import "NavigationController.h"
 #import  "CuWebViewController.h"
 #import "myNavigationViewController.h"
+#import "Toast+UIView.h"
 
 #import <Reachability.h>
 
@@ -28,6 +29,7 @@
     //timer是用于后台任务的执行
     NSTimer *timer;
 }
+@property (nonatomic,strong) Reachability *reach;
 @end
 
 @implementation AppDelegate
@@ -46,6 +48,16 @@
     SetInvertScrollingFlag([[NSUserDefaults standardUserDefaults] boolForKey:@"ui.invert_scrolling"]);
 //    ViewController *vc = [[[ViewController alloc] initWithNibName:@"ViewController" bundle:nil] autorelease];
 //    vc.title = @"cos客户端";
+//添加网络变化监听
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reachabilityChanged:) name:kReachabilityChangedNotification object:nil];
+
+    self.reach =[Reachability reachabilityWithHostName:@"www.apple.com"];
+    [self.reach startNotifier];
+
+    
+    
+    
+    
     
     CuWebViewController *myCuVC=[[CuWebViewController alloc] init];
     
@@ -55,8 +67,18 @@
     [_window makeKeyAndVisible];
     
     
-    
     return YES;
+}
+//网络变化的函数
+-(void)reachabilityChanged:(NSNotification *)notification
+{
+    Reachability *reach = [notification object];
+    NetworkStatus status = [reach currentReachabilityStatus];
+    if(status == NotReachable)
+    {
+        [self.window makeToast:@"无网络,请检查网络连接" duration:3.0 position:@"center"];
+    }
+
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application
@@ -194,6 +216,8 @@
 
 - (void)dealloc
 {
+    [self.reach stopNotifier];
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
     [_window release];
     [super dealloc];
 }
