@@ -60,6 +60,8 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showParamErrorMessage) name:@"paramErrorMessage" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(openRdp) name:@"reloadRdp" object:nil];
     
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reloadPage) name:@"reloadPage" object:nil];
+    
     
     //使用darwin层的注册锁屏通知（应用在前台）
     CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, screenLockStateChanged, NotificationLock, NULL, CFNotificationSuspensionBehaviorDeliverImmediately);
@@ -93,7 +95,9 @@
 {
     NSString *cuurl=[NSString stringWithFormat:@"%@/cu",cuIp];
     NSURLRequest *myrequest=[NSURLRequest requestWithURL:[NSURL URLWithString:cuurl]];
-    myWebView=[[UIWebView alloc] initWithFrame:[UIScreen mainScreen].bounds];
+    if (!myWebView) {
+        myWebView=[[UIWebView alloc] initWithFrame:[UIScreen mainScreen].bounds];
+    }
     myWebView.delegate=self;
     [myWebView loadRequest:myrequest];
     [self.view addSubview:myWebView];
@@ -128,6 +132,11 @@
     NSURLRequest *request = [NSURLRequest requestWithURL:url];
     [myWebView loadRequest:request];
     [(UIScrollView *)[[myWebView subviews] objectAtIndex:0] setBounces:NO];
+}
+
+-(void) reloadPage {
+    NSURLRequest *myrequest=[NSURLRequest requestWithURL:[NSURL URLWithString:[vminfo share].lastUrl]];
+    [myWebView loadRequest:myrequest];
 }
 
 #pragma mark openrdp
@@ -393,15 +402,17 @@
     NSLog(@"访问的url地址是:%@", urlStr);
     
     if ([urlStr hasPrefix:@"http://"] || [urlStr hasPrefix:@"https://"]) {
+        if(![urlStr containsString:@"ping.php"]) {
+            [vminfo share].lastUrl = urlStr;
+        }
         NSURLRequest *checkRequest = request;
         if ([urlStr containsString:@"owncloud"]) {
-            NSString *replacedString = [NSString stringWithFormat:@"?%@", [reqUrl query]];
-            if (replacedString) {
-                NSString *urlString = [urlStr stringByReplacingOccurrencesOfString:replacedString withString:@""];
-                NSURL *checkUrl = [NSURL URLWithString:urlString];
-                checkRequest = [NSURLRequest requestWithURL:checkUrl];
-                NSLog(@"checkUrl:%@", urlString);
-            }
+            NSRange range = [urlStr rangeOfString:@"owncloud"];
+            NSString *urlString = [urlStr substringToIndex:range.location - 1];
+            urlString = [NSString stringWithFormat:@"%@/ping.php", urlString];
+            NSURL *checkUrl = [NSURL URLWithString:urlString];
+            checkRequest = [NSURLRequest requestWithURL:checkUrl];
+            NSLog(@"checkUrl:%@", urlString);
         }
 
         NSURLSessionDataTask *dataTask = [[NSURLSession sharedSession] dataTaskWithRequest:checkRequest completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
@@ -410,19 +421,19 @@
             long statusCode = (long)tmpresponse.statusCode;
 
             if(statusCode >= 400) {
-                NSLog(@"返回的网络状态码不对，返回上一个页面!");
+                NSLog(@"返回的网络状态码大于400，服务端没有出错后的页面重定向，故在客户端处理。返回上一个页面!");
                 if ([webView canGoBack]) {
                     [webView goBack];
                 } else {
                     [webView stopLoading];
                 }
-            } else if(statusCode == 0) {
+            } else if(statusCode == 0) { //返回的状态码为0代表没有网络
                 [webView stopLoading];
                 UIWindow *window = [UIApplication sharedApplication].keyWindow;
                 dispatch_sync(dispatch_get_main_queue(), ^{
-                    [window makeToast:NSLocalizedString(@"请检查网络！正在跳回登录界面！", @"please check your network! Jump to login page！") duration:2.0 position:@"center"];
+                    [window makeToast:NSLocalizedString(@"请检查您的网络设置！", @"please check your networking! Jump to login page！") duration:2.0 position:@"center"];
                 });
-                NSString *filePath = [[NSBundle mainBundle] pathForResource:@"index"  ofType:@"html" inDirectory:@"iplogin"];
+                NSString *filePath = [[NSBundle mainBundle] pathForResource:@"error"  ofType:@"html" inDirectory:@"iplogin"];
                 filePath = [NSString stringWithFormat:@"%@?isAutoLogin=0", filePath]; //1代表应用第一次打开登录页面
                 NSURL *url = [NSURL URLWithString:filePath];
                 NSURLRequest *request = [NSURLRequest requestWithURL:url];

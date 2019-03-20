@@ -10,6 +10,7 @@
 #import <JavaScriptCore/JavaScriptCore.h>
 
 @protocol JSCallOcProtocol <JSExport>
+JSExportAs(pageReload, -(void)pageReload:(id)num); //参数没有用,不加参数会出现语法错误
 JSExportAs(openApp, -(void)AcceptTheDataFromJs:(NSString*)data);
 JSExportAs(logOff, -(void)StopHeartBeat:(id)num);
 JSExportAs(exit, -(void)appEnterBackground:(id)num);   //参数没有用

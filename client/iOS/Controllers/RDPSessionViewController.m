@@ -423,7 +423,11 @@
         NSLog(@"开始断开取消按钮点击后要处理的那个rdp连接！");
         return;
     }
-
+    
+    if([@"opener.exe" isEqualToString:[vminfo share].remoteProgram]) {
+        [self sendMessageToOpener];
+    }
+    
     if (!IOS_VERSION_7_OR_ABOVE)
     {
         CGRect rect=_touchpointer_view.frame;
@@ -453,6 +457,7 @@
     //注册挂载网盘处理函数
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handlePostDataEvent:) name:@"SHOWPOSTDATAMESSAGE" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleFirstPostDataError:) name:@"HANDLEFIRSTPOSTDATAERROREVENT" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loadDiskWhenFirstOpenRdp) name:@"loadDiskWhenFirstOpenRdp" object:nil];
     
     // remove and release connecting view
     [_connecting_indicator_view stopAnimating];
@@ -474,9 +479,7 @@
     }
     //进入遮挡windows登陆界面的界面
 //    [self sessionConnected:session];
-    //开辟新线程，挂载网盘第一次
-        [self performSelector:@selector(postDataWhenFirstOpenRdp) withObject:nil afterDelay:0];
-
+    
     [self loadFloatButton]; //加载悬浮按钮
     
     //定时器向虚拟机发送虚拟按键
@@ -488,6 +491,13 @@
     [[RDPKeyboard getSharedRDPKeyboard] sendVirtualKeyCode:0x00];
 }
 
+-(void) loadDiskWhenFirstOpenRdp {
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"loadDiskWhenFirstOpenRdp" object:nil];
+    //开辟新线程，挂载网盘第一次
+    NSLog(@"开始发起打开应用时的第一次挂载网盘的请求！");
+    [self performSelector:@selector(postDataWhenFirstOpenRdp) withObject:nil afterDelay:0];
+}
+
 #pragma mark FloatButton TapAction
 //悬浮按钮的点击事件
 - (void)floatTapAction:(MyFloatButton *)sender
@@ -497,7 +507,7 @@
             [_mymenuview showMenuView];
             _myfloatbutton.isMoving = NO;
         }];
-    }else
+    } else
     {
         [UIView animateWithDuration:0.2 animations:^{
             [_mymenuview dismiss];
@@ -669,8 +679,19 @@
     }
     NSLog(@"向cu发送断开应用的信息！");
 }
-//关闭docker应用的时候，想服务器发送消息
--(void)sendDockerMessageToService
+
+
+//通过opener打开应用时，参数过长问题的解决（分段发，该函数为在连接上应用后再发剩余的参数）
+-(void) sendMessageToOpener
+{
+    NSString *cuip = [vminfo share].cuIp;
+    NSString *requestUrl = [NSString stringWithFormat:@"%@cu/index.php/Home/Client/sendMessageToOpener",cuip];
+    [[[CommonUtils alloc] init] makeRequestToServer:requestUrl withDictionary:[vminfo share].moreOpenerInfo byHttpMethod:@"POST" type:@"sendMessageToOpener"];
+    NSLog(@"向cu发送额外的打开应用的参数信息！");
+}
+
+//关闭docker应用的时候，向服务器发送消息
+-(void) sendDockerMessageToService
 {
     NSString *Reset_vm_User=[NSString stringWithFormat:@"%@cu/index.php/Home/Client/sendMessageToDockerManager",[vminfo share].cuIp];
     NSDictionary *json=@{

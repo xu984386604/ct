@@ -64,6 +64,10 @@
 
 @property (nonatomic, copy) NSString *RandomCode; //挂网盘和卸载网盘用到的一个相同的随机数
 
+@property (nonatomic, strong) NSMutableDictionary *moreOpenerInfo;  //当remoteProgram过长时，则放到这个参数进行存储
+
+@property (nonatomic, copy) NSString *lastUrl;
+
 //@property (readonly) NSCondition* uiRequestCompleted;
 
 +(instancetype) share;

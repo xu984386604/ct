@@ -85,9 +85,18 @@
     }
     
     NSString *tmp1 = [CommonUtils dictionaryToJson:openerArguments];
-    NSString *tmp2 = [tmp1 stringByReplacingOccurrencesOfString:@"\"" withString:@"\\\""]; //windows的斜杠字符转码
+    NSString *tmp2 =  [tmp1 stringByReplacingOccurrencesOfString:@"\"" withString:@"\\\""]; //windows的斜杠字符转码
+    int length = [CommonUtils convertToByte:tmp2];
+    if(length >= 100) {
+        myinfo.remoteProgram = @"opener.exe";
+        [openerArguments setObject:[vminfo share].vmusername forKey:@"username"];
+        [openerArguments setObject:[vminfo share].vmip forKey:@"ip"];
+        [vminfo share].moreOpenerInfo = openerArguments;
+        NSLog(@"参数过长！采用第二种方式发送opener的参数信息！");
+    } else {
+        myinfo.remoteProgram = [NSString  stringWithFormat:@"opener.exe %@", tmp2];
+    }
     
-    myinfo.remoteProgram = [NSString  stringWithFormat:@"opener.exe %@", tmp2];
     NSLog(@"myinfo.remoteProgram:  %@", myinfo.remoteProgram);
     
     tmp1 = nil;
@@ -251,6 +260,10 @@
 -(void)appEnterBackground:(id)num
 {
     [[NSNotificationCenter defaultCenter] postNotificationName:@"appEnterbackGround" object:nil];
+}
+
+-(void)pageReload:(id)num {
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"reloadPage" object:nil];
 }
 
 @end

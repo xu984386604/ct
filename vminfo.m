@@ -33,6 +33,11 @@ static vminfo *myvminfo;
         key = nil;
     }
     
+    if (!info.lastUrl && info.cuIp) {
+        info.lastUrl = [NSString stringWithFormat:@"%@/cu",info.cuIp];
+        NSLog(@"lastUrl赋值一次！");
+    }
+    
     if (info.multiRdpRecoverInfo == nil) {
         info.multiRdpRecoverInfo = [NSMutableDictionary dictionary];
     }
@@ -41,41 +46,41 @@ static vminfo *myvminfo;
 
 //获取存活的rdp远程应用的恢复连接的信息
 +(void) filterRecoverRdpinfoDic {
-    NSLog(@"开始一次检查存活的rdp：");
-    if ([myvminfo.multiRdpRecoverInfo count] == 0 && myvminfo.checkTimer) {
-        [myvminfo.checkTimer invalidate];
-        myvminfo.checkTimer = nil;
-    }
-    
-    NSEnumerator *keys =  [myvminfo.multiRdpSession keyEnumerator];
-    for (NSObject *key in keys) {
-        NSLog(@"%@", key);
-        NSLog(@"%@", [myvminfo.multiRdpSession objectForKey:key]);
-//        TSXConnectionClosed = 0,
-//        TSXConnectionConnecting = 1,
-//        TSXConnectionConnected = 2,
-//        TSXConnectionDisconnected = 3
-        RDPSession* session = [myvminfo.multiRdpSession objectForKey:key];
-        if ([session isClosed] == 0 || [session isClosed] == 3) {
-            [myvminfo.multiRdpSession removeObjectForKey:key]; //删除已经关闭了的rdp的session信息
-        }
-    }
-    NSMutableDictionary *newDic = [NSMutableDictionary dictionary];
-    NSEnumerator *newKeys =  [myvminfo.multiRdpSession keyEnumerator]; //新的有效sessions
-    
-    for (NSObject<NSCopying> *key in newKeys) {
-        NSDictionary *object = [myvminfo.multiRdpRecoverInfo objectForKey:key];
-        [newDic setObject:object forKey:key];
-    }
-    myvminfo.multiRdpRecoverInfo = newDic;
-    if ([myvminfo.multiRdpRecoverInfo count] == 0) {
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"stoppostMessageToservice" object:@"recoverMsg"];
-    } else {
-        if (!myvminfo.checkTimer) {           
-            myvminfo.checkTimer = [[NSTimer alloc] initWithFireDate:[NSDate dateWithTimeInterval:0 sinceDate:[NSDate date]] interval:10.0 target:self selector:@selector(filterRecoverRdpinfoDic) userInfo:nil repeats:YES];
-            [[NSRunLoop mainRunLoop] addTimer:myvminfo.checkTimer forMode:NSDefaultRunLoopMode];
-        }
-    }
+//    NSLog(@"开始一次检查存活的rdp：");
+//    if ([myvminfo.multiRdpRecoverInfo count] == 0 && myvminfo.checkTimer) {
+//        [myvminfo.checkTimer invalidate];
+//        myvminfo.checkTimer = nil;
+//    }
+//
+//    NSEnumerator *keys =  [myvminfo.multiRdpSession keyEnumerator];
+//    for (NSObject *key in keys) {
+//        NSLog(@"%@", key);
+//        NSLog(@"%@", [myvminfo.multiRdpSession objectForKey:key]);
+////        TSXConnectionClosed = 0,
+////        TSXConnectionConnecting = 1,
+////        TSXConnectionConnected = 2,
+////        TSXConnectionDisconnected = 3
+//        RDPSession* session = [myvminfo.multiRdpSession objectForKey:key];
+//        if ([session isClosed] == 0 || [session isClosed] == 3) {
+//            [myvminfo.multiRdpSession removeObjectForKey:key]; //删除已经关闭了的rdp的session信息
+//        }
+//    }
+//    NSMutableDictionary *newDic = [NSMutableDictionary dictionary];
+//    NSEnumerator *newKeys =  [myvminfo.multiRdpSession keyEnumerator]; //新的有效sessions
+//
+//    for (NSObject<NSCopying> *key in newKeys) {
+//        NSDictionary *object = [myvminfo.multiRdpRecoverInfo objectForKey:key];
+//        [newDic setObject:object forKey:key];
+//    }
+//    myvminfo.multiRdpRecoverInfo = newDic;
+//    if ([myvminfo.multiRdpRecoverInfo count] == 0) {
+//        [[NSNotificationCenter defaultCenter] postNotificationName:@"stoppostMessageToservice" object:@"recoverMsg"];
+//    } else {
+//        if (!myvminfo.checkTimer) {
+//            myvminfo.checkTimer = [[NSTimer alloc] initWithFireDate:[NSDate dateWithTimeInterval:0 sinceDate:[NSDate date]] interval:10.0 target:self selector:@selector(filterRecoverRdpinfoDic) userInfo:nil repeats:YES];
+//            [[NSRunLoop mainRunLoop] addTimer:myvminfo.checkTimer forMode:NSDefaultRunLoopMode];
+//        }
+//    }
 }
 
 

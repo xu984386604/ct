@@ -20,5 +20,6 @@
 + (UIImage*)convertImageFromeView:(UIView*)view;
 + (UIImage*)imageByApplyingAlpha:(CGFloat) alpha image:(UIImage*) image;
 + (NSString *)  currentStandardFormatDate:(NSString *) info;
--(void) makeRequestToServer:(NSString*)urlString withDictionary:(NSDictionary*)dic byHttpMethod:(NSString*) method type:(NSString *) type;
+- (void) makeRequestToServer:(NSString*)urlString withDictionary:(NSDictionary*)dic byHttpMethod:(NSString*) method type:(NSString *) type;
++ (int)convertToByte:(NSString*)str;
 @end

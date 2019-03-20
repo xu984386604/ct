@@ -238,11 +238,25 @@ bool isInner(unsigned int userIp, unsigned int begin, unsigned int end)
         NSLog(@"发送%@信息的请求返回状态码：%ld", type, (long)httpResponse.statusCode);
         if([type isEqualToString:@"postData函数"])
         {
-            
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"SHOWPOSTDATAMESSAGE" object:data];}
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"SHOWPOSTDATAMESSAGE" object:data];
+        }
         if([type isEqualToString:@"postDataWhenFirstOpenRdp函数"])
         {
             [[NSNotificationCenter defaultCenter] postNotificationName:@"HANDLEFIRSTPOSTDATAERROREVENT" object:data];
+        }
+        if([type isEqualToString:@"sendMessageToOpener"])
+        {
+            NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:data options:NSJSONWritingPrettyPrinted error:nil];
+            NSNumber *mycode = [dic objectForKey:@"code"];
+            if ([mycode isEqualToNumber:[NSNumber numberWithLong:800]]) {
+                NSLog(@"cu成功的向agant发送了多余的opener参数！开始发起打开应用后的第一次挂载网盘的请求！");
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"loadDiskWhenFirstOpenRdp" object:data];
+            } else if([mycode isEqualToNumber:[NSNumber numberWithLong:910]]) {
+                NSLog(@"cu和agant通信失败！");
+            } else {
+                NSLog(@"cu返回无效的返回码!");
+            }
+            
         }
     }];
     [sessionData resume]; //如果request任务暂停了，则恢复
@@ -250,5 +264,20 @@ bool isInner(unsigned int userIp, unsigned int begin, unsigned int end)
     [session finishTasksAndInvalidate];
 }
 
+
++ (int) convertToByte:(NSString*)str {
+    int strlength = 0;
+    char* p = (char*)[str cStringUsingEncoding:NSUnicodeStringEncoding];
+    for (int i=0 ; i<[str lengthOfBytesUsingEncoding:NSUnicodeStringEncoding] ;i++) {
+        if (*p) {
+            p++;
+            strlength++;
+        }
+        else {
+            p++;
+        }
+    }
+    return (strlength+1)/2;
+}
 
 @end

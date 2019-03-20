@@ -24,4 +24,5 @@
 //-(void)openIpConfig:(NSString *)data;
 -(void)appEnterBackground:(id)num;  //程序退出
 -(void)openIOSApp:(NSString*)data;
+-(void)pageReload:(id)num; //网络出问题时，js调用词函数进行刷新页面的操作
 @end
