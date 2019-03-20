@@ -308,12 +308,11 @@
     
     // shift button (only on iPad)   
     int objectIdx = 0;
-    if (IsPad())
-    {
+    
         objectIdx = 2;
         curItem = (UIBarButtonItem*)[[_keyboard_toolbar items] objectAtIndex:objectIdx];
         [curItem setStyle:[keyboard shiftPressed] ? UIBarButtonItemStyleDone : UIBarButtonItemStyleBordered];
-    }
+
     
     // ctrl button
     objectIdx += 2;
