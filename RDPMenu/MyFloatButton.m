@@ -143,7 +143,7 @@ float _h; //有效活动高度
             {
               if(STATUSORIENTATION == UIInterfaceOrientationLandscapeRight)
               {
-                  m.x = 0 + _bannerIV.frame.size.height/2+5+44;
+                  m.x = 0 + _bannerIV.frame.size.height/2+5+24;
 
               }else{
                   m.x = 0 + _bannerIV.frame.size.height/2+12;
@@ -163,7 +163,7 @@ float _h; //有效活动高度
             {
                 if(STATUSORIENTATION == UIInterfaceOrientationLandscapeLeft)
                 {
-                    m.x = _w - _bannerIV.frame.size.width/2-12-44;
+                    m.x = _w - _bannerIV.frame.size.width/2-12-24;
 
                 }else{
                     m.x = _w - _bannerIV.frame.size.width/2-12;
