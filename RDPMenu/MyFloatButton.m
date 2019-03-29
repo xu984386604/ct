@@ -11,6 +11,9 @@
 
 #define SCALESIZE 5
 #define __async_main__ dispatch_async(dispatch_get_main_queue()
+#define INTERFACE_IS_IPHONEX (@available(iOS 11.0,*) &&[[UIApplication sharedApplication] delegate].window.safeAreaInsets.bottom > 0.0f?YES:NO)
+#define STATUSORIENTATION [UIApplication sharedApplication].statusBarOrientation
+
 
 typedef NS_ENUM (NSUInteger, LocationTag)
 {
@@ -59,6 +62,7 @@ float _h; //有效活动高度
         UITapGestureRecognizer *publishTap= [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(tapAction)];
         publishTap.delegate = self;
         [_bannerIV addGestureRecognizer:publishTap];
+        
     }
     return self;
 }
@@ -135,25 +139,52 @@ float _h; //有效活动高度
             m.y = 0 + _bannerIV.frame.size.width/2;
             break;
         case kLocationTag_left:
-            m.x = 0 + _bannerIV.frame.size.height/2+12;
+            if(INTERFACE_IS_IPHONEX)
+            {
+              if(STATUSORIENTATION == UIInterfaceOrientationLandscapeRight)
+              {
+                  m.x = 0 + _bannerIV.frame.size.height/2+5+44;
+
+              }else{
+                  m.x = 0 + _bannerIV.frame.size.height/2+12;
+              }
+                
+            }else{
+                    m.x = 0 + _bannerIV.frame.size.height/2+12;
+            }
+            
             break;
         case kLocationTag_bottom:
             m.y = _h - _bannerIV.frame.size.height/2;
             break;
         case kLocationTag_right:
-            m.x = _w - _bannerIV.frame.size.width/2-12;
+            
+            if(INTERFACE_IS_IPHONEX)
+            {
+                if(STATUSORIENTATION == UIInterfaceOrientationLandscapeLeft)
+                {
+                    m.x = _w - _bannerIV.frame.size.width/2-12-44;
+
+                }else{
+                    m.x = _w - _bannerIV.frame.size.width/2-12;
+
+                }
+                
+            }else{
+                m.x = _w - _bannerIV.frame.size.width/2-12;
+
+            }
+            
             break;
     }
     
     //这个是在旋转是微调浮标出界时
-    if (m.x > _w - _bannerIV.frame.size.width/2)
-        m.x = _w - _bannerIV.frame.size.width/2;
-    if (m.y > _h - _bannerIV.frame.size.height/2)
-        m.y = _h - _bannerIV.frame.size.height/2;
-    if (m.y < 35)
-        m.y = 35;
-    
-    
+//    if (m.x > _w - _bannerIV.frame.size.width/2)
+//        m.x = _w - _bannerIV.frame.size.width/2;
+//    if (m.y > _h - _bannerIV.frame.size.height/2)
+//        m.y = _h - _bannerIV.frame.size.height/2;
+//    if (m.y < 35)
+//        m.y = 35;
     
     [UIView animateWithDuration:0.1 animations:^
      {
