@@ -396,7 +396,7 @@
 
 - (void) loadFloatButton {
     //加载悬浮按钮
-    _myfloatbutton=[[MyFloatButton alloc] initWithFrame:CGRectMake(35, SCREEN_HEIGHT-176, 46, 46)];
+    _myfloatbutton=[[MyFloatButton alloc] initWithFrame:CGRectMake(15, SCREEN_HEIGHT-176, 46, 46)];
     [vminfo share].mypoint = _myfloatbutton.center;
     _myfloatbutton.alpha=0.8;
     _myfloatbutton.delegate=self;
@@ -915,11 +915,11 @@
     CGRect rect = [[_keyboard_toolbar superview] bounds];    
     rect.origin.y = [_keyboard_toolbar bounds].size.height;
     rect.size.height -= rect.origin.y;
-    
+    NSLog(@"---------------------------------%f",[[_keyboard_toolbar superview] bounds].size.height);
     // create new view (hidden) and add to host-view of keyboard toolbar
     _advanced_keyboard_view = [[AdvancedKeyboardView alloc] initWithFrame:CGRectMake(rect.origin.x, 
-                                                                                     [[_keyboard_toolbar superview] bounds].size.height, 
-                                                                                     rect.size.width, rect.size.height) delegate:self];
+                                [[_keyboard_toolbar superview] bounds].size.height,
+                                rect.size.width, rect.size.height) delegate:self];
     [[_keyboard_toolbar superview] addSubview:_advanced_keyboard_view];
     // we set autoresize to YES for the keyboard toolbar's superview so that our adv. keyboard view gets properly resized
     [[_keyboard_toolbar superview] setAutoresizesSubviews:YES];
