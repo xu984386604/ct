@@ -169,7 +169,6 @@
     
     if([operation isEqualToString:@"setIp"])
     {
-
         NSString * url = [mydic objectForKey:@"url"];
         [vminfo share].cuIp = [NSString stringWithFormat:@"http://%@/", url];
         //默认处理这种格式的字符串“http://google.com/”(可以带端口号)
@@ -204,8 +203,6 @@
         [vminfo share].uid=uid;
     }
 
-    
-    
     //发送通知，向服务器发送消息
     //[[NSNotificationCenter defaultCenter] postNotificationName:@"postMessageToservice" object:@"loginMsg"];
 

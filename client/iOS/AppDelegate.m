@@ -51,21 +51,15 @@
 //添加网络变化监听
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reachabilityChanged:) name:kReachabilityChangedNotification object:nil];
 
-    self.reach =[Reachability reachabilityWithHostName:@"www.apple.com"];
+    self.reach = [Reachability reachabilityWithHostName:@"www.apple.com"];
     [self.reach startNotifier];
 
-    
-    
-    
-    
-    
-    CuWebViewController *myCuVC=[[CuWebViewController alloc] init];
+    CuWebViewController *myCuVC = [[CuWebViewController alloc] init];
     
         myNavigationViewController *mynav = [[myNavigationViewController alloc] initWithRootViewController:myCuVC];
     
     _window.rootViewController = mynav;
     [_window makeKeyAndVisible];
-    
     
     return YES;
 }

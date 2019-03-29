@@ -280,4 +280,41 @@ bool isInner(unsigned int userIp, unsigned int begin, unsigned int end)
     return (strlength+1)/2;
 }
 
+/**
+ * 适配iPhone X的安全区域
+ * isUse = true 表示使用安全区域
+ * isUse = false 表示不使用安全区域
+ */
++ (void)adaptationSafeAreaWith:(UIScrollView *)sv useArea:(BOOL)isUse {
+    if ([[sv class] isSubclassOfClass:[UIWebView class]]) {
+        UIWebView *webView = (UIWebView *)sv;
+        for (UIView *aView in [webView subviews]) {
+            if ([aView isKindOfClass:[UIScrollView class]]) {
+                sv = (UIScrollView *)aView;
+                break;
+            }
+        }
+    }
+#ifdef __IPHONE_11_0
+    if ([sv respondsToSelector:@selector(setContentInsetAdjustmentBehavior:)]) {
+        if (isUse) {
+            if (@available(iOS 11.0, *)) {
+                sv.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
+                if ([[sv class] isSubclassOfClass:[UITableView class]]) {
+                    UITableView *tv = (UITableView *)sv;
+                    [tv setInsetsContentViewsToSafeArea:NO];
+                }
+            } else {
+                // Fallback on earlier versions
+            }
+        } else {
+            if (@available(iOS 11.0, *)) {
+                sv.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentAlways;
+            } else {
+                // Fallback on earlier versions
+            }
+        }
+    }
+#endif
+}
 @end

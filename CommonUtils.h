@@ -22,4 +22,5 @@
 + (NSString *)  currentStandardFormatDate:(NSString *) info;
 - (void) makeRequestToServer:(NSString*)urlString withDictionary:(NSDictionary*)dic byHttpMethod:(NSString*) method type:(NSString *) type;
 + (int)convertToByte:(NSString*)str;
++ (void)adaptationSafeAreaWith:(UIScrollView *)sv useArea:(BOOL)isUse;
 @end

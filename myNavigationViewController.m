@@ -17,15 +17,10 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
     [self setNavigationBarHidden:YES animated:nil];
-    
-
     //退出到后台
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(myAppEnterBackground:) name:@"appEnterbackGround" object:nil];
-    
-    
     // Do any additional setup after loading the view.
 }
 -(BOOL)shouldAutorotate
@@ -43,7 +38,6 @@
     }
 }
 
-
 #pragma mark 进入后台
 -(void)myAppEnterBackground:(id)num{
     [UIView beginAnimations:@"exitApplication" context:nil];
@@ -55,18 +49,12 @@
     [UIView commitAnimations];
 }
 
-
 -(void)animationFinished:(NSString *)animationID finished:(NSNumber *)finished contex:(void *)context{
     if([animationID compare:@"exitApplication"] == 0)
     {
         exit(0);
     }
 }
-
-
-
-
-
 
 -(void)dealloc {
     

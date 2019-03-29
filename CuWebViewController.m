@@ -23,7 +23,7 @@
 
 #define SCREEN_HEIGHT ([UIScreen mainScreen].bounds.size.height)
 #define SCREEN_WIDTH  ([UIScreen mainScreen].bounds.size.width)
-#define LOCALMD5      @"50eebf29fcc2c6e5d9f55e21e9ab56b0"
+#define LOCALMD5      @"395be56d430f6170db38e3ca7967ddcc"
 
 //WLOG_LEVEL=DEBUG  环境变量
 @interface CuWebViewController () <MyFloatButtonDelegate>
@@ -97,6 +97,7 @@
     NSURLRequest *myrequest=[NSURLRequest requestWithURL:[NSURL URLWithString:cuurl]];
     if (!myWebView) {
         myWebView=[[UIWebView alloc] initWithFrame:[UIScreen mainScreen].bounds];
+        [CommonUtils adaptationSafeAreaWith:(UIScrollView *)myWebView useArea:true];
     }
     myWebView.delegate=self;
     [myWebView loadRequest:myrequest];
@@ -108,6 +109,7 @@
 //加载本地网页
 -(void) loadLocalHTML:(NSString*) fileName  inDirectory:(NSString*) dirName{
     myWebView=[[UIWebView alloc] initWithFrame:[UIScreen mainScreen].bounds];
+    [CommonUtils adaptationSafeAreaWith:(UIScrollView *)myWebView useArea:true];
     myWebView.delegate=self;
     myWebView.scrollView.bounces = NO;
     NSString *filePath = [[NSBundle mainBundle] pathForResource:fileName ofType:@"html" inDirectory:dirName];
@@ -422,11 +424,11 @@
 
             if(statusCode >= 400) {
                 NSLog(@"返回的网络状态码大于400，服务端没有出错后的页面重定向，故在客户端处理。返回上一个页面!");
-                if ([webView canGoBack]) {
-                    [webView goBack];
-                } else {
-                    [webView stopLoading];
-                }
+//                if ([webView canGoBack]) {
+//                    [webView goBack];
+//                } else {
+//                    [webView stopLoading];
+//                }
             } else if(statusCode == 0) { //返回的状态码为0代表没有网络
                 [webView stopLoading];
                 UIWindow *window = [UIApplication sharedApplication].keyWindow;
@@ -483,7 +485,8 @@
     } else if(![urlStr containsString:@"alipay"] && ![urlStr isEqualToString:@"about:blank"]) {
         if (_isNotFirstLoad) {
             [myWebView removeFromSuperview];
-            myWebView = [[UIWebView alloc] initWithFrame:[UIScreen mainScreen].bounds];;
+            myWebView = [[UIWebView alloc] initWithFrame:[UIScreen mainScreen].bounds];
+            [CommonUtils adaptationSafeAreaWith:(UIScrollView *)myWebView useArea:true];
             [self.view addSubview:myWebView];
             myWebView.delegate = self;
             myWebView.scrollView.bounces = NO;
@@ -527,6 +530,7 @@
         myWebView = nil;
         [myWebView autorelease];
         myWebView = [[UIWebView alloc] initWithFrame:[UIScreen mainScreen].bounds];
+        [CommonUtils adaptationSafeAreaWith:(UIScrollView *)myWebView useArea:true];
         [self.view addSubview:myWebView];
         myWebView.delegate = self;
         [myWebView loadRequest:myrequest];
