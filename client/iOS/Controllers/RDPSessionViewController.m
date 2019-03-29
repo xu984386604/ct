@@ -396,7 +396,7 @@
 
 - (void) loadFloatButton {
     //加载悬浮按钮
-    _myfloatbutton=[[MyFloatButton alloc] initWithFrame:CGRectMake(35, SCREEN_HEIGHT-176, 46, 46)];
+    _myfloatbutton=[[MyFloatButton alloc] initWithFrame:CGRectMake(10, SCREEN_HEIGHT-176, 46, 46)];
     [vminfo share].mypoint = _myfloatbutton.center;
     _myfloatbutton.alpha=0.8;
     _myfloatbutton.delegate=self;
