@@ -70,6 +70,6 @@
 
 //@property (readonly) NSCondition* uiRequestCompleted;
 
-+(instancetype) share;
-+(void) filterRecoverRdpinfoDic;
++ (instancetype) share;
++ (void) filterRecoverRdpinfoDic;
 @end

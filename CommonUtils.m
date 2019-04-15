@@ -256,7 +256,6 @@ bool isInner(unsigned int userIp, unsigned int begin, unsigned int end)
             } else {
                 NSLog(@"cu返回无效的返回码!");
             }
-            
         }
     }];
     [sessionData resume]; //如果request任务暂停了，则恢复

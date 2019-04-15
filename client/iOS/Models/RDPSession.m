@@ -277,7 +277,7 @@ out_free:
 
 - (void) disconnect
 {
-    
+    [UIApplication sharedApplication].idleTimerDisabled = NO;
     mfInfo* mfi = [self mfi];
     
     ios_events_send(mfi, [NSDictionary dictionaryWithObject:@"disconnect" forKey:@"type"]);

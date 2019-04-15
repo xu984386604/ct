@@ -13,6 +13,7 @@
 #import "FontAwesome/NSString+FontAwesome.h"
 #import "UpdateApp/UpdateApp.h"
 #import <SCLAlertView.h>
+//#import <AVKit/AVKit.h>
 
 #import <notify.h>
 
@@ -23,7 +24,7 @@
 
 #define SCREEN_HEIGHT ([UIScreen mainScreen].bounds.size.height)
 #define SCREEN_WIDTH  ([UIScreen mainScreen].bounds.size.width)
-#define LOCALMD5      @"2712d5018fc327c37dfbc752bc73d910"
+#define LOCALMD5      @"3e7fa8dcfbe39f84f5d0c88d995b3fa8"
 
 //WLOG_LEVEL=DEBUG  环境变量
 @interface CuWebViewController () <MyFloatButtonDelegate>
@@ -97,7 +98,7 @@
     NSURLRequest *myrequest=[NSURLRequest requestWithURL:[NSURL URLWithString:cuurl]];
     if (!myWebView) {
         myWebView=[[UIWebView alloc] initWithFrame:[UIScreen mainScreen].bounds];
-        [CommonUtils adaptationSafeAreaWith:(UIScrollView *)myWebView useArea:true];
+        [CommonUtils adaptationSafeAreaWith:(UIScrollView *)myWebView useArea:false];
     }
     myWebView.delegate=self;
     [myWebView loadRequest:myrequest];
@@ -109,7 +110,7 @@
 //加载本地网页
 -(void) loadLocalHTML:(NSString*) fileName  inDirectory:(NSString*) dirName{
     myWebView=[[UIWebView alloc] initWithFrame:[UIScreen mainScreen].bounds];
-    [CommonUtils adaptationSafeAreaWith:(UIScrollView *)myWebView useArea:true];
+    [CommonUtils adaptationSafeAreaWith:(UIScrollView *)myWebView useArea:false];
     myWebView.delegate=self;
     myWebView.scrollView.bounces = NO;
     NSString *filePath = [[NSBundle mainBundle] pathForResource:fileName ofType:@"html" inDirectory:dirName];
@@ -194,6 +195,18 @@
     [[bookmark params] setInt:width  forKey:@"height"];
     
     RDPSession* session = [[[RDPSession alloc] initWithBookmark:bookmark] autorelease];
+    rdpSettings* sess_params = [session getSessionParams];
+    sess_params->AudioPlayback = true;
+    sess_params->AudioCapture = true;
+    sess_params->SoundBeepsEnabled = true;
+    sess_params->DisableCtrlAltDel = true;
+    
+//    AVAudioSession *audioSession = [AVAudioSession sharedInstance];
+//    [audioSession setCategory:AVAudioSessionCategoryPlayback error:nil];
+//    [audioSession setActive:YES error:nil];
+    
+    [UIApplication sharedApplication].idleTimerDisabled = YES;
+    
    // NSLog(@"rdp连接的session的名称：%@", session.sessionName);
     RDPSessionViewController* ctrl = [[[RDPSessionViewController alloc] initWithNibName:@"RDPSessionView" bundle:nil session:session] autorelease];
     dispatch_async(dispatch_get_main_queue(), ^{
@@ -433,7 +446,7 @@
                 [webView stopLoading];
                 UIWindow *window = [UIApplication sharedApplication].keyWindow;
                 dispatch_sync(dispatch_get_main_queue(), ^{
-                    [window makeToast:NSLocalizedString(@"请检查您的网络设置！", @"please check your networking! Jump to login page！") duration:2.0 position:@"center"];
+                    [window makeToast:NSLocalizedString(@"请检查您的网络设置！", @"please check your networking! Jump to login page！") duration:2.0 position:@"top"];
                 });
                 NSString *filePath = [[NSBundle mainBundle] pathForResource:@"error"  ofType:@"html" inDirectory:@"iplogin"];
                 filePath = [NSString stringWithFormat:@"%@?isAutoLogin=0", filePath]; //1代表应用第一次打开登录页面
@@ -460,7 +473,7 @@
     }
     
     //判断是否是阿里支付的url
-    if ([urlStr hasPrefix:@"alipays://"] || [urlStr hasPrefix:@"alipay://"]) {
+    if ([urlStr hasPrefix:@"alipays://"] || [urlStr hasPrefix:@"alipay://"] || [urlStr containsString:@"https://unitradeprod.alipay.com"]) {
         [self loadAlipayFloatButton];
         //支付宝是否已经安装
         BOOL isExist = [[UIApplication sharedApplication] canOpenURL:reqUrl];
@@ -486,10 +499,10 @@
         if (_isNotFirstLoad) {
             [myWebView removeFromSuperview];
             myWebView = [[UIWebView alloc] initWithFrame:[UIScreen mainScreen].bounds];
-            [CommonUtils adaptationSafeAreaWith:(UIScrollView *)myWebView useArea:true];
+            [CommonUtils adaptationSafeAreaWith:(UIScrollView *)myWebView useArea:false];
             [self.view addSubview:myWebView];
             myWebView.delegate = self;
-            myWebView.scrollView.bounces = NO;
+            myWebView.scrollView.bounces = NO; //禁止webview缩放
             [myWebView loadRequest:request];
             //reset the firstload flag to load the new request
             [(UIScrollView *)[[myWebView subviews] objectAtIndex:0] setBounces:NO];
@@ -530,7 +543,7 @@
         myWebView = nil;
         [myWebView autorelease];
         myWebView = [[UIWebView alloc] initWithFrame:[UIScreen mainScreen].bounds];
-        [CommonUtils adaptationSafeAreaWith:(UIScrollView *)myWebView useArea:true];
+        [CommonUtils adaptationSafeAreaWith:(UIScrollView *)myWebView useArea:false];
         [self.view addSubview:myWebView];
         myWebView.delegate = self;
         [myWebView loadRequest:myrequest];

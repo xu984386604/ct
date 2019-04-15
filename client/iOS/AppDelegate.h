@@ -12,7 +12,6 @@
 @class MainTabBarController;
 
 @interface AppDelegate : NSObject <UIApplicationDelegate, NSURLSessionDelegate> {
-
     MainTabBarController* _tabBarController;
     UIBackgroundTaskIdentifier taskId; //声明后台任务id
 }

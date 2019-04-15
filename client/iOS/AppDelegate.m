@@ -56,10 +56,16 @@
 
     CuWebViewController *myCuVC = [[CuWebViewController alloc] init];
     
-        myNavigationViewController *mynav = [[myNavigationViewController alloc] initWithRootViewController:myCuVC];
+    myNavigationViewController *mynav = [[myNavigationViewController alloc] initWithRootViewController:myCuVC];
     
     _window.rootViewController = mynav;
     [_window makeKeyAndVisible];
+    
+    
+//    dispatch_sync(dispatch_get_main_queue(), ^{
+//        NSLog(@"dispatch_sync: %@",[NSThread currentThread]);
+//    });
+//    NSLog(@"dispatch_sync: over");
     
     return YES;
 }
@@ -166,7 +172,6 @@
      Save data if appropriate.
      See also applicationDidEnterBackground:
      */
-   // [self closeOpenRdp];
 }
 
 
