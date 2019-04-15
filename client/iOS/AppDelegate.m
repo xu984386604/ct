@@ -100,7 +100,6 @@
             taskId = UIBackgroundTaskInvalid;
         }];
         [self cacSBStartBackgroundTask];
-        NSLog(@"进入后台！");
     }
 }
 

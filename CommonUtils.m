@@ -246,6 +246,7 @@ bool isInner(unsigned int userIp, unsigned int begin, unsigned int end)
         }
         if([type isEqualToString:@"sendMessageToOpener"])
         {
+           
             NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:data options:NSJSONWritingPrettyPrinted error:nil];
             NSNumber *mycode = [dic objectForKey:@"code"];
             if ([mycode isEqualToNumber:[NSNumber numberWithLong:800]]) {
