@@ -315,23 +315,37 @@
     
         objectIdx = 2;
         curItem = (UIBarButtonItem*)[[_keyboard_toolbar items] objectAtIndex:objectIdx];
-        [curItem setStyle:[keyboard shiftPressed] ? UIBarButtonItemStyleDone : UIBarButtonItemStyleBordered];
-
+//        [curItem setStyle:[keyboard shiftPressed] ? UIBarButtonItemStyleDone : UIBarButtonItemStyleBordered];
+    
+    [curItem setTintColor:[keyboard shiftPressed] ? [UIColor redColor] :
+     [UIColor colorWithRed:1.0/255 green:122.0/255 blue:1 alpha:1]];
     
     // ctrl button
     objectIdx += 2;
     curItem = (UIBarButtonItem*)[[_keyboard_toolbar items] objectAtIndex:objectIdx];
-    [curItem setStyle:[keyboard ctrlPressed] ? UIBarButtonItemStyleDone : UIBarButtonItemStyleBordered];
+   // [curItem setStyle:[keyboard ctrlPressed] ? UIBarButtonItemStyleDone : UIBarButtonItemStyleBordered];
+    [curItem setTintColor:[keyboard ctrlPressed] ? [UIColor redColor] :
+     [UIColor colorWithRed:1.0/255 green:122.0/255 blue:1 alpha:1]];
+
+    
+    
     
     // win button
     objectIdx += 2;
     curItem = (UIBarButtonItem*)[[_keyboard_toolbar items] objectAtIndex:objectIdx];
-    [curItem setStyle:[keyboard winPressed] ? UIBarButtonItemStyleDone : UIBarButtonItemStyleBordered];
+   // [curItem setStyle:[keyboard winPressed] ? UIBarButtonItemStyleDone : UIBarButtonItemStyleBordered];
+    [curItem setTintColor:[keyboard winPressed] ? [UIColor redColor] :
+     [UIColor colorWithRed:1.0/255 green:122.0/255 blue:1 alpha:1]];
+
     
     // alt button
     objectIdx += 2;
     curItem = (UIBarButtonItem*)[[_keyboard_toolbar items] objectAtIndex:objectIdx];
-    [curItem setStyle:[keyboard altPressed] ? UIBarButtonItemStyleDone : UIBarButtonItemStyleBordered];    
+   // [curItem setStyle:[keyboard altPressed] ? UIBarButtonItemStyleDone : UIBarButtonItemStyleBordered];
+    [curItem setTintColor:[keyboard altPressed] ? [UIColor redColor] :
+     [UIColor colorWithRed:1.0/255 green:122.0/255 blue:1 alpha:1]];
+
+    
 }
 
 #pragma mark -
@@ -427,6 +441,9 @@
         NSLog(@"开始断开取消按钮点击后要处理的那个rdp连接！");
         return;
     }
+//    if([@"opener.exe" isEqualToString:[vminfo share].remoteProgram]) {
+//        [self sendMessageToOpener];
+//    }
     
     if (!IOS_VERSION_7_OR_ABOVE)
     {
@@ -454,6 +471,10 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillHide:) name: UIKeyboardWillHideNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardDidHide:) name: UIKeyboardDidHideNotification object:nil];
     
+    //注册挂载网盘处理函数
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handlePostDataEvent:) name:@"SHOWPOSTDATAMESSAGE" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleFirstPostDataError:) name:@"HANDLEFIRSTPOSTDATAERROREVENT" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loadDiskWhenFirstOpenRdp) name:@"loadDiskWhenFirstOpenRdp" object:nil];
     // remove and release connecting view
     [_connecting_indicator_view stopAnimating];
     [_connecting_view removeFromSuperview];
@@ -476,6 +497,13 @@
     //进入遮挡windows登陆界面的界面
 //    [self sessionConnected:session];
     
+    if([@"opener.exe" isEqualToString:[vminfo share].remoteProgram]) {
+        [self sendMessageToOpener];
+    }else{
+        [self postDataWhenFirstOpenRdp];
+    }
+
+    
     [self loadFloatButton]; //加载悬浮按钮
     
     if([@"opener.exe" isEqualToString:[vminfo share].remoteProgram]) {
@@ -497,7 +525,7 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"loadDiskWhenFirstOpenRdp" object:nil];
     //开辟新线程，挂载网盘第一次
     NSLog(@"开始发起打开应用时的第一次挂载网盘的请求！");
-    [self performSelector:@selector(postDataWhenFirstOpenRdp) withObject:nil afterDelay:0];
+    [self performSelector:@selector(postDataWhenFirstOpenRdp) withObject:nil afterDelay:1.0];
 }
 
 #pragma mark FloatButton TapAction
@@ -847,7 +875,6 @@
         [MBProgressHUD hideHUDForView:self.view];
         NSDictionary * msg = [mydic objectForKey:@"msg"];
             if(msg){
-                
                 if ((NSNull *)msg == [NSNull null]) {
                     [alertview showError:self title:@"Error" subTitle:@"网盘操作出错" closeButtonTitle:@"确定" duration:0.0f];
                     return;
@@ -920,11 +947,10 @@
     CGRect rect = [[_keyboard_toolbar superview] bounds];    
     rect.origin.y = [_keyboard_toolbar bounds].size.height;
     rect.size.height -= rect.origin.y;
-    
     // create new view (hidden) and add to host-view of keyboard toolbar
     _advanced_keyboard_view = [[AdvancedKeyboardView alloc] initWithFrame:CGRectMake(rect.origin.x, 
-                                                                                     [[_keyboard_toolbar superview] bounds].size.height, 
-                                                                                     rect.size.width, rect.size.height) delegate:self];
+                                [[_keyboard_toolbar superview] bounds].size.height,
+                                rect.size.width, rect.size.height) delegate:self];
     [[_keyboard_toolbar superview] addSubview:_advanced_keyboard_view];
     // we set autoresize to YES for the keyboard toolbar's superview so that our adv. keyboard view gets properly resized
     [[_keyboard_toolbar superview] setAutoresizesSubviews:YES];
