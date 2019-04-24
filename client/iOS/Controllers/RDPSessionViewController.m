@@ -471,10 +471,6 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillHide:) name: UIKeyboardWillHideNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardDidHide:) name: UIKeyboardDidHideNotification object:nil];
     
-    //注册挂载网盘处理函数
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handlePostDataEvent:) name:@"SHOWPOSTDATAMESSAGE" object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleFirstPostDataError:) name:@"HANDLEFIRSTPOSTDATAERROREVENT" object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loadDiskWhenFirstOpenRdp) name:@"loadDiskWhenFirstOpenRdp" object:nil];
     // remove and release connecting view
     [_connecting_indicator_view stopAnimating];
     [_connecting_view removeFromSuperview];
@@ -496,14 +492,6 @@
     }
     //进入遮挡windows登陆界面的界面
 //    [self sessionConnected:session];
-    
-    if([@"opener.exe" isEqualToString:[vminfo share].remoteProgram]) {
-        [self sendMessageToOpener];
-    }else{
-        [self postDataWhenFirstOpenRdp];
-    }
-
-    
     [self loadFloatButton]; //加载悬浮按钮
     
     if([@"opener.exe" isEqualToString:[vminfo share].remoteProgram]) {
