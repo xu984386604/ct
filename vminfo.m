@@ -8,41 +8,56 @@
 
 #import "vminfo.h"
 
-static vminfo *myvminfo;
+static vminfo *myvminfo = nil;
 @implementation vminfo
 
 +(instancetype)allocWithZone:(struct _NSZone *)zone
 {
+    //不能保证myvminfo不会被释放，所以不能使用dispatch_once_t创建单例
     @synchronized (self) {
         if(myvminfo == nil)
         {
-            myvminfo=[super allocWithZone:zone];
+            myvminfo = [super allocWithZone:zone];
         }
     }
+    
+//    static dispatch_once_t predicate;
+//    dispatch_once(&predicate,^{
+//        myvminfo = [super allocWithZone:zone];
+//    });
     
     return myvminfo;
 }
 
-+(instancetype) share{
-    vminfo *info = [[self alloc] init];
-    if (info.RandomCode == nil) {
-//    [[NSDate date] timeIntervalSince1970]
++(instancetype) share {
+    myvminfo = [[self alloc] init];
+//    static dispatch_once_t once_token;
+//    dispatch_once(&once_token,^{
+//        myvminfo = [[self alloc] init];
+//    });
+    
+    if (myvminfo.RandomCode == nil) {
         NSString *key = [NSString stringWithFormat:@"ios%u", arc4random_uniform(10000)];
-        info.RandomCode = key;
+        myvminfo.RandomCode = key;
         [key release];
         key = nil;
     }
     
-    if (!info.lastUrl && info.cuIp) {
-        info.lastUrl = [NSString stringWithFormat:@"%@/cu",info.cuIp];
+    if (!myvminfo.lastUrl && myvminfo.cuIp) {
+        myvminfo.lastUrl = [NSString stringWithFormat:@"%@/cu",myvminfo.cuIp];
         NSLog(@"lastUrl赋值一次！");
     }
     
-    if (info.multiRdpRecoverInfo == nil) {
-        info.multiRdpRecoverInfo = [NSMutableDictionary dictionary];
+    if (myvminfo.multiRdpRecoverInfo == nil) {
+        myvminfo.multiRdpRecoverInfo = [NSMutableDictionary dictionary];
     }
-    return info;
+    return myvminfo;
 }
+
++ (id)copyWithZone:(struct _NSZone *)zone {
+    return myvminfo ? myvminfo : [[self alloc] init];
+}
+
 
 //获取存活的rdp远程应用的恢复连接的信息
 +(void) filterRecoverRdpinfoDic {

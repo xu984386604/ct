@@ -109,6 +109,10 @@
 - (void)viewDidLoad 
 {
     [super viewDidLoad];
+    //注册挂载网盘处理函数
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handlePostDataEvent:) name:@"SHOWPOSTDATAMESSAGE" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleFirstPostDataError:) name:@"HANDLEFIRSTPOSTDATAERROREVENT" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loadDiskWhenFirstOpenRdp) name:@"loadDiskWhenFirstOpenRdp" object:nil];
 //    _uiRequestCompleted = [[NSCondition alloc] init];
 }
 -(BOOL)shouldAutorotate{
@@ -429,6 +433,7 @@
     //登录成功
     NSLog(@"已经登录成功，freerdp实例创建成功！");
     if([[_session sessionName] isEqualToString:[vminfo share].cancelBtnSessionName] && [_session isCancelConnected] == YES) { //_session代表当前session，而session不一定代表当前session
+        [[vminfo share].cancelBtnSessionName release];
         [vminfo share].cancelBtnSessionName = nil;
         [_session disconnect];
         [_session release];
@@ -458,7 +463,7 @@
     
     [[self view] makeToast:NSLocalizedString(@"接入云端成功", @"success to connect message") duration:ToastDurationShort position:@"center"];
     
-    self.wantsFullScreenLayout=YES;
+    self.edgesForExtendedLayout = UIRectEdgeAll;
     
     // register keyboard notification handlers
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name: UIKeyboardWillShowNotification object:nil];
@@ -466,10 +471,6 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillHide:) name: UIKeyboardWillHideNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardDidHide:) name: UIKeyboardDidHideNotification object:nil];
     
-    //注册挂载网盘处理函数
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handlePostDataEvent:) name:@"SHOWPOSTDATAMESSAGE" object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleFirstPostDataError:) name:@"HANDLEFIRSTPOSTDATAERROREVENT" object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loadDiskWhenFirstOpenRdp) name:@"loadDiskWhenFirstOpenRdp" object:nil];
     // remove and release connecting view
     [_connecting_indicator_view stopAnimating];
     [_connecting_view removeFromSuperview];
@@ -481,6 +482,7 @@
     // The 2nd width check is to ignore changes in resolution settings due to the RDVH display bug (refer to RDPSEssion.m for more details)
     ConnectionParams* orig_params = [session params];
     rdpSettings* sess_params = [session getSessionParams];
+    
     if (([orig_params intForKey:@"width"] != sess_params->DesktopWidth && [orig_params intForKey:@"width"] != (sess_params->DesktopWidth + 1)) ||
         [orig_params intForKey:@"height"] != sess_params->DesktopHeight || [orig_params intForKey:@"colors"] != sess_params->ColorDepth)
     {
@@ -490,19 +492,15 @@
     }
     //进入遮挡windows登陆界面的界面
 //    [self sessionConnected:session];
-    
-    if([@"opener.exe" isEqualToString:[vminfo share].remoteProgram]) {
-        [self sendMessageToOpener];
-    }else{
-        [self postDataWhenFirstOpenRdp];
-    }
-
-    
     [self loadFloatButton]; //加载悬浮按钮
     
+    if([@"opener.exe" isEqualToString:[vminfo share].remoteProgram]) {
+        [self sendMessageToOpener];   //采用第二种发送打开应用信息的方式，该方法内部包含了第一次发送挂载网盘的请求
+    } else {
+        [self postDataWhenFirstOpenRdp];
+    }
     
-    
-    //定时器向虚拟机发送虚拟按键
+    //定时器向虚拟机发送虚拟按键,要不然连接的时间长了会断开连接
     myTimer = [NSTimer scheduledTimerWithTimeInterval:180 target:self selector:@selector(sendWinKeyToServiceToKeepAlive) userInfo:nil repeats:YES];
 }
 
@@ -685,6 +683,7 @@
 //关闭rdp
 -(void) closeOpenRdp
 {
+    [UIApplication sharedApplication].idleTimerDisabled = NO;
     NSString *cuip=[vminfo share].cuIp;
     NSString *Reset_vm_User=[NSString stringWithFormat:@"%@cu/index.php/Home/Client/SendMessageToAgent",cuip];
     NSDictionary *data=@{
@@ -722,6 +721,7 @@
                          @"appid":[vminfo share].appid
                          };
     [[[CommonUtils alloc] init] makeRequestToServer:Reset_vm_User withDictionary:json byHttpMethod:@"POST" type:@"sendDockerMessageToService函数"];
+    [UIApplication sharedApplication].idleTimerDisabled = NO;
 }
 
 //这里是屏幕缩放相关
@@ -832,7 +832,7 @@
     myinfo = nil;
 }
 
--(void)postDataWhenFirstOpenRdp
+-(void) postDataWhenFirstOpenRdp
 {
     vminfo *myinfo=[vminfo share];
     NSString *ip=myinfo.cuIp;

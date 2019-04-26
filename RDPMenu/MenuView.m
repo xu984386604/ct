@@ -18,7 +18,7 @@
 #define bgheight 70
 #define floatbtnH  46
 
-@interface MenuView()
+@interface MenuView() 
 {
 
     MenuButton * button1;

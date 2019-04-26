@@ -234,6 +234,9 @@ bool isInner(unsigned int userIp, unsigned int begin, unsigned int end)
     NSURLSession *session = [NSURLSession sessionWithConfiguration:configuration delegate:self delegateQueue:[NSOperationQueue mainQueue]];
     
     NSURLSessionDataTask *sessionData = [session dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data,NSURLResponse * _Nullable response, NSError * _Nullable error) {
+        if (!data) {
+            return;
+        }
         NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
         NSLog(@"发送%@信息的请求返回状态码：%ld", type, (long)httpResponse.statusCode);
         if([type isEqualToString:@"postData函数"])
@@ -246,7 +249,6 @@ bool isInner(unsigned int userIp, unsigned int begin, unsigned int end)
         }
         if([type isEqualToString:@"sendMessageToOpener"])
         {
-           
             NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:data options:NSJSONWritingPrettyPrinted error:nil];
             NSNumber *mycode = [dic objectForKey:@"code"];
             if ([mycode isEqualToNumber:[NSNumber numberWithLong:800]]) {
@@ -257,7 +259,6 @@ bool isInner(unsigned int userIp, unsigned int begin, unsigned int end)
             } else {
                 NSLog(@"cu返回无效的返回码!");
             }
-            
         }
     }];
     [sessionData resume]; //如果request任务暂停了，则恢复
