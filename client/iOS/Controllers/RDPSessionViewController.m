@@ -919,7 +919,7 @@
             if([status isEqualToString:@"failed"]){
                 [alertView showError:self title:@"Error" subTitle:description2 closeButtonTitle:@"确定" duration:0.0f];
                 return;
-            }
+           }
         }
     }else{
         [alertView showError:self title:@"Error" subTitle:@"挂载网盘失败" closeButtonTitle:@"确定" duration:0.0f];
