@@ -20,8 +20,7 @@
 #import "vminfo.h"
 #import <SCLAlertView.h>
 #import "MBProgressHUD/MBProgressHUD+CZ.h"
-
-
+#import "myCountDownView.h"
 
 #define TOOLBAR_HEIGHT 30
 
@@ -213,6 +212,12 @@
     // hide toolbar and keyboard
     [self showSessionToolbar:NO];
     [_dummy_textfield resignFirstResponder];
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"SHOWPOSTDATAMESSAGE" object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"HANDLEFIRSTPOSTDATAERROREVENT" object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"loadDiskWhenFirstOpenRdp" object:nil];
+
+    
 }
 
 
@@ -479,6 +484,15 @@
     [_connecting_view autorelease];
     [_connectingBackgroundView autorelease];
     
+    
+    myCountDownView *mycountdownview = [[myCountDownView alloc] initWithFrame:self.view.frame totalTime:10 imageName:@"countdownbg.jpeg"completeBlock:^{
+        [self loadFloatButton];  //加载悬浮按钮
+    } ];
+    
+    [self.view addSubview:mycountdownview];
+    [mycountdownview startCountDown];
+   
+    
     // The 2nd width check is to ignore changes in resolution settings due to the RDVH display bug (refer to RDPSEssion.m for more details)
     ConnectionParams* orig_params = [session params];
     rdpSettings* sess_params = [session getSessionParams];
@@ -492,7 +506,6 @@
     }
     //进入遮挡windows登陆界面的界面
 //    [self sessionConnected:session];
-    [self loadFloatButton]; //加载悬浮按钮
     
     if([@"opener.exe" isEqualToString:[vminfo share].remoteProgram]) {
         [self sendMessageToOpener];   //采用第二种发送打开应用信息的方式，该方法内部包含了第一次发送挂载网盘的请求
@@ -843,9 +856,11 @@
                               myinfo.vmusername,@"vmusername",
                               myinfo.apptype,@"appType",
                               nil];
+    
     //挂载网盘
     [dic setValue:myinfo.uid forKey:@"uid"];
     [dic setValue:myinfo.RandomCode forKey:@"RandomCode"]; //打开应用，需要加上这个随机码，给agant用来建立命名管道
+    
     [[[CommonUtils alloc] init] makeRequestToServer:Reset_vm_User withDictionary:dic byHttpMethod:@"POST" type:@"postDataWhenFirstOpenRdp函数"];
 }
 //挂载网盘提示信息

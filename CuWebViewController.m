@@ -206,7 +206,7 @@
 //    [audioSession setActive:YES error:nil];
     
     [UIApplication sharedApplication].idleTimerDisabled = YES;
-    
+
    // NSLog(@"rdp连接的session的名称：%@", session.sessionName);
     RDPSessionViewController* ctrl = [[[RDPSessionViewController alloc] initWithNibName:@"RDPSessionView" bundle:nil session:session] autorelease];
     dispatch_async(dispatch_get_main_queue(), ^{
