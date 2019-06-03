@@ -484,13 +484,17 @@
     [_connecting_view autorelease];
     [_connectingBackgroundView autorelease];
     
-    
-    myCountDownView *mycountdownview = [[myCountDownView alloc] initWithFrame:self.view.frame totalTime:10 imageName:@"countdownbg.jpeg"completeBlock:^{
+    if([[vminfo share].apptype isEqualToString:@"lca"]) {
+        //docker应用延迟10秒
+        myCountDownView *mycountdownview = [[myCountDownView alloc] initWithFrame:self.view.frame totalTime:10 imageName:@"countdownbg.jpeg"completeBlock:^{
+            [self loadFloatButton];  //加载悬浮按钮 
+        } ];
+        [self.view addSubview:mycountdownview];
+        [mycountdownview startCountDown];
+    }else{
         [self loadFloatButton];  //加载悬浮按钮
-    } ];
+    }
     
-    [self.view addSubview:mycountdownview];
-    [mycountdownview startCountDown];
    
     
     // The 2nd width check is to ignore changes in resolution settings due to the RDVH display bug (refer to RDPSEssion.m for more details)
@@ -516,7 +520,7 @@
     //定时器向虚拟机发送虚拟按键,要不然连接的时间长了会断开连接
     myTimer = [NSTimer scheduledTimerWithTimeInterval:180 target:self selector:@selector(sendWinKeyToServiceToKeepAlive) userInfo:nil repeats:YES];
 }
-
+//
 -(void)sendWinKeyToServiceToKeepAlive
 {
     [[RDPKeyboard getSharedRDPKeyboard] sendVirtualKeyCode:0x00];
