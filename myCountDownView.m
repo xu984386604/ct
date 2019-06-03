@@ -53,7 +53,7 @@
     [self startTime];
 }
 - (void)startTime {
-    __weak typeof (self)bself = self;
+    __weak typeof(self)bself = self;
     __block NSInteger timeout = _totalTime;
     dispatch_queue_t queue = dispatch_queue_create(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
     dispatch_source_t _timer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, queue);

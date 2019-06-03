@@ -486,8 +486,9 @@
     
     if([[vminfo share].apptype isEqualToString:@"lca"]) {
         //docker应用延迟10秒
+        typeof(self) weakself = self;
         myCountDownView *mycountdownview = [[myCountDownView alloc] initWithFrame:self.view.frame totalTime:10 imageName:@"countdownbg.jpeg"completeBlock:^{
-            [self loadFloatButton];  //加载悬浮按钮 
+            [weakself loadFloatButton];  //加载悬浮按钮
         } ];
         [self.view addSubview:mycountdownview];
         [mycountdownview startCountDown];
