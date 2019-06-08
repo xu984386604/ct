@@ -62,7 +62,7 @@
         if(timeout <=0) {
             dispatch_source_cancel(_timer);
             dispatch_async(dispatch_get_main_queue(), ^{
-                [bself.DCPButton removeFromSuperview];
+                bself.DCPButton.hidden = YES;
                 [bself removeProgress];
                 if(bself.completeBlock)
                     bself.completeBlock();

@@ -508,7 +508,6 @@
     }else{
         [self loadFloatButton];  //加载悬浮按钮
     }
-    
    
     
     // The 2nd width check is to ignore changes in resolution settings due to the RDVH display bug (refer to RDPSEssion.m for more details)

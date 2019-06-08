@@ -78,7 +78,8 @@
 #pragma mark -- CAAnimationDelegate
 - (void)animationDidStop:(CAAnimation *)anim finished:(BOOL)flag {
     if(flag) {
-        self.myblock();
+        if(self.myblock)
+            self.myblock();
     }
 }
 
