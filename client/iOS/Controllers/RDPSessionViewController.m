@@ -230,7 +230,16 @@
 
     [_advanced_keyboard_view release];
     [_keyboard_toolbar release];
-    [_session release];
+    
+    if(_session) {
+        [_session release];
+    }
+    
+    if ([vminfo share].cancelBtnSessionName) {
+        [[vminfo share].cancelBtnSessionName release];
+        [vminfo share].cancelBtnSessionName = nil;
+    }
+   
     [myTimer invalidate];
     myTimer = nil;
     [_myfloatbutton release];
@@ -438,10 +447,14 @@
     //登录成功
     NSLog(@"已经登录成功，freerdp实例创建成功！");
     if([[_session sessionName] isEqualToString:[vminfo share].cancelBtnSessionName] && [_session isCancelConnected] == YES) { //_session代表当前session，而session不一定代表当前session
-        [[vminfo share].cancelBtnSessionName release];
-        [vminfo share].cancelBtnSessionName = nil;
+        if ([vminfo share].cancelBtnSessionName) {
+            [[vminfo share].cancelBtnSessionName release];
+            [vminfo share].cancelBtnSessionName = nil;
+        }
+        
         [_session disconnect];
-        [_session release];
+//        [_session release];
+        
         _session = nil;
         NSLog(@"开始断开取消按钮点击后要处理的那个rdp连接！");
         return;
@@ -701,7 +714,10 @@
 //关闭rdp
 -(void) closeOpenRdp
 {
-    [UIApplication sharedApplication].idleTimerDisabled = NO;
+    dispatch_async(dispatch_get_main_queue(), ^{
+        //设置屏幕常亮
+        [[UIApplication sharedApplication] setIdleTimerDisabled:NO];
+    });
     NSString *cuip=[vminfo share].cuIp;
     NSString *Reset_vm_User=[NSString stringWithFormat:@"%@cu/index.php/Home/Client/SendMessageToAgent",cuip];
     NSDictionary *data=@{
@@ -739,7 +755,10 @@
                          @"appid":[vminfo share].appid
                          };
     [[[CommonUtils alloc] init] makeRequestToServer:Reset_vm_User withDictionary:json byHttpMethod:@"POST" type:@"sendDockerMessageToService函数"];
-    [UIApplication sharedApplication].idleTimerDisabled = NO;
+    dispatch_async(dispatch_get_main_queue(), ^{
+        //设置屏幕常亮
+        [[UIApplication sharedApplication] setIdleTimerDisabled:NO];
+    });
 }
 
 //这里是屏幕缩放相关
