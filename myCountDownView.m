@@ -82,11 +82,12 @@
 - (void)removeProgress {
     self.backgroundImageView.transform = CGAffineTransformMakeScale(1, 1);
     self.backgroundImageView.alpha = 1;
+     typeof(self) weakself = self;
     [UIView animateWithDuration:0.7 animations:^{
-        self.backgroundImageView.alpha = 0.05;
-        self.backgroundImageView.transform = CGAffineTransformMakeScale(5, 5);
+        weakself.backgroundImageView.alpha = 0.05;
+        weakself.backgroundImageView.transform = CGAffineTransformMakeScale(5, 5);
     } completion:^(BOOL finished) {
-        [self removeFromSuperview];
+        [weakself removeFromSuperview];
     }];
     
 }
