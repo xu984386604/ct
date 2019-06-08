@@ -277,7 +277,10 @@ out_free:
 
 - (void) disconnect
 {
-    [UIApplication sharedApplication].idleTimerDisabled = NO;
+    dispatch_async(dispatch_get_main_queue(), ^{
+        //设置屏幕常亮
+        [[UIApplication sharedApplication] setIdleTimerDisabled:NO];
+    });
     mfInfo* mfi = [self mfi];
     
     ios_events_send(mfi, [NSDictionary dictionaryWithObject:@"disconnect" forKey:@"type"]);
