@@ -701,7 +701,7 @@
 {
     SCLAlertViewBuilder *builder = [SCLAlertViewBuilder new]
     .addButtonWithActionBlock(@"确定", ^{});
-    SCLAlertViewShowBuilder *showBuilder = [SCLAlertViewShowBuilder new]
+    SCLAlertViewShowBuilder * showBuilder = [SCLAlertViewShowBuilder new]
     .style(SCLAlertViewStyleError)
     .title(@"错误")
     .subTitle(@"参数错误，无法打开")
