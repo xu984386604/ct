@@ -699,14 +699,16 @@
 //传入的参数错误，提示错误信息
 -(void)showParamErrorMessage
 {
-    SCLAlertViewBuilder *builder = [SCLAlertViewBuilder new]
-    .addButtonWithActionBlock(@"确定", ^{});
-    SCLAlertViewShowBuilder * showBuilder = [SCLAlertViewShowBuilder new]
-    .style(SCLAlertViewStyleError)
-    .title(@"错误")
-    .subTitle(@"参数错误，无法打开")
-    .duration(0);
-    [showBuilder showAlertView:builder.alertView onViewController:self];
+        SCLAlertViewBuilder *builder = [SCLAlertViewBuilder new]
+        .addButtonWithActionBlock(@"确定", ^{});
+        SCLAlertViewShowBuilder * showBuilder = [SCLAlertViewShowBuilder new]
+        .style(SCLAlertViewStyleError)
+        .title(@"错误")
+        .subTitle(@"参数错误，无法打开")
+        .duration(0);
+        [showBuilder showAlertView:builder.alertView onViewController:self];
+    
+    
 }
 
 
