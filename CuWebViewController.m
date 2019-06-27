@@ -24,7 +24,7 @@
 
 #define SCREEN_HEIGHT ([UIScreen mainScreen].bounds.size.height)
 #define SCREEN_WIDTH  ([UIScreen mainScreen].bounds.size.width)
-#define LOCALMD5      @"f089a4df634a996987038d4b51eb22d5"
+#define LOCALMD5      @"8000284544ce1cf6be67804c1f920a42"
 
 //WLOG_LEVEL=DEBUG  环境变量
 @interface CuWebViewController () <MyFloatButtonDelegate>
@@ -682,23 +682,25 @@
 //md5校验 错误提示信息
 -(void)showMD5CheckAlert
 {
-    
-    SCLAlertViewBuilder *builder = [SCLAlertViewBuilder new]
-    .addButtonWithActionBlock(@"退出", ^{
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"appEnterbackGround" object:nil];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        SCLAlertViewBuilder *builder = [SCLAlertViewBuilder new]
+        .addButtonWithActionBlock(@"退出", ^{
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"appEnterbackGround" object:nil];
+        });
+        SCLAlertViewShowBuilder *showBuilder = [SCLAlertViewShowBuilder new]
+        .style(SCLAlertViewStyleError)
+        .title(@"错误")
+        .subTitle(@"本地文件被篡改，无法打开")
+        .duration(0);
+        [showBuilder showAlertView:builder.alertView onViewController:self];
     });
-    SCLAlertViewShowBuilder *showBuilder = [SCLAlertViewShowBuilder new]
-    .style(SCLAlertViewStyleError)
-    .title(@"错误")
-    .subTitle(@"本地文件被篡改，无法打开")
-    .duration(0);
-    [showBuilder showAlertView:builder.alertView onViewController:self];
     
 }
 
 //传入的参数错误，提示错误信息
 -(void)showParamErrorMessage
 {
+    dispatch_async(dispatch_get_main_queue(), ^{
         SCLAlertViewBuilder *builder = [SCLAlertViewBuilder new]
         .addButtonWithActionBlock(@"确定", ^{});
         SCLAlertViewShowBuilder * showBuilder = [SCLAlertViewShowBuilder new]
@@ -707,6 +709,7 @@
         .subTitle(@"参数错误，无法打开")
         .duration(0);
         [showBuilder showAlertView:builder.alertView onViewController:self];
+    });
     
     
 }
