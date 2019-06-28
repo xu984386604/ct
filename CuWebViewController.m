@@ -500,6 +500,7 @@
         }//end of if
     } else if(![urlStr containsString:@"alipay"] && ![urlStr isEqualToString:@"about:blank"]) {
         if (_isNotFirstLoad) {
+            
             [myWebView removeFromSuperview];
             myWebView = [[UIWebView alloc] initWithFrame:[UIScreen mainScreen].bounds];
             [CommonUtils adaptationSafeAreaWith:(UIScrollView *)myWebView useArea:false];
