@@ -502,6 +502,8 @@
         if (_isNotFirstLoad) {
             
             [myWebView removeFromSuperview];
+            [myWebView release];
+            myWebView = nil;
             myWebView = [[UIWebView alloc] initWithFrame:[UIScreen mainScreen].bounds];
             [CommonUtils adaptationSafeAreaWith:(UIScrollView *)myWebView useArea:false];
             [self.view addSubview:myWebView];
@@ -544,8 +546,8 @@
 -(void) loadCuPage:(NSURLRequest*) myrequest {
     [UIView animateWithDuration:1.0f animations:^{
         [myWebView removeFromSuperview];
+        [myWebView release];
         myWebView = nil;
-        [myWebView autorelease];
         myWebView = [[UIWebView alloc] initWithFrame:[UIScreen mainScreen].bounds];
         [CommonUtils adaptationSafeAreaWith:(UIScrollView *)myWebView useArea:false];
         [self.view addSubview:myWebView];
